@@ -1,4 +1,4 @@
-# About
+# About LessCSS Compiler
 [![License BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](http://lesscss-compiler.projects.gabrys.biz/license.txt)
 [![Build Status](https://travis-ci.org/gabrysbiz/lesscss-compiler.svg?branch=develop)](https://travis-ci.org/gabrysbiz/lesscss-compiler)
 

@@ -156,16 +156,16 @@ public class LessCompilerImpl implements LessCompiler {
         return arguments.toArray();
     }
 
-    private CompilerException parseException(final JavaScriptException e) {
-        final Scriptable value = (Scriptable) e.getValue();
+    private CompilerException parseException(final JavaScriptException exception) {
+        final Scriptable value = (Scriptable) exception.getValue();
         if (value != null && ScriptableObject.hasProperty(value, "message")) {
             final String message = ScriptableObject.getProperty(value, "message").toString();
             final Matcher matcher = IMPORT_ERROR_PATTERN.matcher(message);
             if (matcher.find()) {
-                return new ResolveImportException(message, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX), e);
+                return new ResolveImportException(message, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX), exception);
             }
-            return new SyntaxException(message, e);
+            return new SyntaxException(message, exception);
         }
-        return new SyntaxException(e);
+        return new SyntaxException(exception);
     }
 }
