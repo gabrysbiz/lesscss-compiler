@@ -175,7 +175,7 @@ public class LessCompilerImpl implements LessCompiler {
         return arguments.toArray();
     }
 
-    private CompilerException parseException(final JavaScriptException exception) {
+    private static CompilerException parseException(final JavaScriptException exception) {
         final Scriptable value = (Scriptable) exception.getValue();
         if (value != null && ScriptableObject.hasProperty(value, "message")) {
             final String message = ScriptableObject.getProperty(value, "message").toString();
