@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="en-us">
+    <head>
+        <meta charset="UTF-8" />
+        <title>LessCSS Compiler</title>
+        <meta name="description" content="A Java library which compiles Less source files to the CSS code." />
+        <meta name="keywords" content="lesscss, css, stylesheets, java, compiler" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/stylesheet.css" media="screen" />
+        <link rel="stylesheet" type="text/css" href="stylesheets/github-light.css" media="screen" />
+    </head>
+    <body>
+        <section class="page-header">
+            <h1 class="project-name">LessCSS Compiler</h1>
+            <h2 class="project-tagline">A Java library which compiles Less source files to the CSS code</h2>
+            <a href="https://github.com/gabrysbiz/lesscss-compiler" class="btn">View on GitHub</a>
+            <a href="LATEST/" class="btn" rel="nofollow">LATEST (version under development) docs</a>
+        </section>
+        <section class="main-content">
+            <h1>
+                <a id="about" class="anchor" href="#about" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"/>
+                </a>
+                About
+            </h1>
+            <p>
+                The LessCSS Compiler is a Java library which compiles <a href="http://lesscss.org/">Less</a> source files to the
+                <a href="http://www.w3.org/Style/CSS/">CSS</a> code.
+            </p>
+            <p>
+                From <a href="http://lesscss.org/">Less</a> website:
+            </p>
+            <blockquote>
+                Less is a CSS pre-processor, meaning that it extends the CSS language, adding features that allow variables, mixins,
+                functions and many other techniques that allow you to make CSS that is more maintainable, themable and extendable.
+            </blockquote>
+            <h1>
+                <a id="compatibility" class="anchor" href="#compatibility" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Compatibility
+            </h1>
+            <p>
+                The compiler is compatible with version	<a href="https://github.com/less/less.js/releases/tag/v1.7.5">1.7.5</a>.
+                The library is based on the official <a href="http://lesscss.org/">Less</a> JavaScript compiler adapted to the
+                <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> engine.
+            </p>
+            <p>
+                Restrictions:
+            </p>
+            <ul>
+                <li>cannot fetch sources from Internet, e.g. <code>&commat;import (less) &quot;http://example.org/style.less&quot;</code></li>
+            </ul>
+            <h1>
+                <a id="requirements" class="anchor" href="#requirements" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Requirements
+            </h1>
+            <p>
+                The compiler to run requires:
+            </p>
+            <ul>
+                <li>Java 5.0 or higher</li>
+                <li>Third-Party Dependencies (<a href="LATEST/dependencies.html">see list</a>)</li>
+            </ul>
+            <h1>
+                <a id="concept" class="anchor" href="#concept" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Concept
+            </h1>
+            <p>
+                The idea for the <code>LessCompilerImpl</code> class was based on the
+                <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a> library by
+                <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
+            </p>
+            <h1>
+                <a id="license" class="anchor" href="#license" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                License
+            </h1>
+            <p>
+                The plugin is distributed under open source and commercial friendly &quot;BSD 3-Clause&quot; license:
+            </p>
+            <pre>Copyright (c) 2015, Adam Gabryś
+All rights reserved.
+
+Redistribution and use in source and binary forms, with or without modification, 
+are permitted provided that the following conditions are met: 
+1. Redistributions of source code must retain the above copyright notice, this 
+list of conditions and the following disclaimer. 
+2. Redistributions in binary form must reproduce the above copyright notice, 
+this list of conditions and the following disclaimer in the documentation and/or 
+other materials provided with the distribution. 
+3. Neither the name of the gabrys.biz nor the names of its contributors may be 
+used to endorse or promote products derived from this software without specific 
+prior written permission. 
+
+THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
+ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED 
+WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE 
+DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR 
+ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES 
+(INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; 
+LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON 
+ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT 
+(INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS 
+SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
+            <h1>
+                <a id="download" class="anchor" href="#download" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Download
+            </h1>
+            <p>
+                You can download the compiler from docs pages or using various dependency management tools:
+            </p>
+            <ul>
+                <li><a href="https://maven.apache.org/">Apache Maven</a></li>
+                <li><a href="https://buildr.apache.org/">Apache Buildr</a></li>
+                <li><a href="http://ant.apache.org/ivy/">Apache Ivy</a></li>
+                <li><a href="http://docs.groovy-lang.org/latest/html/documentation/grape.html">Groovy Grape</a></li>
+                <li><a href="https://gradle.org/">Gradle</a></li>
+                <li><a href="https://grails.org/">Grails</a></li>
+                <li><a href="http://www.scala-sbt.org/">Scala SBT</a></li>
+                <li><a href="http://leiningen.org/">Leiningen</a></li>
+            </ul>
+            <p>Example for Maven:</p>
+            <pre>&lt;project&gt;
+   ...
+   &lt;dependencies&gt;
+      &lt;dependency&gt;
+         &lt;groupId&gt;biz.gabrys.lesscss&lt;/groupId&gt;
+         &lt;artifactId&gt;compiler&lt;/artifactId&gt;
+         &lt;version&gt;1.0&lt;/version&gt;
+      &lt;/dependency&gt;
+      ...
+   &lt;dependencies&gt;
+   ...
+&lt;/project&gt;</pre>
+            <h1>
+                <a id="usage" class="anchor" href="#usage" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Usage
+            </h1>
+            <p>
+                How to compile a source file:
+            </p>
+            <pre>// create compiler & source file
+LessCompiler compiler = new LessCompilerImpl();
+File source = new File("/less/file.less");
+
+// compile file with default options
+String cssCode = compiler.compile(source); 
+
+// set custom option: minify CSS code
+CompilerOptions options = new CompilerOptionsBuilder().setMinified(true).create();
+String cssMinifiedCode = compiler.compile(source, options);</pre>
+            <h1>
+                <a id="versions" class="anchor" href="#versions" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Versions
+            </h1>
+            <p>
+                <a href="LATEST/" rel="nofollow">LATEST docs</a> - the newest version under development</a>
+            </p>
+            <footer class="site-footer">
+                <span class="site-footer-owner"><a href="https://github.com/gabrysbiz/lesscss-compiler">LessCSS Compiler</a> is maintained by <a href="http://www.gabrys.biz/">gabrys.biz</a>.</span>
+                <span class="site-footer-credits">This page was generated by <a href="https://pages.github.com">GitHub Pages</a> using the <a href="https://github.com/jasonlong/cayman-theme">Cayman theme</a> by <a href="https://twitter.com/jasonlong">Jason Long</a>.</span>
+            </footer>
+        </section>
+    </body>
+</html>
