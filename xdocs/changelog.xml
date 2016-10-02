@@ -18,7 +18,7 @@
             <ul>
                 <li>
                     Corrected creation of <code>includePaths</code> in
-                    <a href="apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html">CompilerOptionsBuilder</a>
+                    <a href="http://lesscss-compiler.projects.gabrys.biz/1.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html">CompilerOptionsBuilder</a>
                 </li>
             </ul>
             <p>
