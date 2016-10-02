@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>About</title>
+    </properties>
+
+    <body>
+        <section name="About">
+            <p>
+                The ${project.name} is a Java library which compiles <a href="http://lesscss.org/">Less</a> source files to the
+                <a href="http://www.w3.org/Style/CSS/">CSS</a> code.
+            </p>
+            <p>
+                From <a href="http://lesscss.org/">Less</a> website:<br />
+                <q>Less is a CSS pre-processor, meaning that it extends the CSS language, adding features that allow variables,
+                mixins, functions and many other techniques that allow you to make CSS that is more maintainable, themable
+                and extendable.</q>
+            </p>
+        </section>
+        <section name="Compatibility">
+            <p>
+                 The compiler is compatible with version    <a href="https://github.com/less/less.js/releases/tag/v1.7.5">1.7.5</a>.
+                 The library is based on the official <a href="http://lesscss.org/">Less</a> JavaScript compiler adapted to the
+                <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> engine.
+            </p>
+            <p>Restrictions:</p>
+            <ul>
+                 <li>cannot fetch sources from Internet, e.g. <code>@import (less) "http://example.org/style.less"</code></li>
+            </ul>
+        </section>
+        <section name="Requirements">
+            <p>
+                The compiler to run requires:
+            </p>
+            <ul>
+                <li>Java 5.0 or higher</li>
+                <li>Third-Party Dependencies (<a href="dependencies.html">see list</a>)</li>
+            </ul>
+        </section>
+        <section name="Download">
+            <p>
+                You can download the library from <a href="download.html">this page</a> or using various
+                <a href="dependency-info.html">dependency management tools</a>.
+            </p>
+        </section>
+        <section name="Concept">
+            <p>
+                The idea for the <a href="xref/biz/gabrys/lesscss/compiler/LessCompilerImpl.html">LessCompilerImpl</a>
+                class was based on the <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a>
+                library by <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
+            </p>
+        </section>
+        <section name="Usage">
+            <p>
+                How to compile a source file:
+            </p>
+            <pre>// create compiler &amp; source file
+LessCompiler compiler = new LessCompilerImpl();
+File source = new File("/less/file.less");
+
+// compile file with default options
+String cssCode = compiler.compile(source); 
+
+// set custom option: minify CSS code
+CompilerOptions options = new CompilerOptionsBuilder().setMinified(true).create();
+String cssMinifiedCode = compiler.compile(source, options);</pre>
+        </section>
+    </body>
+</document>
