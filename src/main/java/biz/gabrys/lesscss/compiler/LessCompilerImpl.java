@@ -137,6 +137,7 @@ public class LessCompilerImpl implements LessCompiler {
     }
 
     private void initialize() throws InitializationException {
+        InputStreamReader reader = null;
         try {
             final Context context = Context.enter();
             context.setLanguageVersion(Context.VERSION_1_8);
@@ -155,13 +156,14 @@ public class LessCompilerImpl implements LessCompiler {
             streams.add(lessFile.openConnection().getInputStream());
             streams.add(lesscFile.openConnection().getInputStream());
 
-            final InputStreamReader reader = new InputStreamReader(new SequenceInputStream(Collections.enumeration(streams)), CHARSET);
+            reader = new InputStreamReader(new SequenceInputStream(Collections.enumeration(streams)), CHARSET);
             compiler = (Function) context.compileReader(reader, lessFile.toString(), 1, null);
 
         } catch (final Exception e) {
             throw new InitializationException("Failed to initialize Less compiler", e);
 
         } finally {
+            IOUtils.closeQuietly(reader);
             Context.exit();
         }
     }
@@ -173,7 +175,7 @@ public class LessCompilerImpl implements LessCompiler {
         return arguments.toArray();
     }
 
-    private CompilerException parseException(final JavaScriptException exception) {
+    private static CompilerException parseException(final JavaScriptException exception) {
         final Scriptable value = (Scriptable) exception.getValue();
         if (value != null && ScriptableObject.hasProperty(value, "message")) {
             final String message = ScriptableObject.getProperty(value, "message").toString();

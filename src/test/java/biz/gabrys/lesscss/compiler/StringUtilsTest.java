@@ -3,7 +3,7 @@ package biz.gabrys.lesscss.compiler;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class StringUtilsTest {
+public final class StringUtilsTest {
 
     @Test
     public void isNotBlank_null_false() {

@@ -1,8 +1,14 @@
 # LessCSS Compiler Changelog
 
+## 1.2.1
+Bugs:
+* Fixed quality flaws
+
+[See documentation](http://lesscss-compiler.projects.gabrys.biz/1.2.1/)
+
 ## 1.2
 Bugs:
-* Correct creation of `includePaths` in [CompilerOptionsBuilder](http://lesscss-compiler.projects.gabrys.biz/1.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html)
+* Corrected creation of `includePaths` in [CompilerOptionsBuilder](http://lesscss-compiler.projects.gabrys.biz/1.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html)
 
 [See documentation](http://lesscss-compiler.projects.gabrys.biz/1.2/)
 
