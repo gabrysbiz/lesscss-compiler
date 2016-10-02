@@ -13,6 +13,7 @@
 package biz.gabrys.lesscss.compiler;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 /**
@@ -75,6 +76,20 @@ public class CompilerOptionsBuilder {
     }
 
     /**
+     * Returns compiler command line argument which enables/disables compatibility with IE browser.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setIeCompatability(boolean)
+     */
+    protected String getIeCompatabilityCompilerArgument() {
+        if (ieCompatability) {
+            return "";
+        } else {
+            return "--no-ie-compat";
+        }
+    }
+
+    /**
      * Returns available include paths (default: empty list). Returned list is a copy - changes in the structure do not
      * change internal state.
      * @return available include paths.
@@ -91,8 +106,35 @@ public class CompilerOptionsBuilder {
      * @since 1.0
      */
     public CompilerOptionsBuilder setIncludePaths(final List<String> includePaths) {
-        this.includePaths = new ArrayList<String>(includePaths);
+        if (includePaths == null || includePaths.isEmpty()) {
+            this.includePaths = Collections.emptyList();
+        } else {
+            this.includePaths = new ArrayList<String>(includePaths);
+        }
         return this;
+    }
+
+    /**
+     * Returns compiler command line argument representation of the available include paths.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setIncludePaths(List)
+     */
+    protected String getIncludePathsCompilerArgument() {
+        if (includePaths == null || includePaths.isEmpty()) {
+            return "";
+        }
+        final StringBuilder paths = new StringBuilder();
+        for (final String path : includePaths) {
+            if (StringUtils.isNotBlank(path)) {
+                final boolean separatorRequired = paths.length() != 0;
+                if (separatorRequired) {
+                    paths.append(systemChecker.isWindows() ? ';' : ':');
+                }
+                paths.append(path.trim());
+            }
+        }
+        return "--include-path=" + paths.toString();
     }
 
     /**
@@ -119,6 +161,21 @@ public class CompilerOptionsBuilder {
     }
 
     /**
+     * Returns compiler command line argument which enables/disables <a href="http://www.w3.org/Style/CSS/">CSS</a> code
+     * minification.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setMinified(boolean)
+     */
+    protected String getMinifiedCompilerArgument() {
+        if (minified) {
+            return "-x";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Checks whether the compiler will rewrite relative URLs (default: {@code false}).
      * @return {@code true} whether the compiler will rewrite relative URLs, otherwise {@code false}.
      * @since 1.0
@@ -136,6 +193,20 @@ public class CompilerOptionsBuilder {
     public CompilerOptionsBuilder setRelativeUrls(final boolean relativeUrls) {
         this.relativeUrls = relativeUrls;
         return this;
+    }
+
+    /**
+     * Returns compiler command line argument which enables/disables rewriting relative URLs.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setRelativeUrls(boolean)
+     */
+    protected String getRelativeUrlsCompilerArgument() {
+        if (relativeUrls) {
+            return "--relative-urls";
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -159,6 +230,20 @@ public class CompilerOptionsBuilder {
     public CompilerOptionsBuilder setRootPath(final String rootPath) {
         this.rootPath = rootPath;
         return this;
+    }
+
+    /**
+     * Returns compiler command line argument representation of the root path.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setRootPath(String)
+     */
+    protected String getRootPathCompilerArgument() {
+        if (StringUtils.isNotBlank(rootPath)) {
+            return "--rootpath=" + rootPath.trim();
+        } else {
+            return "";
+        }
     }
 
     /**
@@ -186,6 +271,20 @@ public class CompilerOptionsBuilder {
     }
 
     /**
+     * Returns compiler command line argument which enables/disables strict imports.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setStrictImports(boolean)
+     */
+    protected String getStrictImportsCompilerArgument() {
+        if (strictImports) {
+            return "--strict-imports";
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Checks whether the compiler will try and process all maths in the <a href="http://www.w3.org/Style/CSS/">CSS</a>
      * code (default: {@code false}).
      * @return {@code true} whether the compiler will try and process all maths in the
@@ -207,6 +306,20 @@ public class CompilerOptionsBuilder {
     public CompilerOptionsBuilder setStrictMath(final boolean strictMath) {
         this.strictMath = strictMath;
         return this;
+    }
+
+    /**
+     * Returns compiler command line argument which enables/disables strict math.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setStrictMath(boolean)
+     */
+    protected String getStrictMathCompilerArgument() {
+        if (strictMath) {
+            return "--strict-math=on";
+        } else {
+            return "--strict-math=off";
+        }
     }
 
     /**
@@ -234,6 +347,20 @@ public class CompilerOptionsBuilder {
     }
 
     /**
+     * Returns compiler command line argument which enables/disables strict units.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setStrictMath(boolean)
+     */
+    protected String getStrictUnitsCompilerArgument() {
+        if (strictUnits) {
+            return "--strict-units=on";
+        } else {
+            return "--strict-units=off";
+        }
+    }
+
+    /**
      * Returns an argument which will be added to every URL (default: {@code ""}).
      * @return the argument which will be added to every URL.
      * @since 1.0
@@ -254,53 +381,35 @@ public class CompilerOptionsBuilder {
     }
 
     /**
+     * Returns compiler command line argument representation of the argument which will be added to every URL.
+     * @return command line argument (never {@code null}).
+     * @since 1.2
+     * @see #setUrlsArgument(String)
+     */
+    protected String getUrlsArgumentCompilerArgument() {
+        if (StringUtils.isNotBlank(urlsArgument)) {
+            return String.format("--url-args=\"%s\"", urlsArgument.trim().replace("\"", "\\\""));
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Creates a new instance of the {@link CompilerOptions}.
      * @return the new instance of the {@link CompilerOptions}.
      * @since 1.0
      */
     public CompilerOptions create() {
-        final List<Object> arguments = new ArrayList<Object>();
-        if (!ieCompatability) {
-            arguments.add("--no-ie-compat");
-        }
-        final String paths = getIncludePathsArgumentValue();
-        if (StringUtils.isNotBlank(paths)) {
-            arguments.add("--include-path=" + paths);
-        }
-        if (minified) {
-            arguments.add("-x");
-        }
-        if (relativeUrls) {
-            arguments.add("--relative-urls");
-        }
-        if (StringUtils.isNotBlank(rootPath)) {
-            arguments.add("--rootpath=" + rootPath.trim());
-        }
-        if (strictImports) {
-            arguments.add("--strict-imports");
-        }
-        arguments.add("--strict-math=" + (strictMath ? "on" : "off"));
-        arguments.add("--strict-units=" + (strictUnits ? "on" : "off"));
-        if (StringUtils.isNotBlank(urlsArgument)) {
-            arguments.add("--url-args=\"" + urlsArgument.trim().replace("\"", "\\\"") + '"');
-        }
-        return new CompilerOptions(arguments);
-    }
-
-    private String getIncludePathsArgumentValue() {
-        if (includePaths == null || includePaths.isEmpty()) {
-            return null;
-        }
-        final StringBuilder paths = new StringBuilder();
-        for (final String path : includePaths) {
-            if (StringUtils.isNotBlank(path)) {
-                final boolean separatorRequired = paths.length() == 0;
-                if (separatorRequired) {
-                    paths.append(systemChecker.isWindows() ? ';' : ':');
-                }
-                paths.append(path.trim());
-            }
-        }
-        return paths.toString();
+        final ListWithoutEmptyValuesBuilder arguments = new ListWithoutEmptyValuesBuilder();
+        arguments.add(getIeCompatabilityCompilerArgument());
+        arguments.add(getIncludePathsCompilerArgument());
+        arguments.add(getMinifiedCompilerArgument());
+        arguments.add(getRelativeUrlsCompilerArgument());
+        arguments.add(getRootPathCompilerArgument());
+        arguments.add(getStrictImportsCompilerArgument());
+        arguments.add(getStrictMathCompilerArgument());
+        arguments.add(getStrictUnitsCompilerArgument());
+        arguments.add(getUrlsArgumentCompilerArgument());
+        return new CompilerOptions(arguments.create());
     }
 }
