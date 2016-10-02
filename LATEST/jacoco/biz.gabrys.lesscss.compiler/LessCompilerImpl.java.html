@@ -137,53 +137,55 @@ public class LessCompilerImpl implements LessCompiler {
     }
 
     private void initialize() throws InitializationException {
+<span class="fc" id="L140">        InputStreamReader reader = null;</span>
         try {
-<span class="fc" id="L141">            final Context context = Context.enter();</span>
-<span class="fc" id="L142">            context.setLanguageVersion(Context.VERSION_1_8);</span>
+<span class="fc" id="L142">            final Context context = Context.enter();</span>
+<span class="fc" id="L143">            context.setLanguageVersion(Context.VERSION_1_8);</span>
 
-<span class="fc" id="L144">            final Global global = new Global();</span>
-<span class="fc" id="L145">            global.init(context);</span>
-<span class="fc" id="L146">            scope = context.initStandardObjects(global);</span>
+<span class="fc" id="L145">            final Global global = new Global();</span>
+<span class="fc" id="L146">            global.init(context);</span>
+<span class="fc" id="L147">            scope = context.initStandardObjects(global);</span>
 
-<span class="fc" id="L148">            console = new ByteArrayOutputStream();</span>
-<span class="fc" id="L149">            global.setOut(new PrintStream(console, false, CHARSET));</span>
+<span class="fc" id="L149">            console = new ByteArrayOutputStream();</span>
+<span class="fc" id="L150">            global.setOut(new PrintStream(console, false, CHARSET));</span>
 
-<span class="fc" id="L151">            final URL lessFile = LessCompilerImpl.class.getResource(&quot;/less/less-rhino-1.7.5.js&quot;);</span>
-<span class="fc" id="L152">            final URL lesscFile = LessCompilerImpl.class.getResource(&quot;/less/lessc-rhino-1.7.5.js&quot;);</span>
+<span class="fc" id="L152">            final URL lessFile = LessCompilerImpl.class.getResource(&quot;/less/less-rhino-1.7.5.js&quot;);</span>
+<span class="fc" id="L153">            final URL lesscFile = LessCompilerImpl.class.getResource(&quot;/less/lessc-rhino-1.7.5.js&quot;);</span>
 
-<span class="fc" id="L154">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;InputStream&gt;();</span>
-<span class="fc" id="L155">            streams.add(lessFile.openConnection().getInputStream());</span>
-<span class="fc" id="L156">            streams.add(lesscFile.openConnection().getInputStream());</span>
+<span class="fc" id="L155">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;InputStream&gt;();</span>
+<span class="fc" id="L156">            streams.add(lessFile.openConnection().getInputStream());</span>
+<span class="fc" id="L157">            streams.add(lesscFile.openConnection().getInputStream());</span>
 
-<span class="fc" id="L158">            final InputStreamReader reader = new InputStreamReader(new SequenceInputStream(Collections.enumeration(streams)), CHARSET);</span>
-<span class="fc" id="L159">            compiler = (Function) context.compileReader(reader, lessFile.toString(), 1, null);</span>
+<span class="fc" id="L159">            reader = new InputStreamReader(new SequenceInputStream(Collections.enumeration(streams)), CHARSET);</span>
+<span class="fc" id="L160">            compiler = (Function) context.compileReader(reader, lessFile.toString(), 1, null);</span>
 
-<span class="nc" id="L161">        } catch (final Exception e) {</span>
-<span class="nc" id="L162">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
+<span class="nc" id="L162">        } catch (final Exception e) {</span>
+<span class="nc" id="L163">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
 
         } finally {
-<span class="pc" id="L165">            Context.exit();</span>
-<span class="fc" id="L166">        }</span>
-<span class="fc" id="L167">    }</span>
+<span class="pc" id="L166">            IOUtils.closeQuietly(reader);</span>
+<span class="pc" id="L167">            Context.exit();</span>
+<span class="fc" id="L168">        }</span>
+<span class="fc" id="L169">    }</span>
 
     private static Object[] prepareCompilerArguments(final File sourceFile, final CompilerOptions options) {
-<span class="fc" id="L170">        final Collection&lt;Object&gt; arguments = new ArrayList&lt;Object&gt;();</span>
-<span class="fc" id="L171">        arguments.addAll(options.getArguments());</span>
-<span class="fc" id="L172">        arguments.add(sourceFile.getAbsolutePath());</span>
-<span class="fc" id="L173">        return arguments.toArray();</span>
+<span class="fc" id="L172">        final Collection&lt;Object&gt; arguments = new ArrayList&lt;Object&gt;();</span>
+<span class="fc" id="L173">        arguments.addAll(options.getArguments());</span>
+<span class="fc" id="L174">        arguments.add(sourceFile.getAbsolutePath());</span>
+<span class="fc" id="L175">        return arguments.toArray();</span>
     }
 
     private CompilerException parseException(final JavaScriptException exception) {
-<span class="fc" id="L177">        final Scriptable value = (Scriptable) exception.getValue();</span>
-<span class="pc bpc" id="L178" title="2 of 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
-<span class="fc" id="L179">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
-<span class="fc" id="L180">            final Matcher matcher = IMPORT_ERROR_PATTERN.matcher(message);</span>
-<span class="fc bfc" id="L181" title="All 2 branches covered.">            if (matcher.find()) {</span>
-<span class="fc" id="L182">                return new ResolveImportException(message, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX), exception);</span>
+<span class="fc" id="L179">        final Scriptable value = (Scriptable) exception.getValue();</span>
+<span class="pc bpc" id="L180" title="2 of 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
+<span class="fc" id="L181">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
+<span class="fc" id="L182">            final Matcher matcher = IMPORT_ERROR_PATTERN.matcher(message);</span>
+<span class="fc bfc" id="L183" title="All 2 branches covered.">            if (matcher.find()) {</span>
+<span class="fc" id="L184">                return new ResolveImportException(message, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX), exception);</span>
             }
-<span class="fc" id="L184">            return new SyntaxException(message, exception);</span>
+<span class="fc" id="L186">            return new SyntaxException(message, exception);</span>
         }
-<span class="nc" id="L186">        return new SyntaxException(exception);</span>
+<span class="nc" id="L188">        return new SyntaxException(exception);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.eclemma.org/jacoco">JaCoCo</a> 0.7.7.201606060606</span></div></body></html>
