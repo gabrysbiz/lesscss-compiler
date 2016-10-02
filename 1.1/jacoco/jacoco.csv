@@ -1,0 +1,10 @@
+GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
+LessCSS Compiler,biz.gabrys.lesscss.compiler,CompilerException,8,5,0,0,4,2,2,1,2,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler,SyntaxException,8,5,0,0,4,2,2,1,2,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler,LessCompilerImpl,22,228,2,6,5,49,2,9,0,7
+LessCSS Compiler,biz.gabrys.lesscss.compiler,ResolveImportException,7,11,0,0,3,4,1,2,1,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler,OperatingSystemCheckerImpl,3,9,0,0,1,3,1,1,1,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler,CompilerOptions,0,15,0,0,0,4,0,2,0,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler,InitializationException,13,0,0,0,6,0,3,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler,StringUtils,3,25,0,8,2,6,1,5,1,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler,CompilerOptionsBuilder,197,103,21,11,43,24,34,4,18,4
