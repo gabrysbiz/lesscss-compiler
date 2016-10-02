@@ -20,11 +20,11 @@ Restrictions:
 # Requirements
 The compiler to run requires:
 * Java 5.0 or higher
-* Third-Party Dependencies ([see list](http://lesscss-compiler.projects.gabrys.biz/1.1/dependencies.html))
+* Third-Party Dependencies ([see list](http://lesscss-compiler.projects.gabrys.biz/1.2/dependencies.html))
 
 # Download
-You can download the library from [this page](http://lesscss-compiler.projects.gabrys.biz/1.1/download.html)
-or using various [dependency management tools](http://lesscss-compiler.projects.gabrys.biz/1.1/dependency-info.html).
+You can download the library from [this page](http://lesscss-compiler.projects.gabrys.biz/1.2/download.html)
+or using various [dependency management tools](http://lesscss-compiler.projects.gabrys.biz/1.2/dependency-info.html).
 
 # Concept
 The idea for the `LessCompilerImpl` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)

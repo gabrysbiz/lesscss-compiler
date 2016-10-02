@@ -49,6 +49,23 @@ import org.mozilla.javascript.tools.shell.Global;
  * <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a> library by
  * <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
  * </p>
+ * <p>
+ * How to use:
+ * </p>
+ * 
+ * <pre>
+ * // create compiler &amp; source file
+ * LessCompiler compiler = new LessCompilerImpl();
+ * File source = new File("/less/file.less");
+ * 
+ * // compile file with default options
+ * String cssCode = compiler.compile(source);
+ * 
+ * // set custom option: minify CSS code
+ * CompilerOptions options = new CompilerOptionsBuilder().setMinified(true).create();
+ * String cssMinifiedCode = compiler.compile(source, options);
+ * </pre>
+ * 
  * @since 1.0
  */
 public class LessCompilerImpl implements LessCompiler {
@@ -80,7 +97,7 @@ public class LessCompilerImpl implements LessCompiler {
      * @since 1.0
      */
     public String compile(final File source) throws CompilerException {
-        return compile(source, new CompilerOptions(Collections.emptyList()));
+        return compile(source, new CompilerOptions());
     }
 
     /**

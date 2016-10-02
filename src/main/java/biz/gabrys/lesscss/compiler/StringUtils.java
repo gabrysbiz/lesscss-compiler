@@ -12,13 +12,24 @@
  */
 package biz.gabrys.lesscss.compiler;
 
-final class StringUtils {
+/**
+ * Provides functionality for working with texts.
+ * @since 1.2
+ */
+public final class StringUtils {
 
     private StringUtils() {
         // blocks the possibility of create a new instance
     }
 
-    static boolean isNotBlank(final String text) {
+    /**
+     * Checks whether a text is not empty (""), not {@code null} and not stores only whitespace.
+     * @param text the text to check.
+     * @return {@code true} if the text is not empty (""), not {@code null} and not stores only whitespace, otherwise
+     *         {@code false}.
+     * @since 1.2
+     */
+    public static boolean isNotBlank(final String text) {
         if (text == null || "".equals(text)) {
             return false;
         }
