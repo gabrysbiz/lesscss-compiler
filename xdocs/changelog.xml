@@ -7,14 +7,23 @@
     </properties>
 
     <body>
+        <section id="release-1.2.1" name="Release 1.2.1">
+            <p>Bugs:</p>
+            <ul>
+                <li>Fixed quality flaws</li>
+            </ul>
+        </section>
         <section id="release-1.2" name="Release 1.2">
             <p>Bugs:</p>
             <ul>
                 <li>
-                    Correct creation of <code>includePaths</code> in
+                    Corrected creation of <code>includePaths</code> in
                     <a href="apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html">CompilerOptionsBuilder</a>
                 </li>
             </ul>
+            <p>
+                <a href="http://lesscss-compiler.projects.gabrys.biz/1.2/">See documentation</a>
+            </p>
         </section>
         <section id="release-1.1" name="Release 1.1">
             <p>Bugs:</p>

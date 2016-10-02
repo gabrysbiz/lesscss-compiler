@@ -5,7 +5,7 @@ import java.io.File;
 import org.junit.Assert;
 import org.junit.Test;
 
-public class LessCompilerImplTest {
+public final class LessCompilerImplTest {
 
     @Test
     public void compile_basicFile_success() throws CompilerException {

@@ -13,6 +13,7 @@
 package biz.gabrys.lesscss.compiler;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -32,6 +33,15 @@ public class CompilerOptions {
      */
     public CompilerOptions() {
         this(Collections.emptyList());
+    }
+
+    /**
+     * Constructs a new instance.
+     * @param arguments array with arguments.
+     * @since 1.2.1
+     */
+    public CompilerOptions(final Object... arguments) {
+        this(Arrays.asList(arguments));
     }
 
     /**
