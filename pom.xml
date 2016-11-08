@@ -5,7 +5,7 @@
 
     <groupId>biz.gabrys.lesscss</groupId>
     <artifactId>compiler</artifactId>
-    <version>1.2.1-SNAPSHOT</version>
+    <version>1.2.2-SNAPSHOT</version>
     <name>LessCSS Compiler</name>
     <description>A Java library which compiles Less source files to the CSS code.</description>
     <url>http://lesscss-compiler.projects.gabrys.biz/LATEST/</url>
