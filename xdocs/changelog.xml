@@ -7,11 +7,18 @@
     </properties>
 
     <body>
+        <section id="release-1.2.2" name="Release 1.2.2">
+            <p>Bugs:</p>
+            <ul>
+                <li>Fixed support for <code>data-uri</code> function</li>
+            </ul>
+        </section>
         <section id="release-1.2.1" name="Release 1.2.1">
             <p>Bugs:</p>
             <ul>
                 <li>Fixed quality flaws</li>
             </ul>
+            <p><a href="http://lesscss-compiler.projects.gabrys.biz/1.2.1/">See documentation</a></p>
         </section>
         <section id="release-1.2" name="Release 1.2">
             <p>Bugs:</p>
@@ -21,24 +28,18 @@
                     <a href="http://lesscss-compiler.projects.gabrys.biz/1.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html">CompilerOptionsBuilder</a>
                 </li>
             </ul>
-            <p>
-                <a href="http://lesscss-compiler.projects.gabrys.biz/1.2/">See documentation</a>
-            </p>
+            <p><a href="http://lesscss-compiler.projects.gabrys.biz/1.2/">See documentation</a></p>
         </section>
         <section id="release-1.1" name="Release 1.1">
             <p>Bugs:</p>
             <ul>
                 <li>Fixed quality flaws</li>
             </ul>
-            <p>
-                <a href="http://lesscss-compiler.projects.gabrys.biz/1.1/">See documentation</a>
-            </p>
+            <p><a href="http://lesscss-compiler.projects.gabrys.biz/1.1/">See documentation</a></p>
         </section>
         <section id="release-1.0" name="Release 1.0">
             <p>Initial release.</p>
-            <p>
-                <a href="http://lesscss-compiler.projects.gabrys.biz/1.0/">See documentation</a>
-            </p>
+            <p><a href="http://lesscss-compiler.projects.gabrys.biz/1.0/">See documentation</a></p>
         </section>
     </body>
 </document>
