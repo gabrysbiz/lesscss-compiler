@@ -113,4 +113,15 @@ public final class LessCompilerImplTest {
             Assert.assertEquals("File name is different than expected", "style'not-existent.less", e.getFileName());
         }
     }
+
+    @Test
+    public void compile_datauri_success() throws CompilerException {
+        final File source = new File(LessCompilerImplTest.class.getResource("/less/datauri.less").getPath());
+        final LessCompilerImpl compiler = new LessCompilerImpl();
+        final String code = compiler.compile(source);
+        // trim removes empty lines at the end
+        Assert.assertEquals("Trimmed code is different than expected",
+                ".style {\n  background: url(\"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAwSURBVEhL7c0hAQAACMRAgiDp34wM0GHi1cTpq+25BCPMCDPCjDAjzAgzwoywUDT373m8fKeCA80AAAAASUVORK5CYII=\");\n}",
+                code.trim());
+    }
 }

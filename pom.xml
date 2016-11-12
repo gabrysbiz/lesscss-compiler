@@ -5,10 +5,10 @@
 
     <groupId>biz.gabrys.lesscss</groupId>
     <artifactId>compiler</artifactId>
-    <version>1.2.1</version>
+    <version>1.2.2</version>
     <name>LessCSS Compiler</name>
     <description>A Java library which compiles Less source files to the CSS code.</description>
-    <url>http://lesscss-compiler.projects.gabrys.biz/1.2.1/</url>
+    <url>http://lesscss-compiler.projects.gabrys.biz/1.2.2/</url>
 
     <inceptionYear>2015</inceptionYear>
     <organization>
@@ -107,7 +107,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-compiler-plugin</artifactId>
-                    <version>3.5.1</version>
+                    <version>3.6.0</version>
                 </plugin>
                 <plugin>
                     <artifactId>maven-deploy-plugin</artifactId>

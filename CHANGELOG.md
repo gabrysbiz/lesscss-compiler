@@ -1,5 +1,11 @@
 # LessCSS Compiler Changelog
 
+## 1.2.2
+Bugs:
+* Fixed support for `data-uri` function
+
+[See documentation](http://lesscss-compiler.projects.gabrys.biz/1.2.2/)
+
 ## 1.2.1
 Bugs:
 * Fixed quality flaws
