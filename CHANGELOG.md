@@ -4,7 +4,7 @@
 Bugs:
 * Fixed support for `data-uri` function
 
-[See documentation](http://lesscss-compiler.projects.gabrys.biz/LATEST/)
+[See documentation](http://lesscss-compiler.projects.gabrys.biz/1.2.2/)
 
 ## 1.2.1
 Bugs:
