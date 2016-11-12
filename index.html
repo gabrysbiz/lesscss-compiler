@@ -16,7 +16,7 @@
             <h1 class="project-name">LessCSS Compiler</h1>
             <h2 class="project-tagline">A Java library which compiles Less source files to the CSS code</h2>
             <a href="https://github.com/gabrysbiz/lesscss-compiler" class="btn">View on GitHub</a>
-            <a href="1.2.1/" class="btn">Release 1.2.1 docs</a>
+            <a href="1.2.2/" class="btn">Release 1.2.2 docs</a>
             <a href="LATEST/" class="btn" rel="nofollow">LATEST (version under development) docs</a>
         </section>
         <section class="main-content">
@@ -65,7 +65,7 @@
             </p>
             <ul>
                 <li>Java 5.0 or higher</li>
-                <li>Third-Party Dependencies (<a href="1.2.1/dependencies.html">see list</a>)</li>
+                <li>Third-Party Dependencies (<a href="1.2.2/dependencies.html">see list</a>)</li>
             </ul>
             <h1>
                 <a id="concept" class="anchor" href="#concept" aria-hidden="true">
@@ -137,7 +137,7 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
       &lt;dependency&gt;
          &lt;groupId&gt;biz.gabrys.lesscss&lt;/groupId&gt;
          &lt;artifactId&gt;compiler&lt;/artifactId&gt;
-         &lt;version&gt;1.2.1&lt;/version&gt;
+         &lt;version&gt;1.2.2&lt;/version&gt;
       &lt;/dependency&gt;
       ...
    &lt;dependencies&gt;
@@ -173,6 +173,7 @@ String cssMinifiedCode = compiler.compile(source, options);</pre>
             </p>
             <p>
                 List of all available releases:
+                <a href="1.2.2/">1.2.2</a>,
                 <a href="1.2.1/">1.2.1</a>,
                 <a href="1.2/">1.2</a>,
                 <a href="1.1/">1.1</a>,
@@ -186,6 +187,15 @@ String cssMinifiedCode = compiler.compile(source, options);</pre>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td id="release-1.2.2">1.2.2<br />(<a href="1.2.2/">docs</a>)</td>
+                        <td>
+                            <p>Bugs:</p>
+                            <ul>
+                                <li>Fixed support for <code>data-uri</code> function</li>
+                            </ul>
+                        </td>
+                    </tr>
                     <tr>
                         <td id="release-1.2.1">1.2.1<br />(<a href="1.2.1/">docs</a>)</td>
                         <td>
