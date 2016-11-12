@@ -141,8 +141,16 @@ less.mode = 'rhino';
     // ---------------------------------------------------------------------------------------------
 
     function encodeBase64Bytes(bytes) {
+        var array = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, bytes.length);
+        for (var i = 0; i < bytes.length; ++i) {
+            var oneByte = bytes[i];
+            if (oneByte > 127) {
+                oneByte -= 256;
+            }
+            array[i] = oneByte;
+        }
         // requires at least a JRE Platform 6 (or JAXB 1.0 on the classpath)
-        return javax.xml.bind.DatatypeConverter.printBase64Binary(bytes)
+        return javax.xml.bind.DatatypeConverter.printBase64Binary(array);
     }
     function encodeBase64String(str) {
         return encodeBase64Bytes(new java.lang.String(str).getBytes());
@@ -2676,7 +2684,7 @@ tree.functions = {
         var mimetype = mimetypeNode.value;
         var filePath = (filePathNode && filePathNode.value);
 
-        var fs = require('./fs'),
+        var fs = require('fs'),
             path = require('path'),
             useBase64 = false;
 
