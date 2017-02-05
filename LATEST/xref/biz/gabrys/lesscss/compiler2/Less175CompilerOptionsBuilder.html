@@ -89,12 +89,12 @@
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>      }
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>  
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>      <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables logging compilation warnings.</em>
-<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L84" href="#L84">84</a>  <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables logging compilation warnings.</em>
+<a class="jxr_linenumber" name="L85" href="#L85">85</a>  <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L86" href="#L86">86</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L87" href="#L87">87</a>  <em class="jxr_javadoccomment">     * @see #withSilent(boolean)</em>
 <a class="jxr_linenumber" name="L88" href="#L88">88</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">protected</strong> String getSilentCompilerArgument() {
+<a class="jxr_linenumber" name="L89" href="#L89">89</a>      <strong class="jxr_keyword">protected</strong> String getSilentCompilerOption() {
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>          <strong class="jxr_keyword">if</strong> (silent) {
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>              <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--silent"</span>;
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>          } <strong class="jxr_keyword">else</strong> {
@@ -116,12 +116,12 @@
 <a class="jxr_linenumber" name="L108" href="#L108">108</a>     }
 <a class="jxr_linenumber" name="L109" href="#L109">109</a> 
 <a class="jxr_linenumber" name="L110" href="#L110">110</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables strict imports.</em>
-<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L111" href="#L111">111</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables strict imports.</em>
+<a class="jxr_linenumber" name="L112" href="#L112">112</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L113" href="#L113">113</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L114" href="#L114">114</a> <em class="jxr_javadoccomment">     * @see #withStrictImports(boolean)</em>
 <a class="jxr_linenumber" name="L115" href="#L115">115</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">protected</strong> String getStrictImportsCompilerArgument() {
+<a class="jxr_linenumber" name="L116" href="#L116">116</a>     <strong class="jxr_keyword">protected</strong> String getStrictImportsCompilerOption() {
 <a class="jxr_linenumber" name="L117" href="#L117">117</a>         <strong class="jxr_keyword">if</strong> (strictImports) {
 <a class="jxr_linenumber" name="L118" href="#L118">118</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--strict-imports"</span>;
 <a class="jxr_linenumber" name="L119" href="#L119">119</a>         } <strong class="jxr_keyword">else</strong> {
@@ -141,12 +141,12 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables a CSS code compression.</em>
-<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables a CSS code compression.</em>
+<a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">     * @see #withCompress(boolean)</em>
 <a class="jxr_linenumber" name="L140" href="#L140">140</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">protected</strong> String getCompressCompilerArgument() {
+<a class="jxr_linenumber" name="L141" href="#L141">141</a>     <strong class="jxr_keyword">protected</strong> String getCompressCompilerOption() {
 <a class="jxr_linenumber" name="L142" href="#L142">142</a>         <strong class="jxr_keyword">if</strong> (compress) {
 <a class="jxr_linenumber" name="L143" href="#L143">143</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--compress"</span>;
 <a class="jxr_linenumber" name="L144" href="#L144">144</a>         } <strong class="jxr_keyword">else</strong> {
@@ -167,11 +167,11 @@
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 
 <a class="jxr_linenumber" name="L160" href="#L160">160</a>     <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L161" href="#L161">161</a> <em class="jxr_javadoccomment">     * TODO what is depends?</em>
-<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * @return command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L162" href="#L162">162</a> <em class="jxr_javadoccomment">     * @return command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L163" href="#L163">163</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L164" href="#L164">164</a> <em class="jxr_javadoccomment">     * @see #withDepends(boolean)</em>
 <a class="jxr_linenumber" name="L165" href="#L165">165</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L166" href="#L166">166</a>     <strong class="jxr_keyword">protected</strong> String getDependsCompilerArgument() {
+<a class="jxr_linenumber" name="L166" href="#L166">166</a>     <strong class="jxr_keyword">protected</strong> String getDependsCompilerOption() {
 <a class="jxr_linenumber" name="L167" href="#L167">167</a>         <strong class="jxr_keyword">if</strong> (depends) {
 <a class="jxr_linenumber" name="L168" href="#L168">168</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--depends"</span>;
 <a class="jxr_linenumber" name="L169" href="#L169">169</a>         } <strong class="jxr_keyword">else</strong> {
@@ -193,12 +193,12 @@
 <a class="jxr_linenumber" name="L185" href="#L185">185</a>     }
 <a class="jxr_linenumber" name="L186" href="#L186">186</a> 
 <a class="jxr_linenumber" name="L187" href="#L187">187</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables compatibility with IE browser.</em>
-<a class="jxr_linenumber" name="L189" href="#L189">189</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L188" href="#L188">188</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables compatibility with IE browser.</em>
+<a class="jxr_linenumber" name="L189" href="#L189">189</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L190" href="#L190">190</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L191" href="#L191">191</a> <em class="jxr_javadoccomment">     * @see #withIeCompatability(boolean)</em>
 <a class="jxr_linenumber" name="L192" href="#L192">192</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">protected</strong> String getIeCompatabilityCompilerArgument() {
+<a class="jxr_linenumber" name="L193" href="#L193">193</a>     <strong class="jxr_keyword">protected</strong> String getIeCompatabilityCompilerOption() {
 <a class="jxr_linenumber" name="L194" href="#L194">194</a>         <strong class="jxr_keyword">if</strong> (ieCompatability) {
 <a class="jxr_linenumber" name="L195" href="#L195">195</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L196" href="#L196">196</a>         } <strong class="jxr_keyword">else</strong> {
@@ -219,12 +219,12 @@
 <a class="jxr_linenumber" name="L211" href="#L211">211</a>     }
 <a class="jxr_linenumber" name="L212" href="#L212">212</a> 
 <a class="jxr_linenumber" name="L213" href="#L213">213</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">     * Returns a command line argument which allows/disallows usage of JavaScript language.</em>
-<a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L214" href="#L214">214</a> <em class="jxr_javadoccomment">     * Returns a command line option which allows/disallows usage of JavaScript language.</em>
+<a class="jxr_linenumber" name="L215" href="#L215">215</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L216" href="#L216">216</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L217" href="#L217">217</a> <em class="jxr_javadoccomment">     * @see #withJavaScriptEnabled(boolean)</em>
 <a class="jxr_linenumber" name="L218" href="#L218">218</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <strong class="jxr_keyword">protected</strong> String getJavaScriptEnabledCompilerArgument() {
+<a class="jxr_linenumber" name="L219" href="#L219">219</a>     <strong class="jxr_keyword">protected</strong> String getJavaScriptEnabledCompilerOption() {
 <a class="jxr_linenumber" name="L220" href="#L220">220</a>         <strong class="jxr_keyword">if</strong> (javaScriptEnabled) {
 <a class="jxr_linenumber" name="L221" href="#L221">221</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L222" href="#L222">222</a>         } <strong class="jxr_keyword">else</strong> {
@@ -251,12 +251,12 @@
 <a class="jxr_linenumber" name="L243" href="#L243">243</a>     }
 <a class="jxr_linenumber" name="L244" href="#L244">244</a> 
 <a class="jxr_linenumber" name="L245" href="#L245">245</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L246" href="#L246">246</a> <em class="jxr_javadoccomment">     * Returns a command line argument representation of the available include paths.</em>
-<a class="jxr_linenumber" name="L247" href="#L247">247</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L246" href="#L246">246</a> <em class="jxr_javadoccomment">     * Returns a command line option representation of the available include paths.</em>
+<a class="jxr_linenumber" name="L247" href="#L247">247</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L248" href="#L248">248</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L249" href="#L249">249</a> <em class="jxr_javadoccomment">     * @see #withIncludePaths(List)</em>
 <a class="jxr_linenumber" name="L250" href="#L250">250</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">protected</strong> String getIncludePathsCompilerArgument() {
+<a class="jxr_linenumber" name="L251" href="#L251">251</a>     <strong class="jxr_keyword">protected</strong> String getIncludePathsCompilerOption() {
 <a class="jxr_linenumber" name="L252" href="#L252">252</a>         <strong class="jxr_keyword">if</strong> (includePaths.isEmpty()) {
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L254" href="#L254">254</a>         }
@@ -286,12 +286,12 @@
 <a class="jxr_linenumber" name="L278" href="#L278">278</a>     }
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> 
 <a class="jxr_linenumber" name="L280" href="#L280">280</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables generating inline source-mapping.</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables generating inline source-mapping.</em>
+<a class="jxr_linenumber" name="L282" href="#L282">282</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L283" href="#L283">283</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L284" href="#L284">284</a> <em class="jxr_javadoccomment">     * @see #withJavaScriptEnabled(boolean)</em>
 <a class="jxr_linenumber" name="L285" href="#L285">285</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>     <strong class="jxr_keyword">protected</strong> String getLineNumbersCompilerArgument() {
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>     <strong class="jxr_keyword">protected</strong> String getLineNumbersCompilerOption() {
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         <strong class="jxr_keyword">if</strong> (lineNumbers == LineNumbersValue.DISABLED) {
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
 <a class="jxr_linenumber" name="L289" href="#L289">289</a>         } <strong class="jxr_keyword">else</strong> {
@@ -320,12 +320,12 @@
 <a class="jxr_linenumber" name="L312" href="#L312">312</a>     }
 <a class="jxr_linenumber" name="L313" href="#L313">313</a> 
 <a class="jxr_linenumber" name="L314" href="#L314">314</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">     * Returns a command line argument representation of the root path.</em>
-<a class="jxr_linenumber" name="L316" href="#L316">316</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
+<a class="jxr_linenumber" name="L315" href="#L315">315</a> <em class="jxr_javadoccomment">     * Returns a command line option representation of the root path.</em>
+<a class="jxr_linenumber" name="L316" href="#L316">316</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
 <a class="jxr_linenumber" name="L317" href="#L317">317</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L318" href="#L318">318</a> <em class="jxr_javadoccomment">     * @see #withRootPath(String)</em>
 <a class="jxr_linenumber" name="L319" href="#L319">319</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <strong class="jxr_keyword">protected</strong> String getRootPathCompilerArgument() {
+<a class="jxr_linenumber" name="L320" href="#L320">320</a>     <strong class="jxr_keyword">protected</strong> String getRootPathCompilerOption() {
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>         <strong class="jxr_keyword">if</strong> (rootPath != <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L322" href="#L322">322</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--rootpath="</span> + rootPath;
 <a class="jxr_linenumber" name="L323" href="#L323">323</a>         } <strong class="jxr_keyword">else</strong> {
@@ -348,220 +348,225 @@
 <a class="jxr_linenumber" name="L340" href="#L340">340</a> <em class="jxr_javadoccomment">     *     background-image: url('images/lamp-post.png');</em>
 <a class="jxr_linenumber" name="L341" href="#L341">341</a> <em class="jxr_javadoccomment">     * }</em>
 <a class="jxr_linenumber" name="L342" href="#L342">342</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * this will output the following normally</em>
-<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     * .icon-1 {</em>
-<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">     *     background-image: url('images/lamp-post.png');</em>
-<a class="jxr_linenumber" name="L349" href="#L349">349</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L350" href="#L350">350</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">     * but with this option on it will instead output</em>
-<a class="jxr_linenumber" name="L353" href="#L353">353</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L354" href="#L354">354</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     * .icon-1 {</em>
-<a class="jxr_linenumber" name="L356" href="#L356">356</a> <em class="jxr_javadoccomment">     *     background-image: url('files/images/lamp-post.png');</em>
-<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L359" href="#L359">359</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L360" href="#L360">360</a> <em class="jxr_javadoccomment">     * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images</em>
-<a class="jxr_linenumber" name="L361" href="#L361">361</a> <em class="jxr_javadoccomment">     * into the CSS.</em>
-<a class="jxr_linenumber" name="L362" href="#L362">362</a> <em class="jxr_javadoccomment">     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.</em>
-<a class="jxr_linenumber" name="L363" href="#L363">363</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
-<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L365" href="#L365">365</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withRelativeUrls(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> relativeUrls) {
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>         <strong class="jxr_keyword">this</strong>.relativeUrls = relativeUrls;
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>     }
-<a class="jxr_linenumber" name="L370" href="#L370">370</a> 
-<a class="jxr_linenumber" name="L371" href="#L371">371</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables rewriting relative URLs.</em>
-<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
-<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     * @see #withRelativeUrls(boolean)</em>
-<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>     <strong class="jxr_keyword">protected</strong> String getRelativeUrlsCompilerArgument() {
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>         <strong class="jxr_keyword">if</strong> (relativeUrls) {
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--relative-urls"</span>;
-<a class="jxr_linenumber" name="L380" href="#L380">380</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>         }
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>     }
-<a class="jxr_linenumber" name="L384" href="#L384">384</a> 
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> <em class="jxr_javadoccomment">     * Sets whether a compiler should try and process all maths in Less code (default: {@code false}). Without this</em>
-<a class="jxr_linenumber" name="L387" href="#L387">387</a> <em class="jxr_javadoccomment">     * option on Less will try and process all maths in your Less e.g.:</em>
-<a class="jxr_linenumber" name="L388" href="#L388">388</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">     * .class {</em>
-<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     *     height: calc(100% - 10px);</em>
-<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_javadoccomment">     * will be processed currently.</em>
-<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
-<a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_javadoccomment">     * With strict math on, only maths that is inside unnecessary parenthesis will be processed. For instance.</em>
-<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
-<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     * .class {</em>
-<a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     *     width: calc(100% - ((10px  - 5px)));</em>
-<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     *     height: (100px / 4px);</em>
-<a class="jxr_linenumber" name="L404" href="#L404">404</a> <em class="jxr_javadoccomment">     *     font-size: 1 / 4;</em>
-<a class="jxr_linenumber" name="L405" href="#L405">405</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     * .class {</em>
-<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     *     width: calc(100% - 5px);</em>
-<a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">     *     height: 25px;</em>
-<a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">     *     font-size: 1 / 4;</em>
-<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L415" href="#L415">415</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise</em>
-<a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">     *            {@code false}.</em>
-<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
-<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withStrictMath(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> strictMath) {
-<a class="jxr_linenumber" name="L422" href="#L422">422</a>         <strong class="jxr_keyword">this</strong>.strictMath = strictMath;
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L424" href="#L424">424</a>     }
-<a class="jxr_linenumber" name="L425" href="#L425">425</a> 
-<a class="jxr_linenumber" name="L426" href="#L426">426</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L427" href="#L427">427</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables strict math.</em>
-<a class="jxr_linenumber" name="L428" href="#L428">428</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
-<a class="jxr_linenumber" name="L429" href="#L429">429</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L430" href="#L430">430</a> <em class="jxr_javadoccomment">     * @see #withStrictMath(boolean)</em>
-<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L432" href="#L432">432</a>     <strong class="jxr_keyword">protected</strong> String getStrictMathCompilerArgument() {
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>         <strong class="jxr_keyword">if</strong> (strictMath) {
-<a class="jxr_linenumber" name="L434" href="#L434">434</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--strict-math=on"</span>;
-<a class="jxr_linenumber" name="L435" href="#L435">435</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L436" href="#L436">436</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L437" href="#L437">437</a>         }
-<a class="jxr_linenumber" name="L438" href="#L438">438</a>     }
-<a class="jxr_linenumber" name="L439" href="#L439">439</a> 
-<a class="jxr_linenumber" name="L440" href="#L440">440</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L441" href="#L441">441</a> <em class="jxr_javadoccomment">     * Sets whether the compiler should guess units in Less code when it does maths (default: {@code false}). Without</em>
-<a class="jxr_linenumber" name="L442" href="#L442">442</a> <em class="jxr_javadoccomment">     * this option, Less compiler attempts to guess at the output unit when it does maths. For instance</em>
-<a class="jxr_linenumber" name="L443" href="#L443">443</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L444" href="#L444">444</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">     * .class {</em>
-<a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">     *     property: 1px * 2px;</em>
-<a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">     * }</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
-<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">     * </em>
-<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">     * In this case, things are clearly not right - a length multiplied by a length gives an area, but CSS does not</em>
-<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">     * support specifying areas. So we assume that the user meant for one of the values to be a value, not a unit of</em>
-<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">     * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an</em>
-<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">     * error.</em>
-<a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,</em>
-<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">     *            otherwise {@code false}.</em>
-<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
-<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L459" href="#L459">459</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withStrictUnits(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> strictUnits) {
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>         <strong class="jxr_keyword">this</strong>.strictUnits = strictUnits;
-<a class="jxr_linenumber" name="L461" href="#L461">461</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
-<a class="jxr_linenumber" name="L462" href="#L462">462</a>     }
-<a class="jxr_linenumber" name="L463" href="#L463">463</a> 
-<a class="jxr_linenumber" name="L464" href="#L464">464</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L465" href="#L465">465</a> <em class="jxr_javadoccomment">     * Returns a command line argument which enables/disables strict units.</em>
-<a class="jxr_linenumber" name="L466" href="#L466">466</a> <em class="jxr_javadoccomment">     * @return the command line argument (never {@code null}).</em>
-<a class="jxr_linenumber" name="L467" href="#L467">467</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L468" href="#L468">468</a> <em class="jxr_javadoccomment">     * @see #withStrictUnits(boolean)</em>
-<a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L470" href="#L470">470</a>     <strong class="jxr_keyword">protected</strong> String getStrictUnitsCompilerArgument() {
-<a class="jxr_linenumber" name="L471" href="#L471">471</a>         <strong class="jxr_keyword">if</strong> (strictUnits) {
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--strict-units=on"</span>;
-<a class="jxr_linenumber" name="L473" href="#L473">473</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L474" href="#L474">474</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
-<a class="jxr_linenumber" name="L475" href="#L475">475</a>         }
-<a class="jxr_linenumber" name="L476" href="#L476">476</a>     }
-<a class="jxr_linenumber" name="L477" href="#L477">477</a> 
-<a class="jxr_linenumber" name="L478" href="#L478">478</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L479" href="#L479">479</a> <em class="jxr_javadoccomment">     * Creates a collection with configuration options for Less compilation process.</em>
-<a class="jxr_linenumber" name="L480" href="#L480">480</a> <em class="jxr_javadoccomment">     * @return the collection with configuration options for Less compilation process.</em>
-<a class="jxr_linenumber" name="L481" href="#L481">481</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L482" href="#L482">482</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L483" href="#L483">483</a>     <strong class="jxr_keyword">public</strong> Collection&lt;Object&gt; create() {
-<a class="jxr_linenumber" name="L484" href="#L484">484</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/ListWithoutEmptyValuesBuilder.html">ListWithoutEmptyValuesBuilder</a> arguments = <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/ListWithoutEmptyValuesBuilder.html">ListWithoutEmptyValuesBuilder</a>();
-<a class="jxr_linenumber" name="L485" href="#L485">485</a>         arguments.add(getSilentCompilerArgument());
-<a class="jxr_linenumber" name="L486" href="#L486">486</a>         arguments.add(getStrictImportsCompilerArgument());
-<a class="jxr_linenumber" name="L487" href="#L487">487</a>         arguments.add(getCompressCompilerArgument());
-<a class="jxr_linenumber" name="L488" href="#L488">488</a>         arguments.add(getDependsCompilerArgument());
-<a class="jxr_linenumber" name="L489" href="#L489">489</a>         arguments.add(getIeCompatabilityCompilerArgument());
-<a class="jxr_linenumber" name="L490" href="#L490">490</a>         arguments.add(getJavaScriptEnabledCompilerArgument());
-<a class="jxr_linenumber" name="L491" href="#L491">491</a>         arguments.add(getIncludePathsCompilerArgument());
-<a class="jxr_linenumber" name="L492" href="#L492">492</a>         arguments.add(getLineNumbersCompilerArgument());
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>         arguments.add(getRootPathCompilerArgument());
-<a class="jxr_linenumber" name="L494" href="#L494">494</a>         arguments.add(getRelativeUrlsCompilerArgument());
-<a class="jxr_linenumber" name="L495" href="#L495">495</a>         arguments.add(getStrictMathCompilerArgument());
-<a class="jxr_linenumber" name="L496" href="#L496">496</a>         arguments.add(getStrictUnitsCompilerArgument());
-<a class="jxr_linenumber" name="L497" href="#L497">497</a>         <strong class="jxr_keyword">return</strong> arguments.create();
-<a class="jxr_linenumber" name="L498" href="#L498">498</a>     }
-<a class="jxr_linenumber" name="L499" href="#L499">499</a> 
-<a class="jxr_linenumber" name="L500" href="#L500">500</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L501" href="#L501">501</a> <em class="jxr_javadoccomment">     * Responsible for checking operating system family.</em>
-<a class="jxr_linenumber" name="L502" href="#L502">502</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L503" href="#L503">503</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L504" href="#L504">504</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">OperatingSystemChecker</a> {
-<a class="jxr_linenumber" name="L505" href="#L505">505</a> 
-<a class="jxr_linenumber" name="L506" href="#L506">506</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">         * Tests whether operating system is &lt;a href="<a href="http://www.microsoft.com/" target="alexandria_uri">http://www.microsoft.com/</a>"&gt;Windows&lt;/a&gt;.</em>
-<a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">         * @return {@code true} whether operating system is Windows, otherwise {@code false}.</em>
-<a class="jxr_linenumber" name="L509" href="#L509">509</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L510" href="#L510">510</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <strong class="jxr_keyword">boolean</strong> isWindows();
-<a class="jxr_linenumber" name="L512" href="#L512">512</a>     }
-<a class="jxr_linenumber" name="L513" href="#L513">513</a> 
-<a class="jxr_linenumber" name="L514" href="#L514">514</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L515" href="#L515">515</a> <em class="jxr_javadoccomment">     * Available values for {@link Less175CompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers} option.</em>
-<a class="jxr_linenumber" name="L516" href="#L516">516</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L517" href="#L517">517</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L518" href="#L518">518</a>     <strong class="jxr_keyword">public</strong> enum <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">LineNumbersValue</a> {
-<a class="jxr_linenumber" name="L519" href="#L519">519</a> 
-<a class="jxr_linenumber" name="L520" href="#L520">520</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L521" href="#L521">521</a> <em class="jxr_javadoccomment">         * Line numbers won't be put in CSS code.</em>
-<a class="jxr_linenumber" name="L522" href="#L522">522</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L523" href="#L523">523</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L524" href="#L524">524</a>         DISABLED(<span class="jxr_string">""</span>),
+<a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L347" href="#L347">347</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L348" href="#L348">348</a> <em class="jxr_javadoccomment">     * .icon-1 {</em>
+<a class="jxr_linenumber" name="L349" href="#L349">349</a> <em class="jxr_javadoccomment">     *     background-image: url('images/lamp-post.png');</em>
+<a class="jxr_linenumber" name="L350" href="#L350">350</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L351" href="#L351">351</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L352" href="#L352">352</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L353" href="#L353">353</a> <em class="jxr_javadoccomment">     * but with this option on it will instead output</em>
+<a class="jxr_linenumber" name="L354" href="#L354">354</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L355" href="#L355">355</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L356" href="#L356">356</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L357" href="#L357">357</a> <em class="jxr_javadoccomment">     * .icon-1 {</em>
+<a class="jxr_linenumber" name="L358" href="#L358">358</a> <em class="jxr_javadoccomment">     *     background-image: url('files/images/lamp-post.png');</em>
+<a class="jxr_linenumber" name="L359" href="#L359">359</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L360" href="#L360">360</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L361" href="#L361">361</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L362" href="#L362">362</a> <em class="jxr_javadoccomment">     * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images</em>
+<a class="jxr_linenumber" name="L363" href="#L363">363</a> <em class="jxr_javadoccomment">     * into the CSS.</em>
+<a class="jxr_linenumber" name="L364" href="#L364">364</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L365" href="#L365">365</a> <em class="jxr_javadoccomment">     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.</em>
+<a class="jxr_linenumber" name="L366" href="#L366">366</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L369" href="#L369">369</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withRelativeUrls(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> relativeUrls) {
+<a class="jxr_linenumber" name="L370" href="#L370">370</a>         <strong class="jxr_keyword">this</strong>.relativeUrls = relativeUrls;
+<a class="jxr_linenumber" name="L371" href="#L371">371</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L372" href="#L372">372</a>     }
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> 
+<a class="jxr_linenumber" name="L374" href="#L374">374</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables rewriting relative URLs.</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @see #withRelativeUrls(boolean)</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a>     <strong class="jxr_keyword">protected</strong> String getRelativeUrlsCompilerOption() {
+<a class="jxr_linenumber" name="L381" href="#L381">381</a>         <strong class="jxr_keyword">if</strong> (relativeUrls) {
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--relative-urls"</span>;
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         }
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>     }
+<a class="jxr_linenumber" name="L387" href="#L387">387</a> 
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> <em class="jxr_javadoccomment">     * Sets whether a compiler should try and process all maths in Less code (default: {@code false}). Without this</em>
+<a class="jxr_linenumber" name="L390" href="#L390">390</a> <em class="jxr_javadoccomment">     * option on Less will try and process all maths in your Less e.g.:</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     * .class {</em>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_javadoccomment">     *     height: calc(100% - 10px);</em>
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     * will be processed currently.</em>
+<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     * With strict math on, only maths that is inside unnecessary parenthesis will be processed. For instance.</em>
+<a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L405" href="#L405">405</a> <em class="jxr_javadoccomment">     * .class {</em>
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     *     width: calc(100% - ((10px  - 5px)));</em>
+<a class="jxr_linenumber" name="L407" href="#L407">407</a> <em class="jxr_javadoccomment">     *     height: (100px / 4px);</em>
+<a class="jxr_linenumber" name="L408" href="#L408">408</a> <em class="jxr_javadoccomment">     *     font-size: 1 / 4;</em>
+<a class="jxr_linenumber" name="L409" href="#L409">409</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L410" href="#L410">410</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L411" href="#L411">411</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L412" href="#L412">412</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L413" href="#L413">413</a> <em class="jxr_javadoccomment">     * .class {</em>
+<a class="jxr_linenumber" name="L414" href="#L414">414</a> <em class="jxr_javadoccomment">     *     width: calc(100% - 5px);</em>
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> <em class="jxr_javadoccomment">     *     height: 25px;</em>
+<a class="jxr_linenumber" name="L416" href="#L416">416</a> <em class="jxr_javadoccomment">     *     font-size: 1 / 4;</em>
+<a class="jxr_linenumber" name="L417" href="#L417">417</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise</em>
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> <em class="jxr_javadoccomment">     *            {@code false}.</em>
+<a class="jxr_linenumber" name="L422" href="#L422">422</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
+<a class="jxr_linenumber" name="L423" href="#L423">423</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L424" href="#L424">424</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withStrictMath(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> strictMath) {
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <strong class="jxr_keyword">this</strong>.strictMath = strictMath;
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>     }
+<a class="jxr_linenumber" name="L429" href="#L429">429</a> 
+<a class="jxr_linenumber" name="L430" href="#L430">430</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables strict math.</em>
+<a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
+<a class="jxr_linenumber" name="L433" href="#L433">433</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L434" href="#L434">434</a> <em class="jxr_javadoccomment">     * @see #withStrictMath(boolean)</em>
+<a class="jxr_linenumber" name="L435" href="#L435">435</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L436" href="#L436">436</a>     <strong class="jxr_keyword">protected</strong> String getStrictMathCompilerOption() {
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>         <strong class="jxr_keyword">if</strong> (strictMath) {
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--strict-math=on"</span>;
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>         }
+<a class="jxr_linenumber" name="L442" href="#L442">442</a>     }
+<a class="jxr_linenumber" name="L443" href="#L443">443</a> 
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">     * Sets whether the compiler should guess units in Less code when it does maths (default: {@code false}). Without</em>
+<a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">     * this option, Less compiler attempts to guess at the output unit when it does maths. For instance</em>
+<a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">     * </em>
+<a class="jxr_linenumber" name="L448" href="#L448">448</a> <em class="jxr_javadoccomment">     * &lt;pre&gt;</em>
+<a class="jxr_linenumber" name="L449" href="#L449">449</a> <em class="jxr_javadoccomment">     * .class {</em>
+<a class="jxr_linenumber" name="L450" href="#L450">450</a> <em class="jxr_javadoccomment">     *     property: 1px * 2px;</em>
+<a class="jxr_linenumber" name="L451" href="#L451">451</a> <em class="jxr_javadoccomment">     * }</em>
+<a class="jxr_linenumber" name="L452" href="#L452">452</a> <em class="jxr_javadoccomment">     * &lt;/pre&gt;</em>
+<a class="jxr_linenumber" name="L453" href="#L453">453</a> <em class="jxr_javadoccomment">     * &lt;p&gt;</em>
+<a class="jxr_linenumber" name="L454" href="#L454">454</a> <em class="jxr_javadoccomment">     * In this case, things are clearly not right - a length multiplied by a length gives an area, but CSS does not</em>
+<a class="jxr_linenumber" name="L455" href="#L455">455</a> <em class="jxr_javadoccomment">     * support specifying areas. So we assume that the user meant for one of the values to be a value, not a unit of</em>
+<a class="jxr_linenumber" name="L456" href="#L456">456</a> <em class="jxr_javadoccomment">     * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an</em>
+<a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">     * error.</em>
+<a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">     * &lt;/p&gt;</em>
+<a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,</em>
+<a class="jxr_linenumber" name="L460" href="#L460">460</a> <em class="jxr_javadoccomment">     *            otherwise {@code false}.</em>
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
+<a class="jxr_linenumber" name="L462" href="#L462">462</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L463" href="#L463">463</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">Less175CompilerOptionsBuilder</a> withStrictUnits(<strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">boolean</strong> strictUnits) {
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>         <strong class="jxr_keyword">this</strong>.strictUnits = strictUnits;
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>     }
+<a class="jxr_linenumber" name="L468" href="#L468">468</a> 
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">     * Returns a command line option which enables/disables strict units.</em>
+<a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">     * @return the command line option (never {@code null}).</em>
+<a class="jxr_linenumber" name="L472" href="#L472">472</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L473" href="#L473">473</a> <em class="jxr_javadoccomment">     * @see #withStrictUnits(boolean)</em>
+<a class="jxr_linenumber" name="L474" href="#L474">474</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L475" href="#L475">475</a>     <strong class="jxr_keyword">protected</strong> String getStrictUnitsCompilerOption() {
+<a class="jxr_linenumber" name="L476" href="#L476">476</a>         <strong class="jxr_keyword">if</strong> (strictUnits) {
+<a class="jxr_linenumber" name="L477" href="#L477">477</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">"--strict-units=on"</span>;
+<a class="jxr_linenumber" name="L478" href="#L478">478</a>         } <strong class="jxr_keyword">else</strong> {
+<a class="jxr_linenumber" name="L479" href="#L479">479</a>             <strong class="jxr_keyword">return</strong> <span class="jxr_string">""</span>;
+<a class="jxr_linenumber" name="L480" href="#L480">480</a>         }
+<a class="jxr_linenumber" name="L481" href="#L481">481</a>     }
+<a class="jxr_linenumber" name="L482" href="#L482">482</a> 
+<a class="jxr_linenumber" name="L483" href="#L483">483</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L484" href="#L484">484</a> <em class="jxr_javadoccomment">     * Creates a collection with configuration options for Less compilation process.</em>
+<a class="jxr_linenumber" name="L485" href="#L485">485</a> <em class="jxr_javadoccomment">     * @return the collection with configuration options for Less compilation process.</em>
+<a class="jxr_linenumber" name="L486" href="#L486">486</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L487" href="#L487">487</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L488" href="#L488">488</a>     <strong class="jxr_keyword">public</strong> Collection&lt;Object&gt; create() {
+<a class="jxr_linenumber" name="L489" href="#L489">489</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/ListWithoutEmptyValuesBuilder.html">ListWithoutEmptyValuesBuilder</a> options = <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/ListWithoutEmptyValuesBuilder.html">ListWithoutEmptyValuesBuilder</a>();
+<a class="jxr_linenumber" name="L490" href="#L490">490</a>         options.add(getSilentCompilerOption());
+<a class="jxr_linenumber" name="L491" href="#L491">491</a>         options.add(getStrictImportsCompilerOption());
+<a class="jxr_linenumber" name="L492" href="#L492">492</a>         options.add(getCompressCompilerOption());
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>         options.add(getDependsCompilerOption());
+<a class="jxr_linenumber" name="L494" href="#L494">494</a>         options.add(getIeCompatabilityCompilerOption());
+<a class="jxr_linenumber" name="L495" href="#L495">495</a>         options.add(getJavaScriptEnabledCompilerOption());
+<a class="jxr_linenumber" name="L496" href="#L496">496</a>         options.add(getIncludePathsCompilerOption());
+<a class="jxr_linenumber" name="L497" href="#L497">497</a>         options.add(getLineNumbersCompilerOption());
+<a class="jxr_linenumber" name="L498" href="#L498">498</a>         options.add(getRootPathCompilerOption());
+<a class="jxr_linenumber" name="L499" href="#L499">499</a>         options.add(getRelativeUrlsCompilerOption());
+<a class="jxr_linenumber" name="L500" href="#L500">500</a>         options.add(getStrictMathCompilerOption());
+<a class="jxr_linenumber" name="L501" href="#L501">501</a>         options.add(getStrictUnitsCompilerOption());
+<a class="jxr_linenumber" name="L502" href="#L502">502</a>         <strong class="jxr_keyword">return</strong> options.create();
+<a class="jxr_linenumber" name="L503" href="#L503">503</a>     }
+<a class="jxr_linenumber" name="L504" href="#L504">504</a> 
+<a class="jxr_linenumber" name="L505" href="#L505">505</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L506" href="#L506">506</a> <em class="jxr_javadoccomment">     * Responsible for checking operating system family.</em>
+<a class="jxr_linenumber" name="L507" href="#L507">507</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L508" href="#L508">508</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L509" href="#L509">509</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">interface</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">OperatingSystemChecker</a> {
+<a class="jxr_linenumber" name="L510" href="#L510">510</a> 
+<a class="jxr_linenumber" name="L511" href="#L511">511</a>         <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L512" href="#L512">512</a> <em class="jxr_javadoccomment">         * Tests whether operating system is &lt;a href="<a href="http://www.microsoft.com/" target="alexandria_uri">http://www.microsoft.com/</a>"&gt;Windows&lt;/a&gt;.</em>
+<a class="jxr_linenumber" name="L513" href="#L513">513</a> <em class="jxr_javadoccomment">         * @return {@code true} whether operating system is Windows, otherwise {@code false}.</em>
+<a class="jxr_linenumber" name="L514" href="#L514">514</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L515" href="#L515">515</a> <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="L516" href="#L516">516</a>         <strong class="jxr_keyword">boolean</strong> isWindows();
+<a class="jxr_linenumber" name="L517" href="#L517">517</a>     }
+<a class="jxr_linenumber" name="L518" href="#L518">518</a> 
+<a class="jxr_linenumber" name="L519" href="#L519">519</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L520" href="#L520">520</a> <em class="jxr_javadoccomment">     * Available values for {@link Less175CompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers} option.</em>
+<a class="jxr_linenumber" name="L521" href="#L521">521</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L522" href="#L522">522</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L523" href="#L523">523</a>     <strong class="jxr_keyword">public</strong> enum <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">LineNumbersValue</a> {
+<a class="jxr_linenumber" name="L524" href="#L524">524</a> 
 <a class="jxr_linenumber" name="L525" href="#L525">525</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L526" href="#L526">526</a> <em class="jxr_javadoccomment">         * Line numbers will be put in CSS comments blocks.</em>
+<a class="jxr_linenumber" name="L526" href="#L526">526</a> <em class="jxr_javadoccomment">         * Line numbers won't be put in CSS code.</em>
 <a class="jxr_linenumber" name="L527" href="#L527">527</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L528" href="#L528">528</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L529" href="#L529">529</a>         COMMENTS(<span class="jxr_string">"comments"</span>),
+<a class="jxr_linenumber" name="L529" href="#L529">529</a>         DISABLED(<span class="jxr_string">""</span>),
 <a class="jxr_linenumber" name="L530" href="#L530">530</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L531" href="#L531">531</a> <em class="jxr_javadoccomment">         * Line numbers will be put in &amp;#64;media queries.</em>
+<a class="jxr_linenumber" name="L531" href="#L531">531</a> <em class="jxr_javadoccomment">         * Line numbers will be put in CSS comments blocks.</em>
 <a class="jxr_linenumber" name="L532" href="#L532">532</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L533" href="#L533">533</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L534" href="#L534">534</a>         MEDIA_QUERY(<span class="jxr_string">"mediaquery"</span>),
+<a class="jxr_linenumber" name="L534" href="#L534">534</a>         COMMENTS(<span class="jxr_string">"comments"</span>),
 <a class="jxr_linenumber" name="L535" href="#L535">535</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L536" href="#L536">536</a> <em class="jxr_javadoccomment">         * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.</em>
+<a class="jxr_linenumber" name="L536" href="#L536">536</a> <em class="jxr_javadoccomment">         * Line numbers will be put in &amp;#64;media queries.</em>
 <a class="jxr_linenumber" name="L537" href="#L537">537</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L538" href="#L538">538</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L539" href="#L539">539</a>         ALL(<span class="jxr_string">"all"</span>);
-<a class="jxr_linenumber" name="L540" href="#L540">540</a> 
-<a class="jxr_linenumber" name="L541" href="#L541">541</a>         <strong class="jxr_keyword">private</strong> String value;
-<a class="jxr_linenumber" name="L542" href="#L542">542</a> 
-<a class="jxr_linenumber" name="L543" href="#L543">543</a>         <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">LineNumbersValue</a>(<strong class="jxr_keyword">final</strong> String value) {
-<a class="jxr_linenumber" name="L544" href="#L544">544</a>             <strong class="jxr_keyword">this</strong>.value = value;
-<a class="jxr_linenumber" name="L545" href="#L545">545</a>         }
-<a class="jxr_linenumber" name="L546" href="#L546">546</a> 
-<a class="jxr_linenumber" name="L547" href="#L547">547</a>         <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L548" href="#L548">548</a> <em class="jxr_javadoccomment">         * Returns a value assigned to this object.</em>
-<a class="jxr_linenumber" name="L549" href="#L549">549</a> <em class="jxr_javadoccomment">         * @return the value assigned to this object.</em>
-<a class="jxr_linenumber" name="L550" href="#L550">550</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L551" href="#L551">551</a> <em class="jxr_javadoccomment">         */</em>
-<a class="jxr_linenumber" name="L552" href="#L552">552</a>         <strong class="jxr_keyword">public</strong> String getValue() {
-<a class="jxr_linenumber" name="L553" href="#L553">553</a>             <strong class="jxr_keyword">return</strong> value;
-<a class="jxr_linenumber" name="L554" href="#L554">554</a>         }
-<a class="jxr_linenumber" name="L555" href="#L555">555</a>     }
-<a class="jxr_linenumber" name="L556" href="#L556">556</a> }
+<a class="jxr_linenumber" name="L539" href="#L539">539</a>         MEDIA_QUERY(<span class="jxr_string">"mediaquery"</span>),
+<a class="jxr_linenumber" name="L540" href="#L540">540</a>         <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L541" href="#L541">541</a> <em class="jxr_javadoccomment">         * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.</em>
+<a class="jxr_linenumber" name="L542" href="#L542">542</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L543" href="#L543">543</a> <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="L544" href="#L544">544</a>         ALL(<span class="jxr_string">"all"</span>);
+<a class="jxr_linenumber" name="L545" href="#L545">545</a> 
+<a class="jxr_linenumber" name="L546" href="#L546">546</a>         <strong class="jxr_keyword">private</strong> String value;
+<a class="jxr_linenumber" name="L547" href="#L547">547</a> 
+<a class="jxr_linenumber" name="L548" href="#L548">548</a>         <a href="../../../../biz/gabrys/lesscss/compiler2/Less175CompilerOptionsBuilder.html">LineNumbersValue</a>(<strong class="jxr_keyword">final</strong> String value) {
+<a class="jxr_linenumber" name="L549" href="#L549">549</a>             <strong class="jxr_keyword">this</strong>.value = value;
+<a class="jxr_linenumber" name="L550" href="#L550">550</a>         }
+<a class="jxr_linenumber" name="L551" href="#L551">551</a> 
+<a class="jxr_linenumber" name="L552" href="#L552">552</a>         <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L553" href="#L553">553</a> <em class="jxr_javadoccomment">         * Returns a value assigned to this object.</em>
+<a class="jxr_linenumber" name="L554" href="#L554">554</a> <em class="jxr_javadoccomment">         * @return the value assigned to this object.</em>
+<a class="jxr_linenumber" name="L555" href="#L555">555</a> <em class="jxr_javadoccomment">         * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L556" href="#L556">556</a> <em class="jxr_javadoccomment">         */</em>
+<a class="jxr_linenumber" name="L557" href="#L557">557</a>         <strong class="jxr_keyword">public</strong> String getValue() {
+<a class="jxr_linenumber" name="L558" href="#L558">558</a>             <strong class="jxr_keyword">return</strong> value;
+<a class="jxr_linenumber" name="L559" href="#L559">559</a>         }
+<a class="jxr_linenumber" name="L560" href="#L560">560</a>     }
+<a class="jxr_linenumber" name="L561" href="#L561">561</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015&#x2013;2017 <a href="http://www.gabrys.biz/">gabrys.biz</a>. All rights reserved.</div>
