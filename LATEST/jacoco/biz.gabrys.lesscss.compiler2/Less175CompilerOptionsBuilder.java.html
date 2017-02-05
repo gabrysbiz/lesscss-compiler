@@ -1,0 +1,557 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Less175CompilerOptionsBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">Less175CompilerOptionsBuilder.java</span></div><h1>Less175CompilerOptionsBuilder.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.List;
+
+import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder;
+import biz.gabrys.lesscss.compiler2.util.StringUtils;
+
+/**
+ * Options that control the &lt;a href=&quot;http://lesscss.org/&quot;&gt;Less&lt;/a&gt; compilation process.
+ * @since 2.0.0
+ * @see &lt;a href=&quot;http://lesscss.org/usage/index.html#command-line-usage-options&quot;&gt;Less options&lt;/a&gt;
+ */
+public class Less175CompilerOptionsBuilder {
+
+    /**
+     * The operating system software checker responsible for verifing system distriubution.
+     * @since 2.0.0
+     */
+    protected OperatingSystemChecker systemChecker;
+
+    private boolean silent;
+    private boolean strictImports;
+    private boolean compress;
+    private boolean depends;
+<span class="fc" id="L40">    private boolean ieCompatability = true;</span>
+<span class="fc" id="L41">    private boolean javaScriptEnabled = true;</span>
+<span class="fc" id="L42">    private List&lt;String&gt; includePaths = Collections.emptyList();</span>
+<span class="fc" id="L43">    private LineNumbersValue lineNumbers = LineNumbersValue.DISABLED;</span>
+    private String rootPath;
+    private boolean relativeUrls;
+    private boolean strictMath;
+    private boolean strictUnits;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L53">    public Less175CompilerOptionsBuilder() {</span>
+<span class="fc" id="L54">        systemChecker = new OperatingSystemChecker() {</span>
+
+            @Override
+            public boolean isWindows() {
+<span class="nc" id="L58">                return System.getProperty(&quot;os.name&quot;).startsWith(&quot;Windows&quot;);</span>
+            }
+        };
+<span class="fc" id="L61">    }</span>
+
+    /**
+     * Constructs a new instance.
+     * @param systemChecker the operating system software checker.
+     * @since 2.0.0
+     */
+<span class="fc" id="L68">    public Less175CompilerOptionsBuilder(final OperatingSystemChecker systemChecker) {</span>
+<span class="fc" id="L69">        this.systemChecker = systemChecker;</span>
+<span class="fc" id="L70">    }</span>
+
+    /**
+     * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
+     * @param silent {@code true} whether the compiler shouldn't log compilation warnings, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withSilent(final boolean silent) {
+<span class="fc" id="L79">        this.silent = silent;</span>
+<span class="fc" id="L80">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables logging compilation warnings.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withSilent(boolean)
+     */
+    protected String getSilentCompilerArgument() {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (silent) {</span>
+<span class="fc" id="L91">            return &quot;--silent&quot;;</span>
+        } else {
+<span class="fc" id="L93">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
+     * selector blocks (default: {@code false}).
+     * @param strictImports {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either
+     *            &amp;#64;media blocks or other selector blocks, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withStrictImports(final boolean strictImports) {
+<span class="fc" id="L106">        this.strictImports = strictImports;</span>
+<span class="fc" id="L107">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables strict imports.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withStrictImports(boolean)
+     */
+    protected String getStrictImportsCompilerArgument() {
+<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (strictImports) {</span>
+<span class="fc" id="L118">            return &quot;--strict-imports&quot;;</span>
+        } else {
+<span class="fc" id="L120">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether a CSS code should be compressed (default: {@code false}).
+     * @param compress {@code true} whether the CSS code should be compressed, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withCompress(final boolean compress) {
+<span class="fc" id="L131">        this.compress = compress;</span>
+<span class="fc" id="L132">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables a CSS code compression.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withCompress(boolean)
+     */
+    protected String getCompressCompilerArgument() {
+<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (compress) {</span>
+<span class="fc" id="L143">            return &quot;--compress&quot;;</span>
+        } else {
+<span class="fc" id="L145">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * TODO what is depends?
+     * @param depends
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withDepends(final boolean depends) {
+<span class="fc" id="L156">        this.depends = depends;</span>
+<span class="fc" id="L157">        return this;</span>
+    }
+
+    /**
+     * TODO what is depends?
+     * @return command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withDepends(boolean)
+     */
+    protected String getDependsCompilerArgument() {
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (depends) {</span>
+<span class="fc" id="L168">            return &quot;--depends&quot;;</span>
+        } else {
+<span class="fc" id="L170">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether a CSS code should be compatible with IE browser (default: {@code true}). Used for the
+     * {@code data-uri} function to ensure that images aren't created that are too large for the browser to handle.
+     * @param ieCompatability {@code true} whether the CSS code should be compatible with IE browser, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withIeCompatability(final boolean ieCompatability) {
+<span class="fc" id="L183">        this.ieCompatability = ieCompatability;</span>
+<span class="fc" id="L184">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables compatibility with IE browser.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withIeCompatability(boolean)
+     */
+    protected String getIeCompatabilityCompilerArgument() {
+<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (ieCompatability) {</span>
+<span class="fc" id="L195">            return &quot;&quot;;</span>
+        } else {
+<span class="fc" id="L197">            return &quot;--no-ie-compat&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether a compiler should allow usage of JavaScript language (default: {@code true}).
+     * @param javaScriptEnabled {@code true} whether the compiler should allow usage of JavaScript language, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withJavaScriptEnabled(final boolean javaScriptEnabled) {
+<span class="fc" id="L209">        this.javaScriptEnabled = javaScriptEnabled;</span>
+<span class="fc" id="L210">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which allows/disallows usage of JavaScript language.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withJavaScriptEnabled(boolean)
+     */
+    protected String getJavaScriptEnabledCompilerArgument() {
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        if (javaScriptEnabled) {</span>
+<span class="fc" id="L221">            return &quot;&quot;;</span>
+        } else {
+<span class="fc" id="L223">            return &quot;--no-js&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets available include paths (default: empty collection). Separated by ':' or ';' on Windows. If the file in an
+     * &amp;#64;import rule does not exist at that exact location, less will look for it at the location(s) passed to this
+     * option. You might use this for instance to specify a path to a library which you want to be referenced simply and
+     * relatively in the less files.
+     * @param includePaths the available include paths.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withIncludePaths(final List&lt;String&gt; includePaths) {
+<span class="fc bfc" id="L237" title="All 4 branches covered.">        if (includePaths == null || includePaths.isEmpty()) {</span>
+<span class="fc" id="L238">            this.includePaths = Collections.emptyList();</span>
+        } else {
+<span class="fc" id="L240">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
+        }
+<span class="fc" id="L242">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument representation of the available include paths.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withIncludePaths(List)
+     */
+    protected String getIncludePathsCompilerArgument() {
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (includePaths.isEmpty()) {</span>
+<span class="fc" id="L253">            return &quot;&quot;;</span>
+        }
+<span class="fc" id="L255">        final StringBuilder paths = new StringBuilder();</span>
+<span class="fc bfc" id="L256" title="All 2 branches covered.">        for (final String path : includePaths) {</span>
+<span class="pc bpc" id="L257" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(path)) {</span>
+<span class="fc bfc" id="L258" title="All 2 branches covered.">                final boolean separatorRequired = paths.length() != 0;</span>
+<span class="fc bfc" id="L259" title="All 2 branches covered.">                if (separatorRequired) {</span>
+<span class="fc bfc" id="L260" title="All 2 branches covered.">                    paths.append(systemChecker.isWindows() ? ';' : ':');</span>
+                }
+<span class="fc" id="L262">                paths.append(path.trim());</span>
+            }
+<span class="fc" id="L264">        }</span>
+<span class="fc" id="L265">        return &quot;--include-path=&quot; + paths.toString();</span>
+    }
+
+    /**
+     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#DISABLED}). This
+     * was the only option before browsers started supporting Source Maps.
+     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#DISABLED}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withLineNumbers(final LineNumbersValue lineNumbers) {
+<span class="fc bfc" id="L276" title="All 2 branches covered.">        this.lineNumbers = lineNumbers != null ? lineNumbers : LineNumbersValue.DISABLED;</span>
+<span class="fc" id="L277">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables generating inline source-mapping.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withJavaScriptEnabled(boolean)
+     */
+    protected String getLineNumbersCompilerArgument() {
+<span class="fc bfc" id="L287" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
+<span class="fc" id="L288">            return &quot;&quot;;</span>
+        } else {
+<span class="fc" id="L290">            return &quot;--line-numbers=&quot; + lineNumbers.value;</span>
+        }
+    }
+
+    ///////
+    // TODO source maps
+    ///////
+
+    /**
+     * Sets a path which will be added to every generated import and URL in CSS code (default: {@code null}). This does
+     * not affect less import statements that are processed, just ones that are left in the output CSS.
+     * &lt;p&gt;
+     * For instance, if all the images the CSS use are in a folder called resources, you can use this option to add this
+     * on to the URL's and then have the name of that folder configurable.
+     * &lt;/p&gt;
+     * @param rootPath the path which will be added.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withRootPath(final String rootPath) {
+<span class="fc" id="L310">        this.rootPath = rootPath;</span>
+<span class="fc" id="L311">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument representation of the root path.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withRootPath(String)
+     */
+    protected String getRootPathCompilerArgument() {
+<span class="fc bfc" id="L321" title="All 2 branches covered.">        if (rootPath != null) {</span>
+<span class="fc" id="L322">            return &quot;--rootpath=&quot; + rootPath;</span>
+        } else {
+<span class="fc" id="L324">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether the compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is,
+     * so if you import a file in a sub-directory that references an image, exactly the same URL will be output in the
+     * CSS code. This option allows you to re-write URLs in imported files so that the URL is always relative to the
+     * base imported file. Example:
+     * 
+     * &lt;pre&gt;
+     * # main.less
+     * &amp;#64;import &quot;files/backgrounds.less&quot;;
+     * 
+     * # files/backgrounds.less
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * 
+     * this will output the following normally
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * 
+     * but with this option on it will instead output
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('files/images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * 
+     * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images
+     * into the CSS.
+     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withRelativeUrls(final boolean relativeUrls) {
+<span class="fc" id="L367">        this.relativeUrls = relativeUrls;</span>
+<span class="fc" id="L368">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables rewriting relative URLs.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withRelativeUrls(boolean)
+     */
+    protected String getRelativeUrlsCompilerArgument() {
+<span class="fc bfc" id="L378" title="All 2 branches covered.">        if (relativeUrls) {</span>
+<span class="fc" id="L379">            return &quot;--relative-urls&quot;;</span>
+        } else {
+<span class="fc" id="L381">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether a compiler should try and process all maths in Less code (default: {@code false}). Without this
+     * option on Less will try and process all maths in your Less e.g.:
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     height: calc(100% - 10px);
+     * }
+     * &lt;/pre&gt;
+     * 
+     * will be processed currently.
+     * &lt;p&gt;
+     * With strict math on, only maths that is inside unnecessary parenthesis will be processed. For instance.
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - ((10px  - 5px)));
+     *     height: (100px / 4px);
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - 5px);
+     *     height: 25px;
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withStrictMath(final boolean strictMath) {
+<span class="fc" id="L422">        this.strictMath = strictMath;</span>
+<span class="fc" id="L423">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables strict math.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withStrictMath(boolean)
+     */
+    protected String getStrictMathCompilerArgument() {
+<span class="fc bfc" id="L433" title="All 2 branches covered.">        if (strictMath) {</span>
+<span class="fc" id="L434">            return &quot;--strict-math=on&quot;;</span>
+        } else {
+<span class="fc" id="L436">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets whether the compiler should guess units in Less code when it does maths (default: {@code false}). Without
+     * this option, Less compiler attempts to guess at the output unit when it does maths. For instance
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     property: 1px * 2px;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * In this case, things are clearly not right - a length multiplied by a length gives an area, but CSS does not
+     * support specifying areas. So we assume that the user meant for one of the values to be a value, not a unit of
+     * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an
+     * error.
+     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,
+     *            otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public Less175CompilerOptionsBuilder withStrictUnits(final boolean strictUnits) {
+<span class="fc" id="L460">        this.strictUnits = strictUnits;</span>
+<span class="fc" id="L461">        return this;</span>
+    }
+
+    /**
+     * Returns a command line argument which enables/disables strict units.
+     * @return the command line argument (never {@code null}).
+     * @since 2.0.0
+     * @see #withStrictUnits(boolean)
+     */
+    protected String getStrictUnitsCompilerArgument() {
+<span class="fc bfc" id="L471" title="All 2 branches covered.">        if (strictUnits) {</span>
+<span class="fc" id="L472">            return &quot;--strict-units=on&quot;;</span>
+        } else {
+<span class="fc" id="L474">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Creates a collection with configuration options for Less compilation process.
+     * @return the collection with configuration options for Less compilation process.
+     * @since 2.0.0
+     */
+    public Collection&lt;Object&gt; create() {
+<span class="fc" id="L484">        final ListWithoutEmptyValuesBuilder arguments = new ListWithoutEmptyValuesBuilder();</span>
+<span class="fc" id="L485">        arguments.add(getSilentCompilerArgument());</span>
+<span class="fc" id="L486">        arguments.add(getStrictImportsCompilerArgument());</span>
+<span class="fc" id="L487">        arguments.add(getCompressCompilerArgument());</span>
+<span class="fc" id="L488">        arguments.add(getDependsCompilerArgument());</span>
+<span class="fc" id="L489">        arguments.add(getIeCompatabilityCompilerArgument());</span>
+<span class="fc" id="L490">        arguments.add(getJavaScriptEnabledCompilerArgument());</span>
+<span class="fc" id="L491">        arguments.add(getIncludePathsCompilerArgument());</span>
+<span class="fc" id="L492">        arguments.add(getLineNumbersCompilerArgument());</span>
+<span class="fc" id="L493">        arguments.add(getRootPathCompilerArgument());</span>
+<span class="fc" id="L494">        arguments.add(getRelativeUrlsCompilerArgument());</span>
+<span class="fc" id="L495">        arguments.add(getStrictMathCompilerArgument());</span>
+<span class="fc" id="L496">        arguments.add(getStrictUnitsCompilerArgument());</span>
+<span class="fc" id="L497">        return arguments.create();</span>
+    }
+
+    /**
+     * Responsible for checking operating system family.
+     * @since 2.0.0
+     */
+    public interface OperatingSystemChecker {
+
+        /**
+         * Tests whether operating system is &lt;a href=&quot;http://www.microsoft.com/&quot;&gt;Windows&lt;/a&gt;.
+         * @return {@code true} whether operating system is Windows, otherwise {@code false}.
+         * @since 2.0.0
+         */
+        boolean isWindows();
+    }
+
+    /**
+     * Available values for {@link Less175CompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers} option.
+     * @since 2.0.0
+     */
+<span class="pc" id="L518">    public enum LineNumbersValue {</span>
+
+        /**
+         * Line numbers won't be put in CSS code.
+         * @since 2.0.0
+         */
+<span class="fc" id="L524">        DISABLED(&quot;&quot;),</span>
+        /**
+         * Line numbers will be put in CSS comments blocks.
+         * @since 2.0.0
+         */
+<span class="fc" id="L529">        COMMENTS(&quot;comments&quot;),</span>
+        /**
+         * Line numbers will be put in &amp;#64;media queries.
+         * @since 2.0.0
+         */
+<span class="fc" id="L534">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
+        /**
+         * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.
+         * @since 2.0.0
+         */
+<span class="fc" id="L539">        ALL(&quot;all&quot;);</span>
+
+        private String value;
+
+<span class="fc" id="L543">        LineNumbersValue(final String value) {</span>
+<span class="fc" id="L544">            this.value = value;</span>
+<span class="fc" id="L545">        }</span>
+
+        /**
+         * Returns a value assigned to this object.
+         * @return the value assigned to this object.
+         * @since 2.0.0
+         */
+        public String getValue() {
+<span class="fc" id="L553">            return value;</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

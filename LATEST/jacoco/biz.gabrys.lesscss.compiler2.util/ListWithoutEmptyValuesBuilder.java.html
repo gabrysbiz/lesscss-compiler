@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListWithoutEmptyValuesBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.util</a> &gt; <span class="el_source">ListWithoutEmptyValuesBuilder.java</span></div><h1>ListWithoutEmptyValuesBuilder.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.util;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Responsible for creating new instances of the {@link List} which stores not empty values.
+ * @since 2.0.0
+ */
+public class ListWithoutEmptyValuesBuilder {
+
+<span class="fc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
+        // do nothing
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Appends a value only if it is not equal to {@code null}.
+     * @param value the appended value.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public ListWithoutEmptyValuesBuilder add(final Object value) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (value != null) {</span>
+<span class="fc" id="L43">            values.add(value);</span>
+        }
+<span class="fc" id="L45">        return this;</span>
+    }
+
+    /**
+     * Appends a value only if it is not blank (empty or contains only whitespace) or not equal to {@code null}.
+     * @param value the appended value.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public ListWithoutEmptyValuesBuilder add(final String value) {
+<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (StringUtils.isNotBlank(value)) {</span>
+<span class="fc" id="L56">            values.add(value);</span>
+        }
+<span class="fc" id="L58">        return this;</span>
+    }
+
+    /**
+     * Creates a new instance of the {@link List}.
+     * @return the new instance of the {@link List}.
+     * @since 2.0.0
+     */
+    public List&lt;Object&gt; create() {
+<span class="fc" id="L67">        return new ArrayList&lt;Object&gt;(values);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
