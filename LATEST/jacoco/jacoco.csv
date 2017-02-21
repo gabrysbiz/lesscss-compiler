@@ -1,12 +1,15 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,IOUtils,3,8,0,2,2,6,1,2,1,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,0,33,0,4,0,10,0,6,0,4
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,StringUtils,3,25,0,8,2,6,1,5,1,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,8,5,0,0,4,2,2,1,2,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,ResolveImportException,14,11,0,0,6,4,2,2,2,2
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,Less175Compiler,26,240,2,6,5,54,2,9,0,7
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,IOUtils,11,0,2,0,7,0,3,0,2,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,24,0,2,0,7,0,4,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,StringUtils,35,0,10,0,9,0,8,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,13,0,0,0,6,0,3,0,3,0
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,InitializationException,13,0,0,0,6,0,3,0,3,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,Less175CompilerOptionsBuilder.LineNumbersValue,5,63,0,0,0,9,1,4,1,4
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,CompilerException,8,5,0,0,4,2,2,1,2,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,Less175CompilerOptionsBuilder.new Less175CompilerOptionsBuilder.OperatingSystemChecker() {...},5,6,0,0,1,1,1,1,1,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,Less175CompilerOptionsBuilder,0,336,1,39,0,94,1,46,0,27
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,255,0,10,0,61,0,10,0,5,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,SourceFileNotFoundException,25,0,0,0,10,0,4,0,4,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,ImportNotFoundException,25,0,0,0,10,0,4,0,4,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,BuildCompilerOptionsException,13,0,0,0,6,0,3,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder,369,0,46,0,105,0,52,0,29,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,78,0,0,0,20,0,7,0,7,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder.LineNumbersValue,80,0,0,0,14,0,5,0,5,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder.new NativeLessCompilerOptionsBuilder.OperatingSystemChecker() {...},11,0,0,0,3,0,2,0,2,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,CompilerException,13,0,0,0,6,0,3,0,3,0

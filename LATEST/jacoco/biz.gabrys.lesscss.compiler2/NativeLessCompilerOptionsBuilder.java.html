@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>Less175CompilerOptionsBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">Less175CompilerOptionsBuilder.java</span></div><h1>Less175CompilerOptionsBuilder.java</h1><pre class="source lang-java linenums">/*
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeLessCompilerOptionsBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">NativeLessCompilerOptionsBuilder.java</span></div><h1>NativeLessCompilerOptionsBuilder.java</h1><pre class="source lang-java linenums"><span class="nc" id="L1">/*</span>
  * LessCSS Compiler
  * http://lesscss-compiler.projects.gabrys.biz/
  *
@@ -12,6 +12,7 @@
  */
 package biz.gabrys.lesscss.compiler2;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -25,7 +26,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * @since 2.0.0
  * @see &lt;a href=&quot;http://lesscss.org/usage/index.html#command-line-usage-options&quot;&gt;Less options&lt;/a&gt;
  */
-public class Less175CompilerOptionsBuilder {
+public class NativeLessCompilerOptionsBuilder {
 
     /**
      * The operating system software checker responsible for verifing system distriubution.
@@ -33,14 +34,15 @@ public class Less175CompilerOptionsBuilder {
      */
     protected OperatingSystemChecker systemChecker;
 
+    private File input;
+    private File output;
     private boolean silent;
     private boolean strictImports;
     private boolean compress;
-    private boolean depends;
-<span class="fc" id="L40">    private boolean ieCompatability = true;</span>
-<span class="fc" id="L41">    private boolean javaScriptEnabled = true;</span>
-<span class="fc" id="L42">    private List&lt;String&gt; includePaths = Collections.emptyList();</span>
-<span class="fc" id="L43">    private LineNumbersValue lineNumbers = LineNumbersValue.DISABLED;</span>
+<span class="nc" id="L42">    private boolean ieCompatability = true;</span>
+<span class="nc" id="L43">    private boolean javaScriptEnabled = true;</span>
+<span class="nc" id="L44">    private List&lt;String&gt; includePaths = Collections.emptyList();</span>
+<span class="nc" id="L45">    private LineNumbersValue lineNumbers = LineNumbersValue.DISABLED;</span>
     private String rootPath;
     private boolean relativeUrls;
     private boolean strictMath;
@@ -50,24 +52,74 @@ public class Less175CompilerOptionsBuilder {
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L53">    public Less175CompilerOptionsBuilder() {</span>
-<span class="fc" id="L54">        systemChecker = new OperatingSystemChecker() {</span>
+<span class="nc" id="L55">    public NativeLessCompilerOptionsBuilder() {</span>
+<span class="nc" id="L56">        systemChecker = new OperatingSystemChecker() {</span>
 
             @Override
             public boolean isWindows() {
-<span class="nc" id="L58">                return System.getProperty(&quot;os.name&quot;).startsWith(&quot;Windows&quot;);</span>
+<span class="nc" id="L60">                return System.getProperty(&quot;os.name&quot;).startsWith(&quot;Windows&quot;);</span>
             }
         };
-<span class="fc" id="L61">    }</span>
+<span class="nc" id="L63">    }</span>
 
     /**
      * Constructs a new instance.
      * @param systemChecker the operating system software checker.
      * @since 2.0.0
      */
-<span class="fc" id="L68">    public Less175CompilerOptionsBuilder(final OperatingSystemChecker systemChecker) {</span>
-<span class="fc" id="L69">        this.systemChecker = systemChecker;</span>
-<span class="fc" id="L70">    }</span>
+<span class="nc" id="L70">    public NativeLessCompilerOptionsBuilder(final OperatingSystemChecker systemChecker) {</span>
+<span class="nc" id="L71">        this.systemChecker = systemChecker;</span>
+<span class="nc" id="L72">    }</span>
+
+    /**
+     * Sets an input (source) file.
+     * @param input the input file.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessCompilerOptionsBuilder withInputFile(final File input) {
+<span class="nc" id="L81">        this.input = input;</span>
+<span class="nc" id="L82">        return this;</span>
+    }
+
+    /**
+     * Returns a command line option which represents an absolute path of the input file.
+     * @return the command line option (never {@code null}).
+     * @since 2.0.0
+     * @see #withInputFile(File)
+     */
+    protected String getInputFileCompilerOption() {
+<span class="nc bnc" id="L92" title="All 2 branches missed.">        if (input != null) {</span>
+<span class="nc" id="L93">            return input.getAbsolutePath();</span>
+        } else {
+<span class="nc" id="L95">            return &quot;&quot;;</span>
+        }
+    }
+
+    /**
+     * Sets an output (destination) file.
+     * @param output the output file.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessCompilerOptionsBuilder withOutputFile(final File output) {
+<span class="nc" id="L106">        this.output = output;</span>
+<span class="nc" id="L107">        return this;</span>
+    }
+
+    /**
+     * Returns a command line option which represents an absolute path of the output file.
+     * @return the command line option (never {@code null}).
+     * @since 2.0.0
+     * @see #withOutputFile(File)
+     */
+    protected String getOutputFileCompilerOption() {
+<span class="nc bnc" id="L117" title="All 2 branches missed.">        if (output != null) {</span>
+<span class="nc" id="L118">            return output.getAbsolutePath();</span>
+        } else {
+<span class="nc" id="L120">            return &quot;&quot;;</span>
+        }
+    }
 
     /**
      * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
@@ -75,9 +127,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withSilent(final boolean silent) {
-<span class="fc" id="L79">        this.silent = silent;</span>
-<span class="fc" id="L80">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withSilent(final boolean silent) {
+<span class="nc" id="L131">        this.silent = silent;</span>
+<span class="nc" id="L132">        return this;</span>
     }
 
     /**
@@ -87,10 +139,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withSilent(boolean)
      */
     protected String getSilentCompilerOption() {
-<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (silent) {</span>
-<span class="fc" id="L91">            return &quot;--silent&quot;;</span>
+<span class="nc bnc" id="L142" title="All 2 branches missed.">        if (silent) {</span>
+<span class="nc" id="L143">            return &quot;--silent&quot;;</span>
         } else {
-<span class="fc" id="L93">            return &quot;&quot;;</span>
+<span class="nc" id="L145">            return &quot;&quot;;</span>
         }
     }
 
@@ -102,9 +154,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withStrictImports(final boolean strictImports) {
-<span class="fc" id="L106">        this.strictImports = strictImports;</span>
-<span class="fc" id="L107">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withStrictImports(final boolean strictImports) {
+<span class="nc" id="L158">        this.strictImports = strictImports;</span>
+<span class="nc" id="L159">        return this;</span>
     }
 
     /**
@@ -114,10 +166,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withStrictImports(boolean)
      */
     protected String getStrictImportsCompilerOption() {
-<span class="fc bfc" id="L117" title="All 2 branches covered.">        if (strictImports) {</span>
-<span class="fc" id="L118">            return &quot;--strict-imports&quot;;</span>
+<span class="nc bnc" id="L169" title="All 2 branches missed.">        if (strictImports) {</span>
+<span class="nc" id="L170">            return &quot;--strict-imports&quot;;</span>
         } else {
-<span class="fc" id="L120">            return &quot;&quot;;</span>
+<span class="nc" id="L172">            return &quot;&quot;;</span>
         }
     }
 
@@ -127,9 +179,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withCompress(final boolean compress) {
-<span class="fc" id="L131">        this.compress = compress;</span>
-<span class="fc" id="L132">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withCompress(final boolean compress) {
+<span class="nc" id="L183">        this.compress = compress;</span>
+<span class="nc" id="L184">        return this;</span>
     }
 
     /**
@@ -139,35 +191,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withCompress(boolean)
      */
     protected String getCompressCompilerOption() {
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        if (compress) {</span>
-<span class="fc" id="L143">            return &quot;--compress&quot;;</span>
+<span class="nc bnc" id="L194" title="All 2 branches missed.">        if (compress) {</span>
+<span class="nc" id="L195">            return &quot;--compress&quot;;</span>
         } else {
-<span class="fc" id="L145">            return &quot;&quot;;</span>
-        }
-    }
-
-    /**
-     * TODO what is depends?
-     * @param depends
-     * @return {@code this} builder.
-     * @since 2.0.0
-     */
-    public Less175CompilerOptionsBuilder withDepends(final boolean depends) {
-<span class="fc" id="L156">        this.depends = depends;</span>
-<span class="fc" id="L157">        return this;</span>
-    }
-
-    /**
-     * TODO what is depends?
-     * @return command line option (never {@code null}).
-     * @since 2.0.0
-     * @see #withDepends(boolean)
-     */
-    protected String getDependsCompilerOption() {
-<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (depends) {</span>
-<span class="fc" id="L168">            return &quot;--depends&quot;;</span>
-        } else {
-<span class="fc" id="L170">            return &quot;&quot;;</span>
+<span class="nc" id="L197">            return &quot;&quot;;</span>
         }
     }
 
@@ -179,9 +206,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withIeCompatability(final boolean ieCompatability) {
-<span class="fc" id="L183">        this.ieCompatability = ieCompatability;</span>
-<span class="fc" id="L184">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withIeCompatability(final boolean ieCompatability) {
+<span class="nc" id="L210">        this.ieCompatability = ieCompatability;</span>
+<span class="nc" id="L211">        return this;</span>
     }
 
     /**
@@ -191,10 +218,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withIeCompatability(boolean)
      */
     protected String getIeCompatabilityCompilerOption() {
-<span class="fc bfc" id="L194" title="All 2 branches covered.">        if (ieCompatability) {</span>
-<span class="fc" id="L195">            return &quot;&quot;;</span>
+<span class="nc bnc" id="L221" title="All 2 branches missed.">        if (ieCompatability) {</span>
+<span class="nc" id="L222">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L197">            return &quot;--no-ie-compat&quot;;</span>
+<span class="nc" id="L224">            return &quot;--no-ie-compat&quot;;</span>
         }
     }
 
@@ -205,9 +232,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withJavaScriptEnabled(final boolean javaScriptEnabled) {
-<span class="fc" id="L209">        this.javaScriptEnabled = javaScriptEnabled;</span>
-<span class="fc" id="L210">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withJavaScriptEnabled(final boolean javaScriptEnabled) {
+<span class="nc" id="L236">        this.javaScriptEnabled = javaScriptEnabled;</span>
+<span class="nc" id="L237">        return this;</span>
     }
 
     /**
@@ -217,10 +244,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withJavaScriptEnabled(boolean)
      */
     protected String getJavaScriptEnabledCompilerOption() {
-<span class="fc bfc" id="L220" title="All 2 branches covered.">        if (javaScriptEnabled) {</span>
-<span class="fc" id="L221">            return &quot;&quot;;</span>
+<span class="nc bnc" id="L247" title="All 2 branches missed.">        if (javaScriptEnabled) {</span>
+<span class="nc" id="L248">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L223">            return &quot;--no-js&quot;;</span>
+<span class="nc" id="L250">            return &quot;--no-js&quot;;</span>
         }
     }
 
@@ -233,13 +260,13 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withIncludePaths(final List&lt;String&gt; includePaths) {
-<span class="fc bfc" id="L237" title="All 4 branches covered.">        if (includePaths == null || includePaths.isEmpty()) {</span>
-<span class="fc" id="L238">            this.includePaths = Collections.emptyList();</span>
-        } else {
-<span class="fc" id="L240">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
+    public NativeLessCompilerOptionsBuilder withIncludePaths(final List&lt;String&gt; includePaths) {
+<span class="nc bnc" id="L264" title="All 4 branches missed.">        if (includePaths == null || includePaths.isEmpty()) {</span>
+<span class="nc" id="L265">            this.includePaths = Collections.emptyList();</span>
+<span class="nc" id="L266">        } else {</span>
+<span class="nc" id="L267">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
         }
-<span class="fc" id="L242">        return this;</span>
+<span class="nc" id="L269">        return this;</span>
     }
 
     /**
@@ -249,20 +276,20 @@ public class Less175CompilerOptionsBuilder {
      * @see #withIncludePaths(List)
      */
     protected String getIncludePathsCompilerOption() {
-<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (includePaths.isEmpty()) {</span>
-<span class="fc" id="L253">            return &quot;&quot;;</span>
+<span class="nc bnc" id="L279" title="All 2 branches missed.">        if (includePaths.isEmpty()) {</span>
+<span class="nc" id="L280">            return &quot;&quot;;</span>
         }
-<span class="fc" id="L255">        final StringBuilder paths = new StringBuilder();</span>
-<span class="fc bfc" id="L256" title="All 2 branches covered.">        for (final String path : includePaths) {</span>
-<span class="pc bpc" id="L257" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(path)) {</span>
-<span class="fc bfc" id="L258" title="All 2 branches covered.">                final boolean separatorRequired = paths.length() != 0;</span>
-<span class="fc bfc" id="L259" title="All 2 branches covered.">                if (separatorRequired) {</span>
-<span class="fc bfc" id="L260" title="All 2 branches covered.">                    paths.append(systemChecker.isWindows() ? ';' : ':');</span>
+<span class="nc" id="L282">        final StringBuilder paths = new StringBuilder();</span>
+<span class="nc bnc" id="L283" title="All 2 branches missed.">        for (final String path : includePaths) {</span>
+<span class="nc bnc" id="L284" title="All 2 branches missed.">            if (StringUtils.isNotBlank(path)) {</span>
+<span class="nc bnc" id="L285" title="All 2 branches missed.">                final boolean separatorRequired = paths.length() != 0;</span>
+<span class="nc bnc" id="L286" title="All 2 branches missed.">                if (separatorRequired) {</span>
+<span class="nc bnc" id="L287" title="All 2 branches missed.">                    paths.append(systemChecker.isWindows() ? ';' : ':');</span>
                 }
-<span class="fc" id="L262">                paths.append(path.trim());</span>
+<span class="nc" id="L289">                paths.append(path.trim());</span>
             }
-<span class="fc" id="L264">        }</span>
-<span class="fc" id="L265">        return &quot;--include-path=&quot; + paths.toString();</span>
+        }
+<span class="nc" id="L292">        return &quot;--include-path=&quot; + paths.toString();</span>
     }
 
     /**
@@ -272,9 +299,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withLineNumbers(final LineNumbersValue lineNumbers) {
-<span class="fc bfc" id="L276" title="All 2 branches covered.">        this.lineNumbers = lineNumbers != null ? lineNumbers : LineNumbersValue.DISABLED;</span>
-<span class="fc" id="L277">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withLineNumbers(final LineNumbersValue lineNumbers) {
+<span class="nc bnc" id="L303" title="All 2 branches missed.">        this.lineNumbers = lineNumbers != null ? lineNumbers : LineNumbersValue.DISABLED;</span>
+<span class="nc" id="L304">        return this;</span>
     }
 
     /**
@@ -284,10 +311,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withJavaScriptEnabled(boolean)
      */
     protected String getLineNumbersCompilerOption() {
-<span class="fc bfc" id="L287" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
-<span class="fc" id="L288">            return &quot;&quot;;</span>
+<span class="nc bnc" id="L314" title="All 2 branches missed.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
+<span class="nc" id="L315">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L290">            return &quot;--line-numbers=&quot; + lineNumbers.value;</span>
+<span class="nc" id="L317">            return &quot;--line-numbers=&quot; + lineNumbers.value;</span>
         }
     }
 
@@ -306,9 +333,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withRootPath(final String rootPath) {
-<span class="fc" id="L310">        this.rootPath = rootPath;</span>
-<span class="fc" id="L311">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withRootPath(final String rootPath) {
+<span class="nc" id="L337">        this.rootPath = rootPath;</span>
+<span class="nc" id="L338">        return this;</span>
     }
 
     /**
@@ -318,10 +345,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withRootPath(String)
      */
     protected String getRootPathCompilerOption() {
-<span class="fc bfc" id="L321" title="All 2 branches covered.">        if (rootPath != null) {</span>
-<span class="fc" id="L322">            return &quot;--rootpath=&quot; + rootPath;</span>
+<span class="nc bnc" id="L348" title="All 2 branches missed.">        if (rootPath != null) {</span>
+<span class="nc" id="L349">            return &quot;--rootpath=&quot; + rootPath;</span>
         } else {
-<span class="fc" id="L324">            return &quot;&quot;;</span>
+<span class="nc" id="L351">            return &quot;&quot;;</span>
         }
     }
 
@@ -366,9 +393,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withRelativeUrls(final boolean relativeUrls) {
-<span class="fc" id="L370">        this.relativeUrls = relativeUrls;</span>
-<span class="fc" id="L371">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withRelativeUrls(final boolean relativeUrls) {
+<span class="nc" id="L397">        this.relativeUrls = relativeUrls;</span>
+<span class="nc" id="L398">        return this;</span>
     }
 
     /**
@@ -378,10 +405,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withRelativeUrls(boolean)
      */
     protected String getRelativeUrlsCompilerOption() {
-<span class="fc bfc" id="L381" title="All 2 branches covered.">        if (relativeUrls) {</span>
-<span class="fc" id="L382">            return &quot;--relative-urls&quot;;</span>
+<span class="nc bnc" id="L408" title="All 2 branches missed.">        if (relativeUrls) {</span>
+<span class="nc" id="L409">            return &quot;--relative-urls&quot;;</span>
         } else {
-<span class="fc" id="L384">            return &quot;&quot;;</span>
+<span class="nc" id="L411">            return &quot;&quot;;</span>
         }
     }
 
@@ -422,9 +449,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withStrictMath(final boolean strictMath) {
-<span class="fc" id="L426">        this.strictMath = strictMath;</span>
-<span class="fc" id="L427">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withStrictMath(final boolean strictMath) {
+<span class="nc" id="L453">        this.strictMath = strictMath;</span>
+<span class="nc" id="L454">        return this;</span>
     }
 
     /**
@@ -434,10 +461,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withStrictMath(boolean)
      */
     protected String getStrictMathCompilerOption() {
-<span class="fc bfc" id="L437" title="All 2 branches covered.">        if (strictMath) {</span>
-<span class="fc" id="L438">            return &quot;--strict-math=on&quot;;</span>
+<span class="nc bnc" id="L464" title="All 2 branches missed.">        if (strictMath) {</span>
+<span class="nc" id="L465">            return &quot;--strict-math=on&quot;;</span>
         } else {
-<span class="fc" id="L440">            return &quot;&quot;;</span>
+<span class="nc" id="L467">            return &quot;&quot;;</span>
         }
     }
 
@@ -461,9 +488,9 @@ public class Less175CompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public Less175CompilerOptionsBuilder withStrictUnits(final boolean strictUnits) {
-<span class="fc" id="L465">        this.strictUnits = strictUnits;</span>
-<span class="fc" id="L466">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withStrictUnits(final boolean strictUnits) {
+<span class="nc" id="L492">        this.strictUnits = strictUnits;</span>
+<span class="nc" id="L493">        return this;</span>
     }
 
     /**
@@ -473,10 +500,10 @@ public class Less175CompilerOptionsBuilder {
      * @see #withStrictUnits(boolean)
      */
     protected String getStrictUnitsCompilerOption() {
-<span class="fc bfc" id="L476" title="All 2 branches covered.">        if (strictUnits) {</span>
-<span class="fc" id="L477">            return &quot;--strict-units=on&quot;;</span>
+<span class="nc bnc" id="L503" title="All 2 branches missed.">        if (strictUnits) {</span>
+<span class="nc" id="L504">            return &quot;--strict-units=on&quot;;</span>
         } else {
-<span class="fc" id="L479">            return &quot;&quot;;</span>
+<span class="nc" id="L506">            return &quot;&quot;;</span>
         }
     }
 
@@ -484,22 +511,32 @@ public class Less175CompilerOptionsBuilder {
      * Creates a collection with configuration options for Less compilation process.
      * @return the collection with configuration options for Less compilation process.
      * @since 2.0.0
+     * @see #withInputFile(File)
      */
     public Collection&lt;Object&gt; create() {
-<span class="fc" id="L489">        final ListWithoutEmptyValuesBuilder options = new ListWithoutEmptyValuesBuilder();</span>
-<span class="fc" id="L490">        options.add(getSilentCompilerOption());</span>
-<span class="fc" id="L491">        options.add(getStrictImportsCompilerOption());</span>
-<span class="fc" id="L492">        options.add(getCompressCompilerOption());</span>
-<span class="fc" id="L493">        options.add(getDependsCompilerOption());</span>
-<span class="fc" id="L494">        options.add(getIeCompatabilityCompilerOption());</span>
-<span class="fc" id="L495">        options.add(getJavaScriptEnabledCompilerOption());</span>
-<span class="fc" id="L496">        options.add(getIncludePathsCompilerOption());</span>
-<span class="fc" id="L497">        options.add(getLineNumbersCompilerOption());</span>
-<span class="fc" id="L498">        options.add(getRootPathCompilerOption());</span>
-<span class="fc" id="L499">        options.add(getRelativeUrlsCompilerOption());</span>
-<span class="fc" id="L500">        options.add(getStrictMathCompilerOption());</span>
-<span class="fc" id="L501">        options.add(getStrictUnitsCompilerOption());</span>
-<span class="fc" id="L502">        return options.create();</span>
+<span class="nc" id="L517">        final ListWithoutEmptyValuesBuilder options = new ListWithoutEmptyValuesBuilder();</span>
+<span class="nc" id="L518">        options.add(getSilentCompilerOption());</span>
+<span class="nc" id="L519">        options.add(getStrictImportsCompilerOption());</span>
+<span class="nc" id="L520">        options.add(getCompressCompilerOption());</span>
+<span class="nc" id="L521">        options.add(getIeCompatabilityCompilerOption());</span>
+<span class="nc" id="L522">        options.add(getJavaScriptEnabledCompilerOption());</span>
+<span class="nc" id="L523">        options.add(getIncludePathsCompilerOption());</span>
+<span class="nc" id="L524">        options.add(getLineNumbersCompilerOption());</span>
+<span class="nc" id="L525">        options.add(getRootPathCompilerOption());</span>
+<span class="nc" id="L526">        options.add(getRelativeUrlsCompilerOption());</span>
+<span class="nc" id="L527">        options.add(getStrictMathCompilerOption());</span>
+<span class="nc" id="L528">        options.add(getStrictUnitsCompilerOption());</span>
+
+<span class="nc" id="L530">        final String inputPath = getInputFileCompilerOption();</span>
+<span class="nc" id="L531">        options.add(inputPath);</span>
+<span class="nc" id="L532">        final String outputPath = getOutputFileCompilerOption();</span>
+<span class="nc bnc" id="L533" title="All 2 branches missed.">        if (StringUtils.isNotBlank(outputPath)) {</span>
+<span class="nc bnc" id="L534" title="All 2 branches missed.">            if (StringUtils.isBlank(inputPath)) {</span>
+<span class="nc" id="L535">                throw new BuildCompilerOptionsException(&quot;inputFile is required when otuputFile is set (see #withInputFile(File))&quot;);</span>
+            }
+<span class="nc" id="L537">            options.add(outputPath);</span>
+        }
+<span class="nc" id="L539">        return options.create();</span>
     }
 
     /**
@@ -517,37 +554,38 @@ public class Less175CompilerOptionsBuilder {
     }
 
     /**
-     * Available values for {@link Less175CompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers} option.
+     * Available values for {@link NativeLessCompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers}
+     * option.
      * @since 2.0.0
      */
-<span class="pc" id="L523">    public enum LineNumbersValue {</span>
+<span class="nc" id="L561">    public enum LineNumbersValue {</span>
 
-        /**
+<span class="nc" id="L563">        /**</span>
          * Line numbers won't be put in CSS code.
          * @since 2.0.0
          */
-<span class="fc" id="L529">        DISABLED(&quot;&quot;),</span>
-        /**
+<span class="nc" id="L567">        DISABLED(&quot;&quot;),</span>
+<span class="nc" id="L568">        /**</span>
          * Line numbers will be put in CSS comments blocks.
          * @since 2.0.0
          */
-<span class="fc" id="L534">        COMMENTS(&quot;comments&quot;),</span>
-        /**
+<span class="nc" id="L572">        COMMENTS(&quot;comments&quot;),</span>
+<span class="nc" id="L573">        /**</span>
          * Line numbers will be put in &amp;#64;media queries.
          * @since 2.0.0
          */
-<span class="fc" id="L539">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
-        /**
+<span class="nc" id="L577">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
+<span class="nc" id="L578">        /**</span>
          * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.
          * @since 2.0.0
          */
-<span class="fc" id="L544">        ALL(&quot;all&quot;);</span>
+<span class="nc" id="L582">        ALL(&quot;all&quot;);</span>
 
         private String value;
 
-<span class="fc" id="L548">        LineNumbersValue(final String value) {</span>
-<span class="fc" id="L549">            this.value = value;</span>
-<span class="fc" id="L550">        }</span>
+<span class="nc" id="L586">        LineNumbersValue(final String value) {</span>
+<span class="nc" id="L587">            this.value = value;</span>
+<span class="nc" id="L588">        }</span>
 
         /**
          * Returns a value assigned to this object.
@@ -555,7 +593,7 @@ public class Less175CompilerOptionsBuilder {
          * @since 2.0.0
          */
         public String getValue() {
-<span class="fc" id="L558">            return value;</span>
+<span class="nc" id="L596">            return value;</span>
         }
     }
 }

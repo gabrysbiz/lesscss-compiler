@@ -1,0 +1,142 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LessCompiler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">LessCompiler.java</span></div><h1>LessCompiler.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.io.File;
+
+/**
+ * &lt;p&gt;
+ * &lt;a href=&quot;http://lesscss.org/&quot;&gt;Less&lt;/a&gt; compiler compatible with
+ * &lt;a href=&quot;https://github.com/less/less.js/releases/tag/v1.7.5&quot;&gt;Less 1.7.5&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * How to use:
+ * &lt;/p&gt;
+ * 
+ * &lt;pre&gt;
+ * // create compiler and source file
+ * LessCompiler compiler = new LessCompiler();
+ * File source = new File(&quot;/source.less&quot;);
+ * 
+ * // compile source file
+ * String cssCode = compiler.compile(source);
+ * 
+ * // compile source file and save to output file
+ * compiler.compile(source, new File(&quot;/output.css&quot;));
+ * 
+ * // compile source file and compress CSS code
+ * String compressedCssCode = compiler.compileAndCompress(source);
+ * &lt;/pre&gt;
+ * 
+ * @since 2.0.0
+ */
+public class LessCompiler {
+
+    private final NativeLessCompiler compiler;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+    public LessCompiler() {
+<span class="nc" id="L52">        this(new NativeLessCompiler());</span>
+<span class="nc" id="L53">    }</span>
+
+    /**
+     * Constructs a new instance.
+     * @param compiler the native compiler used to compile source files.
+     * @since 2.0.0
+     */
+<span class="nc" id="L60">    protected LessCompiler(final NativeLessCompiler compiler) {</span>
+<span class="nc" id="L61">        this.compiler = compiler;</span>
+<span class="nc" id="L62">    }</span>
+
+    /**
+     * Creates a new instance of the {@link NativeLessCompilerOptionsBuilder} used to create configuration options for
+     * the native compiler.
+     * @return the new instance of the {@link NativeLessCompilerOptionsBuilder}.
+     * @since 2.0.0
+     */
+    protected NativeLessCompilerOptionsBuilder createOptionsBuilder() {
+<span class="nc" id="L71">        return new NativeLessCompilerOptionsBuilder();</span>
+    }
+
+    /**
+     * Compiles a Less source file.
+     * @param source the source file.
+     * @return CSS code.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws SourceFileNotFoundException if a source (input) file does not exist.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public String compile(final File source) {
+<span class="nc" id="L86">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="nc" id="L87">        builder.withInputFile(source);</span>
+<span class="nc" id="L88">        return compiler.execute(builder.create());</span>
+    }
+
+    /**
+     * Compiles and compress a Less source file.
+     * @param source the source file.
+     * @return compressed CSS code.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws SourceFileNotFoundException if a source (input) file does not exist.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public String compileAndCompress(final File source) {
+<span class="nc" id="L103">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="nc" id="L104">        builder.withInputFile(source).withCompress(true);</span>
+<span class="nc" id="L105">        return compiler.execute(builder.create());</span>
+    }
+
+    /**
+     * Compiles a Less source file and saves result in an output file.
+     * @param source the source file.
+     * @param output the output file.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws SourceFileNotFoundException if a source (input) file does not exist.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public void compile(final File source, final File output) {
+<span class="nc" id="L120">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="nc" id="L121">        builder.withInputFile(source).withOutputFile(output);</span>
+<span class="nc" id="L122">        compiler.execute(builder.create());</span>
+<span class="nc" id="L123">    }</span>
+
+    /**
+     * Compiles and compress a Less source file and saves result in an output file.
+     * @param source the source file.
+     * @param output the output file.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws SourceFileNotFoundException if a source (input) file does not exist.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public void compileAndCompress(final File source, final File output) {
+<span class="nc" id="L137">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="nc" id="L138">        builder.withInputFile(source).withOutputFile(output).withCompress(true);</span>
+<span class="nc" id="L139">        compiler.execute(builder.create());</span>
+<span class="nc" id="L140">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

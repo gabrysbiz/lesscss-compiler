@@ -22,40 +22,27 @@ import java.util.List;
  */
 public class ListWithoutEmptyValuesBuilder {
 
-<span class="fc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
+<span class="nc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
+<span class="nc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
         // do nothing
-<span class="fc" id="L33">    }</span>
+<span class="nc" id="L33">    }</span>
 
     /**
-     * Appends a value only if it is not equal to {@code null}.
-     * @param value the appended value.
-     * @return {@code this} builder.
-     * @since 2.0.0
-     */
-    public ListWithoutEmptyValuesBuilder add(final Object value) {
-<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (value != null) {</span>
-<span class="fc" id="L43">            values.add(value);</span>
-        }
-<span class="fc" id="L45">        return this;</span>
-    }
-
-    /**
-     * Appends a value only if it is not blank (empty or contains only whitespace) or not equal to {@code null}.
+     * Appends a value only if it is not blank.
      * @param value the appended value.
      * @return {@code this} builder.
      * @since 2.0.0
      */
     public ListWithoutEmptyValuesBuilder add(final String value) {
-<span class="fc bfc" id="L55" title="All 2 branches covered.">        if (StringUtils.isNotBlank(value)) {</span>
-<span class="fc" id="L56">            values.add(value);</span>
+<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (StringUtils.isNotBlank(value)) {</span>
+<span class="nc" id="L43">            values.add(value);</span>
         }
-<span class="fc" id="L58">        return this;</span>
+<span class="nc" id="L45">        return this;</span>
     }
 
     /**
@@ -64,7 +51,7 @@ public class ListWithoutEmptyValuesBuilder {
      * @since 2.0.0
      */
     public List&lt;Object&gt; create() {
-<span class="fc" id="L67">        return new ArrayList&lt;Object&gt;(values);</span>
+<span class="nc" id="L54">        return new ArrayList&lt;Object&gt;(values);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

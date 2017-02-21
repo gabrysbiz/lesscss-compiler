@@ -1,0 +1,184 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeLessCompiler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">NativeLessCompiler.java</span></div><h1>NativeLessCompiler.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.SequenceInputStream;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
+
+import biz.gabrys.lesscss.compiler2.util.IOUtils;
+
+/**
+ * &lt;p&gt;
+ * Compiler which is compatible with &lt;a href=&quot;https://github.com/less/less.js/releases/tag/v1.7.5&quot;&gt;Less 1.7.5&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The library is based on the official &lt;a href=&quot;http://lesscss.org/&quot;&gt;Less&lt;/a&gt; JavaScript compiler adapted to the
+ * &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino&quot;&gt;Rhino&lt;/a&gt; engine.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The idea for this class implementation was based on the
+ * &lt;a href=&quot;https://github.com/marceloverdijk/lesscss-java&quot;&gt;lesscss-java&lt;/a&gt; library by
+ * &lt;a href=&quot;https://github.com/marceloverdijk&quot;&gt;Marcel Overdijk&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * How to use:
+ * &lt;/p&gt;
+ * 
+ * &lt;pre&gt;
+ * // create compiler and source file
+ * NativeLessCompiler compiler = new NativeLessCompiler();
+ * File input = new File(&quot;/less/file.less&quot;);
+ * 
+ * // compile source file
+ * String cssCode = compiler.execute(new NativeLessCompilerOptionsBuilder().withInputFile(input).create());
+ * 
+ * // compile source file and compress CSS code
+ * Collection&amp;lt;Object&amp;gt; options = new NativeLessCompilerOptionsBuilder().withInputFile(input).withCompress(true).create();
+ * String cssCompressedCode = compiler.execute(options);
+ * &lt;/pre&gt;
+ * 
+ * @since 2.0.0
+ */
+public class NativeLessCompiler {
+
+<span class="nc" id="L70">    private static final Pattern IMPORT_DOES_NOT_EXIST_PATTERN = Pattern.compile(&quot;^FileError:\\s+'(.+)'\\s+wasn't\\s+found\\s+(?s).*&quot;);</span>
+    private static final int IMPORT_ERROR_FILE_NAME_GROUP_INDEX = 1;
+<span class="nc" id="L72">    private static final Pattern SOURCE_DOES_NOT_EXIST_PATTERN = Pattern.compile(&quot;Couldn't open source file: (.*)&quot;);</span>
+    private static final int SOURCE_ERROR_FILE_PATH_GROUP_INDEX = 1;
+
+<span class="nc" id="L75">    private static final String CHARSET = &quot;UTF-8&quot;;</span>
+
+<span class="nc" id="L77">    private final Object mutex = new Object();</span>
+
+    private Scriptable scope;
+    private ByteArrayOutputStream console;
+    private Function compiler;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="nc" id="L87">    public NativeLessCompiler() {</span>
+        // do nothing
+<span class="nc" id="L89">    }</span>
+
+    /**
+     * Executes the compiler with options.
+     * @param options the compiler options.
+     * @return the compiler output (depends on options it can be e.g. CSS code, Source Map etc).
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws SourceFileNotFoundException if a source (input) file does not exist.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     * @see NativeLessCompilerOptionsBuilder
+     */
+    public String execute(final Collection&lt;Object&gt; options) {
+<span class="nc" id="L104">        synchronized (mutex) {</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (compiler == null) {</span>
+<span class="nc" id="L106">                initialize();</span>
+            }
+            try {
+<span class="nc" id="L109">                final Context context = Context.enter();</span>
+
+<span class="nc" id="L111">                final ScriptableObject compileScope = (ScriptableObject) context.newObject(scope);</span>
+<span class="nc" id="L112">                compileScope.setParentScope(null);</span>
+<span class="nc" id="L113">                compileScope.setPrototype(scope);</span>
+
+<span class="nc" id="L115">                final Scriptable arguments = context.newArray(compileScope, options.toArray(new Object[0]));</span>
+<span class="nc" id="L116">                compileScope.defineProperty(&quot;arguments&quot;, arguments, ScriptableObject.DONTENUM);</span>
+
+<span class="nc" id="L118">                compiler.call(context, compileScope, null, new Object[0]);</span>
+<span class="nc" id="L119">                return console.toString(CHARSET);</span>
+
+<span class="nc" id="L121">            } catch (final JavaScriptException e) {</span>
+<span class="nc" id="L122">                throw parseException(e);</span>
+<span class="nc" id="L123">            } catch (final Exception e) {</span>
+<span class="nc" id="L124">                throw new CompilerException(e);</span>
+<span class="nc" id="L125">            } finally {</span>
+<span class="nc" id="L126">                console.reset();</span>
+<span class="nc" id="L127">                Context.exit();</span>
+<span class="nc" id="L128">            }</span>
+        }
+    }
+
+    private void initialize() {
+<span class="nc" id="L133">        InputStream inputStream = null;</span>
+<span class="nc" id="L134">        InputStreamReader streamReader = null;</span>
+        try {
+<span class="nc" id="L136">            final Context context = Context.enter();</span>
+<span class="nc" id="L137">            context.setLanguageVersion(Context.VERSION_1_8);</span>
+
+<span class="nc" id="L139">            final Global global = new Global();</span>
+<span class="nc" id="L140">            global.init(context);</span>
+<span class="nc" id="L141">            scope = context.initStandardObjects(global);</span>
+
+<span class="nc" id="L143">            console = new ByteArrayOutputStream();</span>
+<span class="nc" id="L144">            global.setOut(new PrintStream(console, false, CHARSET));</span>
+
+<span class="nc" id="L146">            final URL lessFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js&quot;);</span>
+<span class="nc" id="L147">            final URL lesscFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js&quot;);</span>
+
+<span class="nc" id="L149">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;InputStream&gt;();</span>
+<span class="nc" id="L150">            streams.add(lessFile.openConnection().getInputStream());</span>
+<span class="nc" id="L151">            streams.add(lesscFile.openConnection().getInputStream());</span>
+
+<span class="nc" id="L153">            inputStream = new SequenceInputStream(Collections.enumeration(streams));</span>
+<span class="nc" id="L154">            streamReader = new InputStreamReader(inputStream, CHARSET);</span>
+<span class="nc" id="L155">            compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);</span>
+
+<span class="nc" id="L157">        } catch (final Exception e) {</span>
+<span class="nc" id="L158">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
+
+<span class="nc" id="L160">        } finally {</span>
+<span class="nc" id="L161">            IOUtils.closeQuietly(streamReader);</span>
+<span class="nc" id="L162">            IOUtils.closeQuietly(inputStream);</span>
+<span class="nc" id="L163">            Context.exit();</span>
+<span class="nc" id="L164">        }</span>
+<span class="nc" id="L165">    }</span>
+
+    private static CompilerException parseException(final JavaScriptException exception) {
+<span class="nc" id="L168">        final Scriptable value = (Scriptable) exception.getValue();</span>
+<span class="nc bnc" id="L169" title="All 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
+<span class="nc" id="L170">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
+<span class="nc" id="L171">            Matcher matcher = IMPORT_DOES_NOT_EXIST_PATTERN.matcher(message);</span>
+<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (matcher.find()) {</span>
+<span class="nc" id="L173">                return new ImportNotFoundException(message, exception, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX));</span>
+            }
+<span class="nc" id="L175">            matcher = SOURCE_DOES_NOT_EXIST_PATTERN.matcher(message);</span>
+<span class="nc bnc" id="L176" title="All 2 branches missed.">            if (matcher.find()) {</span>
+<span class="nc" id="L177">                return new SourceFileNotFoundException(message, matcher.group(SOURCE_ERROR_FILE_PATH_GROUP_INDEX));</span>
+            }
+<span class="nc" id="L179">            return new SyntaxException(message, exception);</span>
+        }
+<span class="nc" id="L181">        return new SyntaxException(exception);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

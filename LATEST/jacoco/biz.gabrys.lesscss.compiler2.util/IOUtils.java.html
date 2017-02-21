@@ -31,14 +31,14 @@ public final class IOUtils {
      * @since 2.0.0
      */
     public static void closeQuietly(final Closeable closeable) {
-<span class="fc bfc" id="L34" title="All 2 branches covered.">        if (closeable == null) {</span>
-<span class="fc" id="L35">            return;</span>
+<span class="nc bnc" id="L34" title="All 2 branches missed.">        if (closeable == null) {</span>
+<span class="nc" id="L35">            return;</span>
         }
         try {
-<span class="fc" id="L38">            closeable.close();</span>
-<span class="fc" id="L39">        } catch (final IOException e) {</span>
+<span class="nc" id="L38">            closeable.close();</span>
+<span class="nc" id="L39">        } catch (final IOException e) {</span>
             // do nothing
-<span class="fc" id="L41">        }</span>
-<span class="fc" id="L42">    }</span>
+        }
+<span class="nc" id="L42">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

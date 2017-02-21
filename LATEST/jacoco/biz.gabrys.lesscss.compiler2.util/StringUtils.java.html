@@ -23,22 +23,32 @@ public final class StringUtils {
 <span class="nc" id="L23">    }</span>
 
     /**
-     * Checks whether a text is not empty, not {@code null} and not stores only whitespace.
+     * Checks whether a text is {@code null}, empty or stores only whitespace.
+     * @param text the text to check.
+     * @return {@code true} if the text is empty, {@code null} or stores only whitespace, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public static boolean isBlank(final String text) {
+<span class="nc bnc" id="L32" title="All 2 branches missed.">        return !isNotBlank(text);</span>
+    }
+
+    /**
+     * Checks whether a text is not {@code null}, not empty and not stores only whitespace.
      * @param text the text to check.
      * @return {@code true} if the text is not empty, not {@code null} and not stores only whitespace, otherwise
      *         {@code false}.
      * @since 2.0.0
      */
     public static boolean isNotBlank(final String text) {
-<span class="fc bfc" id="L33" title="All 4 branches covered.">        if (text == null || &quot;&quot;.equals(text)) {</span>
-<span class="fc" id="L34">            return false;</span>
+<span class="nc bnc" id="L43" title="All 4 branches missed.">        if (text == null || &quot;&quot;.equals(text)) {</span>
+<span class="nc" id="L44">            return false;</span>
         }
-<span class="fc bfc" id="L36" title="All 2 branches covered.">        for (int i = 0; i &lt; text.length(); ++i) {</span>
-<span class="fc bfc" id="L37" title="All 2 branches covered.">            if (!Character.isWhitespace(text.charAt(i))) {</span>
-<span class="fc" id="L38">                return true;</span>
+<span class="nc bnc" id="L46" title="All 2 branches missed.">        for (int i = 0; i &lt; text.length(); ++i) {</span>
+<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (!Character.isWhitespace(text.charAt(i))) {</span>
+<span class="nc" id="L48">                return true;</span>
             }
         }
-<span class="fc" id="L41">        return false;</span>
+<span class="nc" id="L51">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
