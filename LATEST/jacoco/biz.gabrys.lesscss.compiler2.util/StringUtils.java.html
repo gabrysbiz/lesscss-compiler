@@ -29,7 +29,7 @@ public final class StringUtils {
      * @since 2.0.0
      */
     public static boolean isBlank(final String text) {
-<span class="nc bnc" id="L32" title="All 2 branches missed.">        return !isNotBlank(text);</span>
+<span class="fc bfc" id="L32" title="All 2 branches covered.">        return !isNotBlank(text);</span>
     }
 
     /**
@@ -40,15 +40,15 @@ public final class StringUtils {
      * @since 2.0.0
      */
     public static boolean isNotBlank(final String text) {
-<span class="nc bnc" id="L43" title="All 4 branches missed.">        if (text == null || &quot;&quot;.equals(text)) {</span>
-<span class="nc" id="L44">            return false;</span>
+<span class="fc bfc" id="L43" title="All 4 branches covered.">        if (text == null || &quot;&quot;.equals(text)) {</span>
+<span class="fc" id="L44">            return false;</span>
         }
-<span class="nc bnc" id="L46" title="All 2 branches missed.">        for (int i = 0; i &lt; text.length(); ++i) {</span>
-<span class="nc bnc" id="L47" title="All 2 branches missed.">            if (!Character.isWhitespace(text.charAt(i))) {</span>
-<span class="nc" id="L48">                return true;</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        for (int i = 0; i &lt; text.length(); ++i) {</span>
+<span class="fc bfc" id="L47" title="All 2 branches covered.">            if (!Character.isWhitespace(text.charAt(i))) {</span>
+<span class="fc" id="L48">                return true;</span>
             }
         }
-<span class="nc" id="L51">        return false;</span>
+<span class="fc" id="L51">        return false;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

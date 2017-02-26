@@ -22,15 +22,30 @@ import java.util.List;
  */
 public class ListWithoutEmptyValuesBuilder {
 
-<span class="nc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
+<span class="fc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="nc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
+<span class="fc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
         // do nothing
-<span class="nc" id="L33">    }</span>
+<span class="fc" id="L33">    }</span>
+
+    /**
+     * Appends all values which are not blank.
+     * @param values the appended values.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public ListWithoutEmptyValuesBuilder add(final String[] values) {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (values != null) {</span>
+<span class="fc bfc" id="L43" title="All 2 branches covered.">            for (final String value : values) {</span>
+<span class="fc" id="L44">                add(value);</span>
+            }
+        }
+<span class="fc" id="L47">        return this;</span>
+    }
 
     /**
      * Appends a value only if it is not blank.
@@ -39,10 +54,10 @@ public class ListWithoutEmptyValuesBuilder {
      * @since 2.0.0
      */
     public ListWithoutEmptyValuesBuilder add(final String value) {
-<span class="nc bnc" id="L42" title="All 2 branches missed.">        if (StringUtils.isNotBlank(value)) {</span>
-<span class="nc" id="L43">            values.add(value);</span>
+<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (StringUtils.isNotBlank(value)) {</span>
+<span class="fc" id="L58">            values.add(value);</span>
         }
-<span class="nc" id="L45">        return this;</span>
+<span class="fc" id="L60">        return this;</span>
     }
 
     /**
@@ -51,7 +66,7 @@ public class ListWithoutEmptyValuesBuilder {
      * @since 2.0.0
      */
     public List&lt;Object&gt; create() {
-<span class="nc" id="L54">        return new ArrayList&lt;Object&gt;(values);</span>
+<span class="fc" id="L69">        return new ArrayList&lt;Object&gt;(values);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

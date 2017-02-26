@@ -19,6 +19,7 @@ import java.io.PrintStream;
 import java.io.SequenceInputStream;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.regex.Matcher;
@@ -67,14 +68,15 @@ import biz.gabrys.lesscss.compiler2.util.IOUtils;
  */
 public class NativeLessCompiler {
 
-<span class="nc" id="L70">    private static final Pattern IMPORT_DOES_NOT_EXIST_PATTERN = Pattern.compile(&quot;^FileError:\\s+'(.+)'\\s+wasn't\\s+found\\s+(?s).*&quot;);</span>
-    private static final int IMPORT_ERROR_FILE_NAME_GROUP_INDEX = 1;
-<span class="nc" id="L72">    private static final Pattern SOURCE_DOES_NOT_EXIST_PATTERN = Pattern.compile(&quot;Couldn't open source file: (.*)&quot;);</span>
-    private static final int SOURCE_ERROR_FILE_PATH_GROUP_INDEX = 1;
+    /**
+     * Separator used to extract paths from {@code --include-path&quot;} option.
+     * @since 2.0.0
+     */
+    public static final String INCLUDE_PATHS_SEPARATOR = &quot;gabrys-lesscss-compiler-path-separator&quot;;
 
-<span class="nc" id="L75">    private static final String CHARSET = &quot;UTF-8&quot;;</span>
+    private static final String CHARSET = &quot;UTF-8&quot;;
 
-<span class="nc" id="L77">    private final Object mutex = new Object();</span>
+<span class="fc" id="L79">    private final Object mutex = new Object();</span>
 
     private Scriptable scope;
     private ByteArrayOutputStream console;
@@ -84,101 +86,165 @@ public class NativeLessCompiler {
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="nc" id="L87">    public NativeLessCompiler() {</span>
+<span class="fc" id="L89">    public NativeLessCompiler() {</span>
         // do nothing
-<span class="nc" id="L89">    }</span>
+<span class="fc" id="L91">    }</span>
 
     /**
-     * Executes the compiler with options.
+     * Executes the compiler. You can use standard
+     * &lt;a href=&quot;http://lesscss.org/usage/index.html#command-line-usage-options&quot;&gt;Less options&lt;/a&gt; with some exceptions:
+     * &lt;ul&gt;
+     * &lt;li&gt;use {@link #INCLUDE_PATHS_SEPARATOR} to separate paths in {@code --include-path&quot;} option instead of ';'
+     * character on Windows and ':' character on Unix/Linux machines&lt;/li&gt;
+     * &lt;li&gt;does not support options:
+     * &lt;ul&gt;
+     * &lt;li&gt;allow imports from insecure HTTPS hosts ({@code --insecure})&lt;/li&gt;
+     * &lt;li&gt;lint ({@code -l} or {@code --lint})&lt;/li&gt;
+     * &lt;li&gt;makefile ({@code -M} or {@code --depends})&lt;/li&gt;
+     * &lt;li&gt;no color ({@code --no-color})&lt;/li&gt;
+     * &lt;li&gt;plugins ({@code --plugin})&lt;/li&gt;
+     * &lt;li&gt;version ({@code -v} or {@code --version})&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/li&gt;
+     * &lt;/ul&gt;
      * @param options the compiler options.
-     * @return the compiler output (depends on options it can be e.g. CSS code, Source Map etc).
+     * @return the compiler output (depends on options it can be e.g. CSS code, logs).
      * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if the compiler cannot read file content.
      * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
-     * @throws SourceFileNotFoundException if a source (input) file does not exist.
      * @throws SyntaxException if a syntax error occurred during source file compilation.
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
      * @see NativeLessCompilerOptionsBuilder
      */
     public String execute(final Collection&lt;Object&gt; options) {
-<span class="nc" id="L104">        synchronized (mutex) {</span>
-<span class="nc bnc" id="L105" title="All 2 branches missed.">            if (compiler == null) {</span>
-<span class="nc" id="L106">                initialize();</span>
+<span class="fc" id="L122">        synchronized (mutex) {</span>
+<span class="fc bfc" id="L123" title="All 2 branches covered.">            if (compiler == null) {</span>
+<span class="fc" id="L124">                initialize();</span>
             }
             try {
-<span class="nc" id="L109">                final Context context = Context.enter();</span>
+<span class="fc" id="L127">                final Context context = Context.enter();</span>
 
-<span class="nc" id="L111">                final ScriptableObject compileScope = (ScriptableObject) context.newObject(scope);</span>
-<span class="nc" id="L112">                compileScope.setParentScope(null);</span>
-<span class="nc" id="L113">                compileScope.setPrototype(scope);</span>
+<span class="fc" id="L129">                final ScriptableObject compileScope = (ScriptableObject) context.newObject(scope);</span>
+<span class="fc" id="L130">                compileScope.setParentScope(null);</span>
+<span class="fc" id="L131">                compileScope.setPrototype(scope);</span>
 
-<span class="nc" id="L115">                final Scriptable arguments = context.newArray(compileScope, options.toArray(new Object[0]));</span>
-<span class="nc" id="L116">                compileScope.defineProperty(&quot;arguments&quot;, arguments, ScriptableObject.DONTENUM);</span>
+<span class="fc" id="L133">                final Scriptable arguments = context.newArray(compileScope, options.toArray(new Object[0]));</span>
+<span class="fc" id="L134">                compileScope.defineProperty(&quot;arguments&quot;, arguments, ScriptableObject.DONTENUM);</span>
 
-<span class="nc" id="L118">                compiler.call(context, compileScope, null, new Object[0]);</span>
-<span class="nc" id="L119">                return console.toString(CHARSET);</span>
+<span class="fc" id="L136">                compiler.call(context, compileScope, null, new Object[0]);</span>
+<span class="fc" id="L137">                return console.toString(CHARSET);</span>
 
-<span class="nc" id="L121">            } catch (final JavaScriptException e) {</span>
-<span class="nc" id="L122">                throw parseException(e);</span>
-<span class="nc" id="L123">            } catch (final Exception e) {</span>
-<span class="nc" id="L124">                throw new CompilerException(e);</span>
-<span class="nc" id="L125">            } finally {</span>
-<span class="nc" id="L126">                console.reset();</span>
-<span class="nc" id="L127">                Context.exit();</span>
-<span class="nc" id="L128">            }</span>
-        }
+<span class="fc" id="L139">            } catch (final JavaScriptException e) {</span>
+<span class="fc" id="L140">                throw parseException(e);</span>
+<span class="nc" id="L141">            } catch (final Exception e) {</span>
+<span class="nc" id="L142">                throw new CompilerException(e);</span>
+            } finally {
+<span class="fc" id="L144">                console.reset();</span>
+<span class="fc" id="L145">                Context.exit();</span>
+            }
+<span class="fc" id="L147">        }</span>
     }
 
     private void initialize() {
-<span class="nc" id="L133">        InputStream inputStream = null;</span>
-<span class="nc" id="L134">        InputStreamReader streamReader = null;</span>
+<span class="fc" id="L151">        InputStream inputStream = null;</span>
+<span class="fc" id="L152">        InputStreamReader streamReader = null;</span>
         try {
-<span class="nc" id="L136">            final Context context = Context.enter();</span>
-<span class="nc" id="L137">            context.setLanguageVersion(Context.VERSION_1_8);</span>
+<span class="fc" id="L154">            final Context context = Context.enter();</span>
+<span class="fc" id="L155">            context.setLanguageVersion(Context.VERSION_1_8);</span>
 
-<span class="nc" id="L139">            final Global global = new Global();</span>
-<span class="nc" id="L140">            global.init(context);</span>
-<span class="nc" id="L141">            scope = context.initStandardObjects(global);</span>
+<span class="fc" id="L157">            final Global global = new Global();</span>
+<span class="fc" id="L158">            global.init(context);</span>
+<span class="fc" id="L159">            scope = context.initStandardObjects(global);</span>
 
-<span class="nc" id="L143">            console = new ByteArrayOutputStream();</span>
-<span class="nc" id="L144">            global.setOut(new PrintStream(console, false, CHARSET));</span>
+<span class="fc" id="L161">            console = new ByteArrayOutputStream();</span>
+<span class="fc" id="L162">            global.setOut(new PrintStream(console, false, CHARSET));</span>
 
-<span class="nc" id="L146">            final URL lessFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js&quot;);</span>
-<span class="nc" id="L147">            final URL lesscFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js&quot;);</span>
+<span class="fc" id="L164">            final URL lessFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js&quot;);</span>
+<span class="fc" id="L165">            final URL lesscFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js&quot;);</span>
 
-<span class="nc" id="L149">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;InputStream&gt;();</span>
-<span class="nc" id="L150">            streams.add(lessFile.openConnection().getInputStream());</span>
-<span class="nc" id="L151">            streams.add(lesscFile.openConnection().getInputStream());</span>
+<span class="fc" id="L167">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;InputStream&gt;();</span>
+<span class="fc" id="L168">            streams.add(lessFile.openConnection().getInputStream());</span>
+<span class="fc" id="L169">            streams.add(lesscFile.openConnection().getInputStream());</span>
 
-<span class="nc" id="L153">            inputStream = new SequenceInputStream(Collections.enumeration(streams));</span>
-<span class="nc" id="L154">            streamReader = new InputStreamReader(inputStream, CHARSET);</span>
-<span class="nc" id="L155">            compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);</span>
+<span class="fc" id="L171">            inputStream = new SequenceInputStream(Collections.enumeration(streams));</span>
+<span class="fc" id="L172">            streamReader = new InputStreamReader(inputStream, CHARSET);</span>
+<span class="fc" id="L173">            compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);</span>
 
-<span class="nc" id="L157">        } catch (final Exception e) {</span>
-<span class="nc" id="L158">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
+<span class="nc" id="L175">        } catch (final Exception e) {</span>
+<span class="nc" id="L176">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
 
-<span class="nc" id="L160">        } finally {</span>
-<span class="nc" id="L161">            IOUtils.closeQuietly(streamReader);</span>
-<span class="nc" id="L162">            IOUtils.closeQuietly(inputStream);</span>
-<span class="nc" id="L163">            Context.exit();</span>
-<span class="nc" id="L164">        }</span>
-<span class="nc" id="L165">    }</span>
+        } finally {
+<span class="pc" id="L179">            IOUtils.closeQuietly(streamReader);</span>
+<span class="pc" id="L180">            IOUtils.closeQuietly(inputStream);</span>
+<span class="pc" id="L181">            Context.exit();</span>
+<span class="fc" id="L182">        }</span>
+<span class="fc" id="L183">    }</span>
 
     private static CompilerException parseException(final JavaScriptException exception) {
-<span class="nc" id="L168">        final Scriptable value = (Scriptable) exception.getValue();</span>
-<span class="nc bnc" id="L169" title="All 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
-<span class="nc" id="L170">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
-<span class="nc" id="L171">            Matcher matcher = IMPORT_DOES_NOT_EXIST_PATTERN.matcher(message);</span>
-<span class="nc bnc" id="L172" title="All 2 branches missed.">            if (matcher.find()) {</span>
-<span class="nc" id="L173">                return new ImportNotFoundException(message, exception, matcher.group(IMPORT_ERROR_FILE_NAME_GROUP_INDEX));</span>
-            }
-<span class="nc" id="L175">            matcher = SOURCE_DOES_NOT_EXIST_PATTERN.matcher(message);</span>
-<span class="nc bnc" id="L176" title="All 2 branches missed.">            if (matcher.find()) {</span>
-<span class="nc" id="L177">                return new SourceFileNotFoundException(message, matcher.group(SOURCE_ERROR_FILE_PATH_GROUP_INDEX));</span>
-            }
-<span class="nc" id="L179">            return new SyntaxException(message, exception);</span>
+<span class="fc" id="L186">        final Scriptable value = (Scriptable) exception.getValue();</span>
+<span class="pc bpc" id="L187" title="2 of 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
+<span class="fc" id="L188">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
+
+<span class="fc" id="L190">            final Iterable&lt;ExceptionConverter&gt; converters = Arrays.asList(new ImportExceptionConverter(),</span>
+                    new ConfigurationExceptionConverter(), new ReadFileExceptionConverter());
+
+<span class="fc bfc" id="L193" title="All 2 branches covered.">            for (final ExceptionConverter converter : converters) {</span>
+<span class="fc" id="L194">                final Matcher matcher = converter.getPattern().matcher(message);</span>
+<span class="fc bfc" id="L195" title="All 2 branches covered.">                if (matcher.find()) {</span>
+<span class="fc" id="L196">                    return converter.createException(exception, matcher, message);</span>
+                }
+<span class="fc" id="L198">            }</span>
+<span class="fc" id="L199">            return new SyntaxException(message, exception);</span>
         }
-<span class="nc" id="L181">        return new SyntaxException(exception);</span>
+<span class="nc" id="L201">        return new SyntaxException(exception);</span>
+    }
+
+    private interface ExceptionConverter {
+
+        Pattern getPattern();
+
+        CompilerException createException(Exception cause, Matcher matcher, String message);
+    }
+
+<span class="fc" id="L211">    private static class ImportExceptionConverter implements ExceptionConverter {</span>
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L215">            return Pattern.compile(&quot;^FileError:\\s+'(.+)'\\s+wasn't\\s+found\\s+(?s).*&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L220">            return new ImportNotFoundException(message, cause, matcher.group(1));</span>
+        }
+    }
+
+<span class="fc" id="L224">    private static class ConfigurationExceptionConverter implements ExceptionConverter {</span>
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L228">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L233">            return new ConfigurationException(matcher.group(1), cause);</span>
+        }
+    }
+
+<span class="fc" id="L237">    private static class ReadFileExceptionConverter implements ExceptionConverter {</span>
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L241">            return Pattern.compile(&quot;^Couldn't open source file: (.*)&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L246">            return new ReadFileException(message, cause, matcher.group(1));</span>
+        }
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>

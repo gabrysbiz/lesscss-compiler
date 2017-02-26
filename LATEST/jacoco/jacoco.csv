@@ -1,15 +1,18 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,IOUtils,11,0,2,0,7,0,3,0,2,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,24,0,2,0,7,0,4,0,3,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,StringUtils,35,0,10,0,9,0,8,0,3,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,13,0,0,0,6,0,3,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,IOUtils,3,8,0,2,2,6,1,2,1,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,0,48,0,6,0,11,0,7,0,4
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,StringUtils,3,32,0,10,2,7,1,7,1,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,8,5,0,0,4,2,2,1,2,1
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,InitializationException,13,0,0,0,6,0,3,0,3,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,255,0,10,0,61,0,10,0,5,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,SourceFileNotFoundException,25,0,0,0,10,0,4,0,4,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,ImportNotFoundException,25,0,0,0,10,0,4,0,4,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,BuildCompilerOptionsException,13,0,0,0,6,0,3,0,3,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder,369,0,46,0,105,0,52,0,29,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,78,0,0,0,20,0,7,0,7,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder.LineNumbersValue,80,0,0,0,14,0,5,0,5,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder.new NativeLessCompilerOptionsBuilder.OperatingSystemChecker() {...},11,0,0,0,3,0,2,0,2,0
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,CompilerException,13,0,0,0,6,0,3,0,3,0
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,26,243,2,8,5,51,2,7,0,4
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ReadFileExceptionConverter,0,15,0,0,0,3,0,3,0,3
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,ImportNotFoundException,14,11,0,0,6,4,2,2,2,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder,0,522,1,57,0,149,1,70,0,42
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,10,118,0,6,3,31,2,10,2,7
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ConfigurationExceptionConverter,0,14,0,0,0,3,0,3,0,3
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ImportExceptionConverter,0,15,0,0,0,3,0,3,0,3
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,ReadFileException,14,11,0,0,6,4,2,2,2,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder.LineNumbersValue,5,63,0,0,0,9,1,4,1,4
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,BuilderCreationException,9,4,0,0,4,2,2,1,2,1
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,CompilerException,4,9,0,0,2,4,1,2,1,2
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,ConfigurationException,4,9,0,0,2,4,1,2,1,2
