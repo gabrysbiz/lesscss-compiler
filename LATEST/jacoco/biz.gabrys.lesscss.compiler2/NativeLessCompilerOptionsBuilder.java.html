@@ -13,11 +13,10 @@
 package biz.gabrys.lesscss.compiler2;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
+import biz.gabrys.lesscss.compiler2.LessCompilerOptions.LineNumbersValue;
 import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder;
 import biz.gabrys.lesscss.compiler2.util.StringUtils;
 
@@ -28,15 +27,10 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  */
 public class NativeLessCompilerOptionsBuilder {
 
+<span class="fc" id="L30">    private LessCompilerOptions options = new LessCompilerOptions();</span>
     private File input;
     private File output;
-    private boolean silent;
-    private boolean strictImports;
-    private boolean compress;
-<span class="fc" id="L36">    private boolean ieCompatability = true;</span>
-<span class="fc" id="L37">    private boolean javaScriptEnabled = true;</span>
-<span class="fc" id="L38">    private List&lt;String&gt; includePaths = Collections.emptyList();</span>
-<span class="fc" id="L39">    private LineNumbersValue lineNumbers = LineNumbersValue.DISABLED;</span>
+
     private boolean sourceMapDefault;
     private File sourceMapFile;
     private boolean sourceMapInline;
@@ -44,18 +38,42 @@ public class NativeLessCompilerOptionsBuilder {
     private String sourceMapBasePath;
     private boolean sourceMapLessInline;
     private String sourceMapUrl;
-    private String rootPath;
-    private boolean relativeUrls;
-    private boolean strictMath;
-    private boolean strictUnits;
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L56">    public NativeLessCompilerOptionsBuilder() {</span>
+<span class="fc" id="L46">    public NativeLessCompilerOptionsBuilder() {</span>
         // do nothing
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L48">    }</span>
+
+    /**
+     * Sets compiler options. This method overwrites values set by:
+     * &lt;ul&gt;
+     * &lt;li&gt;{@link #withSilent(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withStrictImports(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withCompress(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withIeCompatability(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withJavaScript(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withIncludePaths(List)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withLineNumbers(LineNumbersValue)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withRootPath(String)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withRelativeUrls(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withStrictMath(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #withStrictUnits(boolean)}&lt;/li&gt;
+     * &lt;/ul&gt;
+     * @param options the options object.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessCompilerOptionsBuilder withOptions(final LessCompilerOptions options) {
+<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (options != null) {</span>
+<span class="fc" id="L71">            this.options = new LessCompilerOptions(options);</span>
+        } else {
+<span class="nc" id="L73">            this.options = new LessCompilerOptions();</span>
+        }
+<span class="fc" id="L75">        return this;</span>
+    }
 
     /**
      * Sets an input (source) file.
@@ -64,8 +82,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withInputFile(final File input) {
-<span class="fc" id="L67">        this.input = input;</span>
-<span class="fc" id="L68">        return this;</span>
+<span class="fc" id="L85">        this.input = input;</span>
+<span class="fc" id="L86">        return this;</span>
     }
 
     /**
@@ -75,10 +93,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withInputFile(File)
      */
     protected String getInputFileCompilerOption() {
-<span class="fc bfc" id="L78" title="All 2 branches covered.">        if (input != null) {</span>
-<span class="fc" id="L79">            return input.getAbsolutePath();</span>
+<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (input != null) {</span>
+<span class="fc" id="L97">            return input.getAbsolutePath();</span>
         } else {
-<span class="fc" id="L81">            return &quot;&quot;;</span>
+<span class="fc" id="L99">            return &quot;&quot;;</span>
         }
     }
 
@@ -90,8 +108,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withInputFile(File)
      */
     public NativeLessCompilerOptionsBuilder withOutputFile(final File output) {
-<span class="fc" id="L93">        this.output = output;</span>
-<span class="fc" id="L94">        return this;</span>
+<span class="fc" id="L111">        this.output = output;</span>
+<span class="fc" id="L112">        return this;</span>
     }
 
     /**
@@ -101,10 +119,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withOutputFile(File)
      */
     protected String getOutputFileCompilerOption() {
-<span class="fc bfc" id="L104" title="All 2 branches covered.">        if (output != null) {</span>
-<span class="fc" id="L105">            return output.getAbsolutePath();</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        if (output != null) {</span>
+<span class="fc" id="L123">            return output.getAbsolutePath();</span>
         } else {
-<span class="fc" id="L107">            return &quot;&quot;;</span>
+<span class="fc" id="L125">            return &quot;&quot;;</span>
         }
     }
 
@@ -115,8 +133,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withSilent(final boolean silent) {
-<span class="fc" id="L118">        this.silent = silent;</span>
-<span class="fc" id="L119">        return this;</span>
+<span class="fc" id="L136">        options.setSilent(silent);</span>
+<span class="fc" id="L137">        return this;</span>
     }
 
     /**
@@ -126,10 +144,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSilent(boolean)
      */
     protected String getSilentCompilerOption() {
-<span class="fc bfc" id="L129" title="All 2 branches covered.">        if (silent) {</span>
-<span class="fc" id="L130">            return &quot;--silent&quot;;</span>
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (options.isSilent()) {</span>
+<span class="fc" id="L148">            return &quot;--silent&quot;;</span>
         } else {
-<span class="fc" id="L132">            return &quot;&quot;;</span>
+<span class="fc" id="L150">            return &quot;&quot;;</span>
         }
     }
 
@@ -142,8 +160,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withStrictImports(final boolean strictImports) {
-<span class="fc" id="L145">        this.strictImports = strictImports;</span>
-<span class="fc" id="L146">        return this;</span>
+<span class="fc" id="L163">        options.setStrictImportsEnabled(strictImports);</span>
+<span class="fc" id="L164">        return this;</span>
     }
 
     /**
@@ -153,10 +171,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withStrictImports(boolean)
      */
     protected String getStrictImportsCompilerOption() {
-<span class="fc bfc" id="L156" title="All 2 branches covered.">        if (strictImports) {</span>
-<span class="fc" id="L157">            return &quot;--strict-imports&quot;;</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (options.isStrictImportsEnabled()) {</span>
+<span class="fc" id="L175">            return &quot;--strict-imports&quot;;</span>
         } else {
-<span class="fc" id="L159">            return &quot;&quot;;</span>
+<span class="fc" id="L177">            return &quot;&quot;;</span>
         }
     }
 
@@ -167,8 +185,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withCompress(final boolean compress) {
-<span class="fc" id="L170">        this.compress = compress;</span>
-<span class="fc" id="L171">        return this;</span>
+<span class="fc" id="L188">        options.setCompressionEnabled(compress);</span>
+<span class="fc" id="L189">        return this;</span>
     }
 
     /**
@@ -178,10 +196,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withCompress(boolean)
      */
     protected String getCompressCompilerOption() {
-<span class="fc bfc" id="L181" title="All 2 branches covered.">        if (compress) {</span>
-<span class="fc" id="L182">            return &quot;--compress&quot;;</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (options.isCompressionEnabled()) {</span>
+<span class="fc" id="L200">            return &quot;--compress&quot;;</span>
         } else {
-<span class="fc" id="L184">            return &quot;&quot;;</span>
+<span class="fc" id="L202">            return &quot;&quot;;</span>
         }
     }
 
@@ -194,8 +212,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withIeCompatability(final boolean ieCompatability) {
-<span class="fc" id="L197">        this.ieCompatability = ieCompatability;</span>
-<span class="fc" id="L198">        return this;</span>
+<span class="fc" id="L215">        options.setIeCompatabilityEnabled(ieCompatability);</span>
+<span class="fc" id="L216">        return this;</span>
     }
 
     /**
@@ -205,54 +223,50 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withIeCompatability(boolean)
      */
     protected String getIeCompatabilityCompilerOption() {
-<span class="fc bfc" id="L208" title="All 2 branches covered.">        if (ieCompatability) {</span>
-<span class="fc" id="L209">            return &quot;&quot;;</span>
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (options.isIeCompatabilityEnabled()) {</span>
+<span class="fc" id="L227">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L211">            return &quot;--no-ie-compat&quot;;</span>
+<span class="fc" id="L229">            return &quot;--no-ie-compat&quot;;</span>
         }
     }
 
     /**
      * Sets whether a compiler should allow usage of JavaScript language (default: {@code true}).
-     * @param javaScriptEnabled {@code true} whether the compiler should allow usage of JavaScript language, otherwise
+     * @param javaScript {@code true} whether the compiler should allow usage of JavaScript language, otherwise
      *            {@code false}.
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withJavaScriptEnabled(final boolean javaScriptEnabled) {
-<span class="fc" id="L223">        this.javaScriptEnabled = javaScriptEnabled;</span>
-<span class="fc" id="L224">        return this;</span>
+    public NativeLessCompilerOptionsBuilder withJavaScript(final boolean javaScript) {
+<span class="fc" id="L241">        options.setJavaScriptAllowed(javaScript);</span>
+<span class="fc" id="L242">        return this;</span>
     }
 
     /**
      * Returns a command line option which allows/disallows usage of JavaScript language.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withJavaScriptEnabled(boolean)
+     * @see #withJavaScript(boolean)
      */
-    protected String getJavaScriptEnabledCompilerOption() {
-<span class="fc bfc" id="L234" title="All 2 branches covered.">        if (javaScriptEnabled) {</span>
-<span class="fc" id="L235">            return &quot;&quot;;</span>
+    protected String getJavaScriptCompilerOption() {
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (options.isJavaScriptAllowed()) {</span>
+<span class="fc" id="L253">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L237">            return &quot;--no-js&quot;;</span>
+<span class="fc" id="L255">            return &quot;--no-js&quot;;</span>
         }
     }
 
     /**
      * Sets available include paths (default: empty collection). If the file in an &amp;#64;import rule does not exist at
-     * that exact location, less will look for it at the location(s) passed to this option. You might use this for
+     * that exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
      * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @param includePaths the available include paths.
      * @return {@code this} builder.
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withIncludePaths(final List&lt;String&gt; includePaths) {
-<span class="fc bfc" id="L250" title="All 4 branches covered.">        if (includePaths == null || includePaths.isEmpty()) {</span>
-<span class="fc" id="L251">            this.includePaths = Collections.emptyList();</span>
-        } else {
-<span class="fc" id="L253">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
-        }
-<span class="fc" id="L255">        return this;</span>
+<span class="fc" id="L268">        options.setIncludePaths(includePaths);</span>
+<span class="fc" id="L269">        return this;</span>
     }
 
     /**
@@ -262,20 +276,21 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withIncludePaths(List)
      */
     protected String getIncludePathsCompilerOption() {
-<span class="fc bfc" id="L265" title="All 2 branches covered.">        if (includePaths.isEmpty()) {</span>
-<span class="fc" id="L266">            return &quot;&quot;;</span>
+<span class="fc" id="L279">        final Collection&lt;String&gt; includePaths = options.getIncludePaths();</span>
+<span class="fc bfc" id="L280" title="All 2 branches covered.">        if (includePaths.isEmpty()) {</span>
+<span class="fc" id="L281">            return &quot;&quot;;</span>
         }
-<span class="fc" id="L268">        final StringBuilder paths = new StringBuilder();</span>
-<span class="fc bfc" id="L269" title="All 2 branches covered.">        for (final String path : includePaths) {</span>
-<span class="pc bpc" id="L270" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(path)) {</span>
-<span class="fc bfc" id="L271" title="All 2 branches covered.">                final boolean separatorRequired = paths.length() != 0;</span>
-<span class="fc bfc" id="L272" title="All 2 branches covered.">                if (separatorRequired) {</span>
-<span class="fc" id="L273">                    paths.append(NativeLessCompiler.INCLUDE_PATHS_SEPARATOR);</span>
+<span class="fc" id="L283">        final StringBuilder paths = new StringBuilder();</span>
+<span class="fc bfc" id="L284" title="All 2 branches covered.">        for (final String path : includePaths) {</span>
+<span class="pc bpc" id="L285" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(path)) {</span>
+<span class="fc bfc" id="L286" title="All 2 branches covered.">                final boolean separatorRequired = paths.length() != 0;</span>
+<span class="fc bfc" id="L287" title="All 2 branches covered.">                if (separatorRequired) {</span>
+<span class="fc" id="L288">                    paths.append(NativeLessCompiler.INCLUDE_PATHS_SEPARATOR);</span>
                 }
-<span class="fc" id="L275">                paths.append(path.trim());</span>
+<span class="fc" id="L290">                paths.append(path.trim());</span>
             }
-<span class="fc" id="L277">        }</span>
-<span class="fc" id="L278">        return &quot;--include-path=&quot; + paths.toString();</span>
+<span class="fc" id="L292">        }</span>
+<span class="fc" id="L293">        return &quot;--include-path=&quot; + paths.toString();</span>
     }
 
     /**
@@ -286,21 +301,22 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withLineNumbers(final LineNumbersValue lineNumbers) {
-<span class="fc bfc" id="L289" title="All 2 branches covered.">        this.lineNumbers = lineNumbers != null ? lineNumbers : LineNumbersValue.DISABLED;</span>
-<span class="fc" id="L290">        return this;</span>
+<span class="fc" id="L304">        options.setLineNumbers(lineNumbers);</span>
+<span class="fc" id="L305">        return this;</span>
     }
 
     /**
      * Returns a command line option which enables/disables generating inline source-mapping.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withJavaScriptEnabled(boolean)
+     * @see #withJavaScript(boolean)
      */
     protected String getLineNumbersCompilerOption() {
-<span class="fc bfc" id="L300" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
-<span class="fc" id="L301">            return &quot;&quot;;</span>
+<span class="fc" id="L315">        final LineNumbersValue lineNumbers = options.getLineNumbers();</span>
+<span class="fc bfc" id="L316" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
+<span class="fc" id="L317">            return &quot;&quot;;</span>
         } else {
-<span class="fc" id="L303">            return &quot;--line-numbers=&quot; + lineNumbers.value;</span>
+<span class="fc" id="L319">            return &quot;--line-numbers=&quot; + lineNumbers.getValue();</span>
         }
     }
 
@@ -320,10 +336,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapInline(boolean)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapDefault(final boolean enabled) {
-<span class="fc" id="L323">        sourceMapDefault = enabled;</span>
-<span class="fc" id="L324">        sourceMapFile = null;</span>
-<span class="fc" id="L325">        sourceMapInline = false;</span>
-<span class="fc" id="L326">        return this;</span>
+<span class="fc" id="L339">        sourceMapDefault = enabled;</span>
+<span class="fc" id="L340">        sourceMapFile = null;</span>
+<span class="fc" id="L341">        sourceMapInline = false;</span>
+<span class="fc" id="L342">        return this;</span>
     }
 
     /**
@@ -333,10 +349,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapDefault(boolean)
      */
     protected String getSourceMapDefaultCompilerOption() {
-<span class="fc bfc" id="L336" title="All 2 branches covered.">        if (sourceMapDefault) {</span>
-<span class="fc" id="L337">            return &quot;--source-map&quot;;</span>
+<span class="fc bfc" id="L352" title="All 2 branches covered.">        if (sourceMapDefault) {</span>
+<span class="fc" id="L353">            return &quot;--source-map&quot;;</span>
         } else {
-<span class="fc" id="L339">            return &quot;&quot;;</span>
+<span class="fc" id="L355">            return &quot;&quot;;</span>
         }
     }
 
@@ -353,10 +369,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapInline(boolean)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapFile(final File sourceMap) {
-<span class="fc" id="L356">        sourceMapDefault = false;</span>
-<span class="fc" id="L357">        sourceMapFile = sourceMap;</span>
-<span class="fc" id="L358">        sourceMapInline = false;</span>
-<span class="fc" id="L359">        return this;</span>
+<span class="fc" id="L372">        sourceMapDefault = false;</span>
+<span class="fc" id="L373">        sourceMapFile = sourceMap;</span>
+<span class="fc" id="L374">        sourceMapInline = false;</span>
+<span class="fc" id="L375">        return this;</span>
     }
 
     /**
@@ -366,10 +382,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapFile(File)
      */
     protected String getSourceMapFileCompilerOption() {
-<span class="fc bfc" id="L369" title="All 2 branches covered.">        if (sourceMapFile != null) {</span>
-<span class="fc" id="L370">            return &quot;--source-map=&quot; + sourceMapFile.getAbsolutePath();</span>
+<span class="fc bfc" id="L385" title="All 2 branches covered.">        if (sourceMapFile != null) {</span>
+<span class="fc" id="L386">            return &quot;--source-map=&quot; + sourceMapFile.getAbsolutePath();</span>
         } else {
-<span class="fc" id="L372">            return &quot;&quot;;</span>
+<span class="fc" id="L388">            return &quot;&quot;;</span>
         }
     }
 
@@ -389,10 +405,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapLessInline(boolean)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapInline(final boolean inline) {
-<span class="fc" id="L392">        sourceMapDefault = false;</span>
-<span class="fc" id="L393">        sourceMapFile = null;</span>
-<span class="fc" id="L394">        sourceMapInline = inline;</span>
-<span class="fc" id="L395">        return this;</span>
+<span class="fc" id="L408">        sourceMapDefault = false;</span>
+<span class="fc" id="L409">        sourceMapFile = null;</span>
+<span class="fc" id="L410">        sourceMapInline = inline;</span>
+<span class="fc" id="L411">        return this;</span>
     }
 
     /**
@@ -402,10 +418,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapInline(boolean)
      */
     protected String[] getSourceMapInlineCompilerOptions() {
-<span class="fc bfc" id="L405" title="All 2 branches covered.">        if (sourceMapInline) {</span>
-<span class="fc" id="L406">            return new String[] { &quot;--source-map&quot;, &quot;--source-map-map-inline&quot; };</span>
+<span class="fc bfc" id="L421" title="All 2 branches covered.">        if (sourceMapInline) {</span>
+<span class="fc" id="L422">            return new String[] { &quot;--source-map&quot;, &quot;--source-map-map-inline&quot; };</span>
         } else {
-<span class="fc" id="L408">            return new String[0];</span>
+<span class="fc" id="L424">            return new String[0];</span>
         }
     }
 
@@ -423,8 +439,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapInline(boolean)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapLessInline(final boolean inline) {
-<span class="fc" id="L426">        sourceMapLessInline = inline;</span>
-<span class="fc" id="L427">        return this;</span>
+<span class="fc" id="L442">        sourceMapLessInline = inline;</span>
+<span class="fc" id="L443">        return this;</span>
     }
 
     /**
@@ -434,10 +450,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapLessInline(boolean)
      */
     protected String getSourceMapLessInlineCompilerOption() {
-<span class="fc bfc" id="L437" title="All 2 branches covered.">        if (sourceMapLessInline) {</span>
-<span class="fc" id="L438">            return &quot;--source-map-less-inline&quot;;</span>
+<span class="fc bfc" id="L453" title="All 2 branches covered.">        if (sourceMapLessInline) {</span>
+<span class="fc" id="L454">            return &quot;--source-map-less-inline&quot;;</span>
         } else {
-<span class="fc" id="L440">            return &quot;&quot;;</span>
+<span class="fc" id="L456">            return &quot;&quot;;</span>
         }
     }
 
@@ -471,8 +487,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapUrl(String)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapRootPath(final String rootPath) {
-<span class="fc" id="L474">        sourceMapRootPath = rootPath;</span>
-<span class="fc" id="L475">        return this;</span>
+<span class="fc" id="L490">        sourceMapRootPath = rootPath;</span>
+<span class="fc" id="L491">        return this;</span>
     }
 
     /**
@@ -482,10 +498,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapRootPath(String)
      */
     protected String getSourceMapRootPathCompilerOption() {
-<span class="fc bfc" id="L485" title="All 2 branches covered.">        if (sourceMapRootPath != null) {</span>
-<span class="fc" id="L486">            return &quot;--source-map-rootpath=&quot; + sourceMapRootPath;</span>
+<span class="fc bfc" id="L501" title="All 2 branches covered.">        if (sourceMapRootPath != null) {</span>
+<span class="fc" id="L502">            return &quot;--source-map-rootpath=&quot; + sourceMapRootPath;</span>
         } else {
-<span class="fc" id="L488">            return &quot;&quot;;</span>
+<span class="fc" id="L504">            return &quot;&quot;;</span>
         }
     }
 
@@ -508,8 +524,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapUrl(String)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapBasePath(final String basePath) {
-<span class="fc" id="L511">        sourceMapBasePath = basePath;</span>
-<span class="fc" id="L512">        return this;</span>
+<span class="fc" id="L527">        sourceMapBasePath = basePath;</span>
+<span class="fc" id="L528">        return this;</span>
     }
 
     /**
@@ -519,10 +535,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapBasePath(String)
      */
     protected String getSourceMapBasePathCompilerOption() {
-<span class="fc bfc" id="L522" title="All 2 branches covered.">        if (sourceMapBasePath != null) {</span>
-<span class="fc" id="L523">            return &quot;--source-map-basepath=&quot; + sourceMapBasePath;</span>
+<span class="fc bfc" id="L538" title="All 2 branches covered.">        if (sourceMapBasePath != null) {</span>
+<span class="fc" id="L539">            return &quot;--source-map-basepath=&quot; + sourceMapBasePath;</span>
         } else {
-<span class="fc" id="L525">            return &quot;&quot;;</span>
+<span class="fc" id="L541">            return &quot;&quot;;</span>
         }
     }
 
@@ -537,8 +553,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapRootPath(String)
      */
     public NativeLessCompilerOptionsBuilder withSourceMapUrl(final String url) {
-<span class="fc" id="L540">        sourceMapUrl = url;</span>
-<span class="fc" id="L541">        return this;</span>
+<span class="fc" id="L556">        sourceMapUrl = url;</span>
+<span class="fc" id="L557">        return this;</span>
     }
 
     /**
@@ -548,10 +564,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withSourceMapUrl(String)
      */
     protected String getSourceMapUrlCompilerOption() {
-<span class="fc bfc" id="L551" title="All 2 branches covered.">        if (sourceMapUrl != null) {</span>
-<span class="fc" id="L552">            return &quot;--source-map-url=&quot; + sourceMapUrl;</span>
+<span class="fc bfc" id="L567" title="All 2 branches covered.">        if (sourceMapUrl != null) {</span>
+<span class="fc" id="L568">            return &quot;--source-map-url=&quot; + sourceMapUrl;</span>
         } else {
-<span class="fc" id="L554">            return &quot;&quot;;</span>
+<span class="fc" id="L570">            return &quot;&quot;;</span>
         }
     }
 
@@ -567,8 +583,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withRootPath(final String rootPath) {
-<span class="fc" id="L570">        this.rootPath = rootPath;</span>
-<span class="fc" id="L571">        return this;</span>
+<span class="fc" id="L586">        options.setRootPath(rootPath);</span>
+<span class="fc" id="L587">        return this;</span>
     }
 
     /**
@@ -578,18 +594,19 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withRootPath(String)
      */
     protected String getRootPathCompilerOption() {
-<span class="fc bfc" id="L581" title="All 2 branches covered.">        if (rootPath != null) {</span>
-<span class="fc" id="L582">            return &quot;--rootpath=&quot; + rootPath;</span>
+<span class="fc" id="L597">        final String rootPath = options.getRootPath();</span>
+<span class="fc bfc" id="L598" title="All 2 branches covered.">        if (rootPath != null) {</span>
+<span class="fc" id="L599">            return &quot;--rootpath=&quot; + rootPath;</span>
         } else {
-<span class="fc" id="L584">            return &quot;&quot;;</span>
+<span class="fc" id="L601">            return &quot;&quot;;</span>
         }
     }
 
     /**
-     * Sets whether the compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is,
-     * so if you import a file in a sub-directory that references an image, exactly the same URL will be output in the
-     * CSS code. This option allows you to re-write URLs in imported files so that the URL is always relative to the
-     * base imported file. Example:
+     * Sets whether a compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is, so
+     * if you import a file in a sub-directory that references an image, exactly the same URL will be output in the CSS
+     * code. This option allows you to re-write URLs in imported files so that the URL is always relative to the base
+     * imported file. Example:
      * 
      * &lt;pre&gt;
      * # main.less
@@ -627,8 +644,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withRelativeUrls(final boolean relativeUrls) {
-<span class="fc" id="L630">        this.relativeUrls = relativeUrls;</span>
-<span class="fc" id="L631">        return this;</span>
+<span class="fc" id="L647">        options.setRelativeUrlsRewriteEnabled(relativeUrls);</span>
+<span class="fc" id="L648">        return this;</span>
     }
 
     /**
@@ -638,16 +655,16 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withRelativeUrls(boolean)
      */
     protected String getRelativeUrlsCompilerOption() {
-<span class="fc bfc" id="L641" title="All 2 branches covered.">        if (relativeUrls) {</span>
-<span class="fc" id="L642">            return &quot;--relative-urls&quot;;</span>
+<span class="fc bfc" id="L658" title="All 2 branches covered.">        if (options.isRelativeUrlsRewriteEnabled()) {</span>
+<span class="fc" id="L659">            return &quot;--relative-urls&quot;;</span>
         } else {
-<span class="fc" id="L644">            return &quot;&quot;;</span>
+<span class="fc" id="L661">            return &quot;&quot;;</span>
         }
     }
 
     /**
      * Sets whether a compiler should try and process all maths in Less code (default: {@code false}). Without this
-     * option on Less will try and process all maths in your Less e.g.:
+     * option on the compiler will try and process all maths in your Less e.g.:
      * 
      * &lt;pre&gt;
      * .class {
@@ -658,7 +675,7 @@ public class NativeLessCompilerOptionsBuilder {
      * will be processed currently.
      * &lt;/p&gt;
      * &lt;p&gt;
-     * With strict math on, only maths that is inside unnecessary parenthesis will be processed. For instance.
+     * With strict math on, only maths that is inside unnecessary parenthesis will be processed. Example:
      * &lt;/p&gt;
      * 
      * &lt;pre&gt;
@@ -668,6 +685,9 @@ public class NativeLessCompilerOptionsBuilder {
      *     font-size: 1 / 4;
      * }
      * &lt;/pre&gt;
+     * &lt;p&gt;
+     * will be compiled to
+     * &lt;/p&gt;
      * 
      * &lt;pre&gt;
      * .class {
@@ -683,8 +703,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withStrictMath(final boolean strictMath) {
-<span class="fc" id="L686">        this.strictMath = strictMath;</span>
-<span class="fc" id="L687">        return this;</span>
+<span class="fc" id="L706">        options.setStrictMathEnabled(strictMath);</span>
+<span class="fc" id="L707">        return this;</span>
     }
 
     /**
@@ -694,16 +714,16 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withStrictMath(boolean)
      */
     protected String getStrictMathCompilerOption() {
-<span class="fc bfc" id="L697" title="All 2 branches covered.">        if (strictMath) {</span>
-<span class="fc" id="L698">            return &quot;--strict-math=on&quot;;</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">        if (options.isStrictMathEnabled()) {</span>
+<span class="fc" id="L718">            return &quot;--strict-math=on&quot;;</span>
         } else {
-<span class="fc" id="L700">            return &quot;&quot;;</span>
+<span class="fc" id="L720">            return &quot;&quot;;</span>
         }
     }
 
     /**
-     * Sets whether the compiler should guess units in Less code when it does maths (default: {@code false}). Without
-     * this option, Less compiler attempts to guess at the output unit when it does maths. For instance
+     * Sets whether a compiler should guess units in Less code when it does maths (default: {@code false}). Without this
+     * option, the compiler attempts to guess at the output unit when it does maths. For instance:
      * 
      * &lt;pre&gt;
      * .class {
@@ -722,8 +742,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessCompilerOptionsBuilder withStrictUnits(final boolean strictUnits) {
-<span class="fc" id="L725">        this.strictUnits = strictUnits;</span>
-<span class="fc" id="L726">        return this;</span>
+<span class="fc" id="L745">        options.setStrictUnitsEnabled(strictUnits);</span>
+<span class="fc" id="L746">        return this;</span>
     }
 
     /**
@@ -733,10 +753,10 @@ public class NativeLessCompilerOptionsBuilder {
      * @see #withStrictUnits(boolean)
      */
     protected String getStrictUnitsCompilerOption() {
-<span class="fc bfc" id="L736" title="All 2 branches covered.">        if (strictUnits) {</span>
-<span class="fc" id="L737">            return &quot;--strict-units=on&quot;;</span>
+<span class="fc bfc" id="L756" title="All 2 branches covered.">        if (options.isStrictUnitsEnabled()) {</span>
+<span class="fc" id="L757">            return &quot;--strict-units=on&quot;;</span>
         } else {
-<span class="fc" id="L739">            return &quot;&quot;;</span>
+<span class="fc" id="L759">            return &quot;&quot;;</span>
         }
     }
 
@@ -747,82 +767,39 @@ public class NativeLessCompilerOptionsBuilder {
      * @since 2.0.0
      */
     public Collection&lt;Object&gt; create() {
-<span class="fc" id="L750">        final ListWithoutEmptyValuesBuilder options = new ListWithoutEmptyValuesBuilder();</span>
-<span class="fc" id="L751">        options.add(getSilentCompilerOption());</span>
-<span class="fc" id="L752">        options.add(getStrictImportsCompilerOption());</span>
-<span class="fc" id="L753">        options.add(getCompressCompilerOption());</span>
-<span class="fc" id="L754">        options.add(getIeCompatabilityCompilerOption());</span>
-<span class="fc" id="L755">        options.add(getJavaScriptEnabledCompilerOption());</span>
-<span class="fc" id="L756">        options.add(getIncludePathsCompilerOption());</span>
-<span class="fc" id="L757">        options.add(getLineNumbersCompilerOption());</span>
+<span class="fc" id="L770">        final ListWithoutEmptyValuesBuilder configurationOptions = new ListWithoutEmptyValuesBuilder();</span>
+<span class="fc" id="L771">        configurationOptions.add(getSilentCompilerOption());</span>
+<span class="fc" id="L772">        configurationOptions.add(getStrictImportsCompilerOption());</span>
+<span class="fc" id="L773">        configurationOptions.add(getCompressCompilerOption());</span>
+<span class="fc" id="L774">        configurationOptions.add(getIeCompatabilityCompilerOption());</span>
+<span class="fc" id="L775">        configurationOptions.add(getJavaScriptCompilerOption());</span>
+<span class="fc" id="L776">        configurationOptions.add(getIncludePathsCompilerOption());</span>
+<span class="fc" id="L777">        configurationOptions.add(getLineNumbersCompilerOption());</span>
 
-<span class="fc" id="L759">        options.add(getSourceMapDefaultCompilerOption());</span>
-<span class="fc" id="L760">        options.add(getSourceMapFileCompilerOption());</span>
-<span class="fc" id="L761">        options.add(getSourceMapInlineCompilerOptions());</span>
-<span class="fc" id="L762">        options.add(getSourceMapLessInlineCompilerOption());</span>
-<span class="fc" id="L763">        options.add(getSourceMapRootPathCompilerOption());</span>
-<span class="fc" id="L764">        options.add(getSourceMapBasePathCompilerOption());</span>
-<span class="fc" id="L765">        options.add(getSourceMapUrlCompilerOption());</span>
+<span class="fc" id="L779">        configurationOptions.add(getSourceMapDefaultCompilerOption());</span>
+<span class="fc" id="L780">        configurationOptions.add(getSourceMapFileCompilerOption());</span>
+<span class="fc" id="L781">        configurationOptions.add(getSourceMapInlineCompilerOptions());</span>
+<span class="fc" id="L782">        configurationOptions.add(getSourceMapLessInlineCompilerOption());</span>
+<span class="fc" id="L783">        configurationOptions.add(getSourceMapRootPathCompilerOption());</span>
+<span class="fc" id="L784">        configurationOptions.add(getSourceMapBasePathCompilerOption());</span>
+<span class="fc" id="L785">        configurationOptions.add(getSourceMapUrlCompilerOption());</span>
 
-<span class="fc" id="L767">        options.add(getRootPathCompilerOption());</span>
-<span class="fc" id="L768">        options.add(getRelativeUrlsCompilerOption());</span>
-<span class="fc" id="L769">        options.add(getStrictMathCompilerOption());</span>
-<span class="fc" id="L770">        options.add(getStrictUnitsCompilerOption());</span>
+<span class="fc" id="L787">        configurationOptions.add(getRootPathCompilerOption());</span>
+<span class="fc" id="L788">        configurationOptions.add(getRelativeUrlsCompilerOption());</span>
+<span class="fc" id="L789">        configurationOptions.add(getStrictMathCompilerOption());</span>
+<span class="fc" id="L790">        configurationOptions.add(getStrictUnitsCompilerOption());</span>
 
-<span class="fc" id="L772">        final String inputPath = getInputFileCompilerOption();</span>
-<span class="fc" id="L773">        options.add(inputPath);</span>
-<span class="fc" id="L774">        final String outputPath = getOutputFileCompilerOption();</span>
-<span class="fc bfc" id="L775" title="All 2 branches covered.">        if (StringUtils.isNotBlank(outputPath)) {</span>
-<span class="fc bfc" id="L776" title="All 2 branches covered.">            if (StringUtils.isBlank(inputPath)) {</span>
-<span class="fc" id="L777">                throw new BuilderCreationException(&quot;input file is required when otuput file is set (see #withInputFile(File))&quot;);</span>
+<span class="fc" id="L792">        final String inputPath = getInputFileCompilerOption();</span>
+<span class="fc" id="L793">        configurationOptions.add(inputPath);</span>
+<span class="fc" id="L794">        final String outputPath = getOutputFileCompilerOption();</span>
+<span class="fc bfc" id="L795" title="All 2 branches covered.">        if (StringUtils.isNotBlank(outputPath)) {</span>
+<span class="fc bfc" id="L796" title="All 2 branches covered.">            if (StringUtils.isBlank(inputPath)) {</span>
+<span class="fc" id="L797">                throw new BuilderCreationException(&quot;Input file is required when otuput file is set (see #withInputFile(File))&quot;);</span>
             }
-<span class="fc" id="L779">            options.add(outputPath);</span>
+<span class="fc" id="L799">            configurationOptions.add(outputPath);</span>
         }
-<span class="fc" id="L781">        return options.create();</span>
+<span class="fc" id="L801">        return configurationOptions.create();</span>
     }
 
-    /**
-     * Available values for {@link NativeLessCompilerOptionsBuilder#withLineNumbers(LineNumbersValue) line numbers}
-     * option.
-     * @since 2.0.0
-     */
-<span class="pc" id="L789">    public enum LineNumbersValue {</span>
-
-        /**
-         * Line numbers won't be put in CSS code.
-         * @since 2.0.0
-         */
-<span class="fc" id="L795">        DISABLED(&quot;&quot;),</span>
-        /**
-         * Line numbers will be put in CSS comments blocks.
-         * @since 2.0.0
-         */
-<span class="fc" id="L800">        COMMENTS(&quot;comments&quot;),</span>
-        /**
-         * Line numbers will be put in &amp;#64;media queries.
-         * @since 2.0.0
-         */
-<span class="fc" id="L805">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
-        /**
-         * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.
-         * @since 2.0.0
-         */
-<span class="fc" id="L810">        ALL(&quot;all&quot;);</span>
-
-        private String value;
-
-<span class="fc" id="L814">        LineNumbersValue(final String value) {</span>
-<span class="fc" id="L815">            this.value = value;</span>
-<span class="fc" id="L816">        }</span>
-
-        /**
-         * Returns a value assigned to this object.
-         * @return the value assigned to this object.
-         * @since 2.0.0
-         */
-        public String getValue() {
-<span class="fc" id="L824">            return value;</span>
-        }
-    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
