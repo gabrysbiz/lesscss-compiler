@@ -32,7 +32,7 @@ import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
 
-import biz.gabrys.lesscss.compiler2.util.IOUtils;
+import biz.gabrys.lesscss.compiler2.util.io.IOUtils;
 
 /**
  * &lt;p&gt;
@@ -111,8 +111,8 @@ public class NativeLessCompiler {
      * @return the compiler output (depends on options it can be e.g. CSS code, logs).
      * @throws InitializationException if an error occurred during compiler initialization.
      * @throws ConfigurationException if the compiler is configured incorrectly.
-     * @throws ReadFileException if the compiler cannot read file content.
-     * @throws ImportNotFoundException if any &amp;#64;import operation point to non-existent file.
+     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
+     *             non-existent file.
      * @throws SyntaxException if a syntax error occurred during source file compilation.
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
@@ -187,8 +187,8 @@ public class NativeLessCompiler {
 <span class="pc bpc" id="L187" title="2 of 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
 <span class="fc" id="L188">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
 
-<span class="fc" id="L190">            final Iterable&lt;ExceptionConverter&gt; converters = Arrays.asList(new ImportExceptionConverter(),</span>
-                    new ConfigurationExceptionConverter(), new ReadFileExceptionConverter());
+<span class="fc" id="L190">            final Iterable&lt;ExceptionConverter&gt; converters = Arrays.asList(new ImportFileExceptionConverter(),</span>
+                    new ConfigurationExceptionConverter(), new SourceFileExceptionConverter());
 
 <span class="fc bfc" id="L193" title="All 2 branches covered.">            for (final ExceptionConverter converter : converters) {</span>
 <span class="fc" id="L194">                final Matcher matcher = converter.getPattern().matcher(message);</span>
@@ -208,43 +208,44 @@ public class NativeLessCompiler {
         CompilerException createException(Exception cause, Matcher matcher, String message);
     }
 
-<span class="fc" id="L211">    private static class ImportExceptionConverter implements ExceptionConverter {</span>
+<span class="fc" id="L211">    private static class ImportFileExceptionConverter implements ExceptionConverter {</span>
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L215">            return Pattern.compile(&quot;^FileError:\\s+'(.+)'\\s+wasn't\\s+found\\s+(?s).*&quot;);</span>
+<span class="fc" id="L215">            return Pattern.compile(&quot;^FileError:\\s+'(.+)'\\s+does\\snot\\sexist\\sin\\s((?s).*)$&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L220">            return new ImportNotFoundException(message, cause, matcher.group(1));</span>
+<span class="fc" id="L220">            return new ReadFileException(String.format(&quot;File \&quot;%s\&quot; does not exist. Error in %s&quot;, matcher.group(1), matcher.group(2)),</span>
+<span class="fc" id="L221">                    cause, matcher.group(1));</span>
         }
     }
 
-<span class="fc" id="L224">    private static class ConfigurationExceptionConverter implements ExceptionConverter {</span>
+<span class="fc" id="L225">    private static class ConfigurationExceptionConverter implements ExceptionConverter {</span>
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L228">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
+<span class="fc" id="L229">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L233">            return new ConfigurationException(matcher.group(1), cause);</span>
+<span class="fc" id="L234">            return new ConfigurationException(matcher.group(1), cause);</span>
         }
     }
 
-<span class="fc" id="L237">    private static class ReadFileExceptionConverter implements ExceptionConverter {</span>
+<span class="fc" id="L238">    private static class SourceFileExceptionConverter implements ExceptionConverter {</span>
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L241">            return Pattern.compile(&quot;^Couldn't open source file: (.*)&quot;);</span>
+<span class="fc" id="L242">            return Pattern.compile(&quot;^Couldn't open file (.*)&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L246">            return new ReadFileException(message, cause, matcher.group(1));</span>
+<span class="fc" id="L247">            return new ReadFileException(message, cause, matcher.group(1));</span>
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.8.201612092310</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

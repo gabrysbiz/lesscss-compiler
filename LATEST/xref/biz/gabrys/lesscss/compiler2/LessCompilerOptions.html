@@ -69,8 +69,8 @@
 <a class="jxr_linenumber" name="L61" href="#L61">61</a>          compressionEnabled = options.compressionEnabled;
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>          ieCompatabilityEnabled = options.ieCompatabilityEnabled;
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>          javaScriptAllowed = options.javaScriptAllowed;
-<a class="jxr_linenumber" name="L64" href="#L64">64</a>          includePaths = options.includePaths == <strong class="jxr_keyword">null</strong> ? Collections.&lt;String&gt;emptyList() : <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(options.includePaths);
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>          lineNumbers = options.lineNumbers == <strong class="jxr_keyword">null</strong> ? LineNumbersValue.DISABLED : options.lineNumbers;
+<a class="jxr_linenumber" name="L64" href="#L64">64</a>          includePaths = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(options.includePaths);
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>          lineNumbers = options.lineNumbers;
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          rootPath = options.rootPath;
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>          relativeUrlsRewriteEnabled = options.relativeUrlsRewriteEnabled;
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>          strictMathEnabled = options.strictMathEnabled;
