@@ -16,8 +16,8 @@ import java.io.File;
 import java.io.IOException;
 
 import biz.gabrys.lesscss.compiler2.util.io.IOUtils;
-import biz.gabrys.lesscss.compiler2.util.io.TemporaryFileFactory;
 import biz.gabrys.lesscss.compiler2.util.io.SystemDefaultTemporaryFileFactory;
+import biz.gabrys.lesscss.compiler2.util.io.TemporaryFileFactory;
 
 /**
  * &lt;p&gt;
@@ -31,16 +31,18 @@ import biz.gabrys.lesscss.compiler2.util.io.SystemDefaultTemporaryFileFactory;
  * &lt;pre&gt;
  * // create compiler and source file
  * LessCompiler compiler = new LessCompiler();
- * File source = new File(&quot;/source.less&quot;);
+ *
+ * // compile source code
+ * String cssCode1 = compiler.compile(&quot;.basic { display: block; }&quot;);
  * 
  * // compile source file
- * String cssCode = compiler.compile(source);
+ * String cssCode2 = compiler.compile(new File(&quot;/source.less&quot;));
  * 
- * // compile source file and save to output file
- * compiler.compile(source, new File(&quot;/output.css&quot;));
+ * // compile source file and save CSS code in an output file
+ * compiler.compile(new File(&quot;/source.less&quot;), new File(&quot;/output.css&quot;));
  * 
  * // compile source file and compress CSS code
- * String compressedCssCode = compiler.compileAndCompress(source);
+ * String compressedCssCode = compiler.compileAndCompress(new File(&quot;/source.less&quot;));
  * &lt;/pre&gt;
  * 
  * @since 2.0.0
@@ -55,8 +57,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler() {
-<span class="nc" id="L58">        this(new NativeLessCompiler());</span>
-<span class="nc" id="L59">    }</span>
+<span class="nc" id="L60">        this(new NativeLessCompiler());</span>
+<span class="nc" id="L61">    }</span>
 
     /**
      * Constructs a new instance.
@@ -64,8 +66,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler(final NativeLessCompiler compiler) {
-<span class="fc" id="L67">        this(compiler, new SystemDefaultTemporaryFileFactory());</span>
-<span class="fc" id="L68">    }</span>
+<span class="fc" id="L69">        this(compiler, new SystemDefaultTemporaryFileFactory());</span>
+<span class="fc" id="L70">    }</span>
 
     /**
      * Constructs a new instance.
@@ -73,8 +75,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler(final TemporaryFileFactory fileFactory) {
-<span class="nc" id="L76">        this(new NativeLessCompiler(), fileFactory);</span>
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L78">        this(new NativeLessCompiler(), fileFactory);</span>
+<span class="nc" id="L79">    }</span>
 
     /**
      * Constructs a new instance.
@@ -82,13 +84,13 @@ public class LessCompiler {
      * @param fileFactory the file factory used to create source files when Less code is passed by string parameter.
      * @since 2.0.0
      */
-<span class="fc" id="L85">    public LessCompiler(final NativeLessCompiler compiler, final TemporaryFileFactory fileFactory) {</span>
-<span class="fc" id="L86">        this.compiler = compiler;</span>
-<span class="fc" id="L87">        this.fileFactory = fileFactory;</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L87">    public LessCompiler(final NativeLessCompiler compiler, final TemporaryFileFactory fileFactory) {</span>
+<span class="fc" id="L88">        this.compiler = compiler;</span>
+<span class="fc" id="L89">        this.fileFactory = fileFactory;</span>
+<span class="fc" id="L90">    }</span>
 
     /**
-     * Compiles a Less source file and returns a CSS code.
+     * Compiles a Less source code to a CSS code.
      * @param source the Less code (cannot be {@code null}).
      * @return the CSS code.
      * @throws IllegalArgumentException if the Less code is {@code null}.
@@ -100,17 +102,17 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final CharSequence source) {
-<span class="fc" id="L103">        validateSourceString(source);</span>
-<span class="fc" id="L104">        final File sourceFile = createTemporaryFileWithCode(source);</span>
-<span class="fc" id="L105">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L106">        builder.withInputFile(sourceFile);</span>
-<span class="fc" id="L107">        final String css = compiler.execute(builder.create());</span>
-<span class="fc" id="L108">        deleteFile(sourceFile);</span>
-<span class="fc" id="L109">        return css;</span>
+<span class="fc" id="L105">        validateSourceCode(source);</span>
+<span class="fc" id="L106">        final File sourceFile = createTemporaryFileWithCode(source);</span>
+<span class="fc" id="L107">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L108">        builder.inputFile(sourceFile);</span>
+<span class="fc" id="L109">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L110">        deleteFile(sourceFile);</span>
+<span class="fc" id="L111">        return css;</span>
     }
 
     /**
-     * Compiles a Less source file and returns a CSS code.
+     * Compiles a Less source file to a CSS code.
      * @param source the source file (cannot be {@code null} and must exist).
      * @return the CSS code.
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist.
@@ -123,14 +125,14 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final File source) {
-<span class="fc" id="L126">        validateSourceFile(source);</span>
-<span class="fc" id="L127">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L128">        builder.withInputFile(source);</span>
-<span class="fc" id="L129">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L128">        validateSourceFile(source);</span>
+<span class="fc" id="L129">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L130">        builder.inputFile(source);</span>
+<span class="fc" id="L131">        return compiler.execute(builder.build());</span>
     }
 
     /**
-     * Compiles a Less source file and saves CSS code in an output file.
+     * Compiles a Less source file to a CSS code and saves it in an output file.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param output the output file (cannot be {@code null}).
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is
@@ -144,16 +146,16 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final File source, final File output) {
-<span class="fc" id="L147">        validateSourceFile(source);</span>
-<span class="fc" id="L148">        validateOutputFile(output);</span>
-<span class="fc" id="L149">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L150">        builder.withInputFile(source).withOutputFile(output);</span>
-<span class="fc" id="L151">        compiler.execute(builder.create());</span>
-<span class="fc" id="L152">    }</span>
+<span class="fc" id="L149">        validateSourceFile(source);</span>
+<span class="fc" id="L150">        validateOutputFile(output);</span>
+<span class="fc" id="L151">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L152">        builder.inputFile(source).outputFile(output);</span>
+<span class="fc" id="L153">        compiler.execute(builder.build());</span>
+<span class="fc" id="L154">    }</span>
 
     /**
-     * Compiles a Less source file with custom configuration options and returns a CSS code.
-     * @param source the Less code (cannot be {@code null}).
+     * Compiles a Less source code with custom configuration options to a CSS code.
+     * @param source the source code (cannot be {@code null}).
      * @param options the configuration options (can be {@code null}).
      * @return the CSS code.
      * @throws IllegalArgumentException if the Less code is {@code null}.
@@ -165,13 +167,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final CharSequence source, final LessCompilerOptions options) {
-<span class="fc" id="L168">        validateSourceString(source);</span>
-<span class="fc" id="L169">        final File sourceFile = createTemporaryFileWithCode(source);</span>
-<span class="fc" id="L170">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L171">        builder.withInputFile(sourceFile).withOptions(options);</span>
-<span class="fc" id="L172">        final String css = compiler.execute(builder.create());</span>
-<span class="fc" id="L173">        deleteFile(sourceFile);</span>
-<span class="fc" id="L174">        return css;</span>
+<span class="fc" id="L170">        validateSourceCode(source);</span>
+<span class="fc" id="L171">        final File sourceFile = createTemporaryFileWithCode(source);</span>
+<span class="fc" id="L172">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L173">        builder.inputFile(sourceFile).options(options);</span>
+<span class="fc" id="L174">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L175">        deleteFile(sourceFile);</span>
+<span class="fc" id="L176">        return css;</span>
     }
 
     /**
@@ -189,10 +191,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final File source, final LessCompilerOptions options) {
-<span class="fc" id="L192">        validateSourceFile(source);</span>
-<span class="fc" id="L193">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L194">        builder.withInputFile(source).withOptions(options);</span>
-<span class="fc" id="L195">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L194">        validateSourceFile(source);</span>
+<span class="fc" id="L195">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L196">        builder.inputFile(source).options(options);</span>
+<span class="fc" id="L197">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -211,15 +213,15 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final File source, final File output, final LessCompilerOptions options) {
-<span class="fc" id="L214">        validateSourceFile(source);</span>
-<span class="fc" id="L215">        validateOutputFile(output);</span>
-<span class="fc" id="L216">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L217">        builder.withInputFile(source).withOutputFile(output).withOptions(options);</span>
-<span class="fc" id="L218">        compiler.execute(builder.create());</span>
-<span class="fc" id="L219">    }</span>
+<span class="fc" id="L216">        validateSourceFile(source);</span>
+<span class="fc" id="L217">        validateOutputFile(output);</span>
+<span class="fc" id="L218">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L219">        builder.inputFile(source).outputFile(output).options(options);</span>
+<span class="fc" id="L220">        compiler.execute(builder.build());</span>
+<span class="fc" id="L221">    }</span>
 
     /**
-     * Compiles a Less source file and returns a compressed CSS code.
+     * Compiles a Less source file to a compressed CSS code.
      * @param source the Less code (cannot be {@code null}).
      * @return the compressed CSS code.
      * @throws IllegalArgumentException if the Less code is {@code null}.
@@ -231,13 +233,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final CharSequence source) {
-<span class="fc" id="L234">        validateSourceString(source);</span>
-<span class="fc" id="L235">        final File sourceFile = createTemporaryFileWithCode(source);</span>
-<span class="fc" id="L236">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L237">        builder.withInputFile(sourceFile).withCompress(true);</span>
-<span class="fc" id="L238">        final String css = compiler.execute(builder.create());</span>
-<span class="fc" id="L239">        deleteFile(sourceFile);</span>
-<span class="fc" id="L240">        return css;</span>
+<span class="fc" id="L236">        validateSourceCode(source);</span>
+<span class="fc" id="L237">        final File sourceFile = createTemporaryFileWithCode(source);</span>
+<span class="fc" id="L238">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L239">        builder.inputFile(sourceFile).compress(true);</span>
+<span class="fc" id="L240">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L241">        deleteFile(sourceFile);</span>
+<span class="fc" id="L242">        return css;</span>
     }
 
     /**
@@ -254,10 +256,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final File source) {
-<span class="fc" id="L257">        validateSourceFile(source);</span>
-<span class="fc" id="L258">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L259">        builder.withInputFile(source).withCompress(true);</span>
-<span class="fc" id="L260">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L259">        validateSourceFile(source);</span>
+<span class="fc" id="L260">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L261">        builder.inputFile(source).compress(true);</span>
+<span class="fc" id="L262">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -275,12 +277,12 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final File source, final File output) {
-<span class="fc" id="L278">        validateSourceFile(source);</span>
-<span class="fc" id="L279">        validateOutputFile(output);</span>
-<span class="fc" id="L280">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L281">        builder.withInputFile(source).withOutputFile(output).withCompress(true);</span>
-<span class="fc" id="L282">        compiler.execute(builder.create());</span>
-<span class="fc" id="L283">    }</span>
+<span class="fc" id="L280">        validateSourceFile(source);</span>
+<span class="fc" id="L281">        validateOutputFile(output);</span>
+<span class="fc" id="L282">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L283">        builder.inputFile(source).outputFile(output).compress(true);</span>
+<span class="fc" id="L284">        compiler.execute(builder.build());</span>
+<span class="fc" id="L285">    }</span>
 
     /**
      * Compiles a Less source file to a CSS code with inline Source Map.
@@ -296,17 +298,16 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileWithInlineSourceMap(final File source) {
-<span class="fc" id="L299">        validateSourceFile(source);</span>
-<span class="fc" id="L300">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L301">        builder.withInputFile(source).withSourceMapInline(true);</span>
-<span class="fc" id="L302">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L301">        validateSourceFile(source);</span>
+<span class="fc" id="L302">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L303">        builder.inputFile(source).sourceMapInline(true);</span>
+<span class="fc" id="L304">        return compiler.execute(builder.build());</span>
     }
 
     /**
      * Compiles a Less source file to a CSS code with inline Source Map and saves it in an output file.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param output the output file (cannot be {@code null}).
-     * @return the CSS code with inline Source Map.
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is
      *             {@code null}.
      * @throws InitializationException if an error occurred during compiler initialization.
@@ -317,13 +318,13 @@ public class LessCompiler {
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
      */
-    public String compileWithInlineSourceMap(final File source, final File output) {
-<span class="fc" id="L321">        validateSourceFile(source);</span>
-<span class="fc" id="L322">        validateOutputFile(output);</span>
-<span class="fc" id="L323">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L324">        builder.withInputFile(source).withOutputFile(output).withSourceMapInline(true);</span>
-<span class="fc" id="L325">        return compiler.execute(builder.create());</span>
-    }
+    public void compileWithInlineSourceMap(final File source, final File output) {
+<span class="fc" id="L322">        validateSourceFile(source);</span>
+<span class="fc" id="L323">        validateOutputFile(output);</span>
+<span class="fc" id="L324">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L325">        builder.inputFile(source).outputFile(output).sourceMapInline(true);</span>
+<span class="fc" id="L326">        compiler.execute(builder.build());</span>
+<span class="fc" id="L327">    }</span>
 
     /**
      * Compiles a Less source file to a compressed CSS code with inline Source Map.
@@ -339,17 +340,16 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileWithInlineSourceMapAndCompress(final File source) {
-<span class="fc" id="L342">        validateSourceFile(source);</span>
-<span class="fc" id="L343">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L344">        builder.withInputFile(source).withSourceMapInline(true).withCompress(true);</span>
-<span class="fc" id="L345">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L343">        validateSourceFile(source);</span>
+<span class="fc" id="L344">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L345">        builder.inputFile(source).sourceMapInline(true).compress(true);</span>
+<span class="fc" id="L346">        return compiler.execute(builder.build());</span>
     }
 
     /**
      * Compiles a Less source file to a compressed CSS code with inline Source Map and saves it in an output file.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param output the output file (cannot be {@code null}).
-     * @return the compressed CSS code with inline Source Map.
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is
      *             {@code null}.
      * @throws InitializationException if an error occurred during compiler initialization.
@@ -360,13 +360,13 @@ public class LessCompiler {
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
      */
-    public String compileWithInlineSourceMapAndCompress(final File source, final File output) {
+    public void compileWithInlineSourceMapAndCompress(final File source, final File output) {
 <span class="fc" id="L364">        validateSourceFile(source);</span>
 <span class="fc" id="L365">        validateOutputFile(output);</span>
 <span class="fc" id="L366">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L367">        builder.withInputFile(source).withOutputFile(output).withSourceMapInline(true).withCompress(true);</span>
-<span class="fc" id="L368">        return compiler.execute(builder.create());</span>
-    }
+<span class="fc" id="L367">        builder.inputFile(source).outputFile(output).sourceMapInline(true).compress(true);</span>
+<span class="fc" id="L368">        compiler.execute(builder.build());</span>
+<span class="fc" id="L369">    }</span>
 
     /**
      * Compiles a Less source file to a CSS code with full inline Source Map. Full means that include the compiler will
@@ -385,8 +385,8 @@ public class LessCompiler {
     public String compileWithFullInlineSourceMap(final File source) {
 <span class="fc" id="L386">        validateSourceFile(source);</span>
 <span class="fc" id="L387">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L388">        builder.withInputFile(source).withSourceMapInline(true).withSourceMapLessInline(true);</span>
-<span class="fc" id="L389">        return compiler.execute(builder.create());</span>
+<span class="fc" id="L388">        builder.inputFile(source).sourceMapInline(true).sourceMapLessInline(true);</span>
+<span class="fc" id="L389">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -394,7 +394,6 @@ public class LessCompiler {
      * that include the compiler will include all of the Less files in to the Source Map.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param output the output file (cannot be {@code null}).
-     * @return the CSS code with inline Source Map.
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is
      *             {@code null}.
      * @throws InitializationException if an error occurred during compiler initialization.
@@ -405,52 +404,52 @@ public class LessCompiler {
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
      */
-    public String compileWithFullInlineSourceMap(final File source, final File output) {
-<span class="fc" id="L409">        validateSourceFile(source);</span>
-<span class="fc" id="L410">        validateOutputFile(output);</span>
-<span class="fc" id="L411">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L412">        builder.withInputFile(source).withOutputFile(output).withSourceMapInline(true).withSourceMapLessInline(true);</span>
-<span class="fc" id="L413">        return compiler.execute(builder.create());</span>
-    }
+    public void compileWithFullInlineSourceMap(final File source, final File output) {
+<span class="fc" id="L408">        validateSourceFile(source);</span>
+<span class="fc" id="L409">        validateOutputFile(output);</span>
+<span class="fc" id="L410">        final NativeLessCompilerOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L411">        builder.inputFile(source).outputFile(output).sourceMapInline(true).sourceMapLessInline(true);</span>
+<span class="fc" id="L412">        compiler.execute(builder.build());</span>
+<span class="fc" id="L413">    }</span>
 
     /**
-     * Validates a source text.
-     * @param source the source text.
-     * @throws IllegalArgumentException if the source text is {@code null}.
+     * Validates a source code.
+     * @param source the source code.
+     * @throws IllegalArgumentException if the source code is {@code null}.
      * @since 2.0.0
      */
-    protected void validateSourceString(final CharSequence source) {
-<span class="fc bfc" id="L423" title="All 2 branches covered.">        if (source == null) {</span>
-<span class="fc" id="L424">            throw new IllegalArgumentException(&quot;Source text cannot be null&quot;);</span>
+    protected void validateSourceCode(final CharSequence source) {
+<span class="fc bfc" id="L422" title="All 2 branches covered.">        if (source == null) {</span>
+<span class="fc" id="L423">            throw new IllegalArgumentException(&quot;Source text cannot be null&quot;);</span>
         }
-<span class="fc" id="L426">    }</span>
+<span class="fc" id="L425">    }</span>
 
     /**
-     * Validates source file.
+     * Validates a source file.
      * @param source the source file.
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist.
      * @since 2.0.0
      */
     protected void validateSourceFile(final File source) {
-<span class="fc bfc" id="L435" title="All 2 branches covered.">        if (source == null) {</span>
-<span class="fc" id="L436">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
+<span class="fc bfc" id="L434" title="All 2 branches covered.">        if (source == null) {</span>
+<span class="fc" id="L435">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L438" title="All 2 branches covered.">        if (!source.exists()) {</span>
-<span class="fc" id="L439">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + source.getAbsolutePath());</span>
+<span class="fc bfc" id="L437" title="All 2 branches covered.">        if (!source.exists()) {</span>
+<span class="fc" id="L438">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + source.getAbsolutePath());</span>
         }
-<span class="fc" id="L441">    }</span>
+<span class="fc" id="L440">    }</span>
 
     /**
-     * Validates output file.
+     * Validates an output file.
      * @param output the output file.
      * @throws IllegalArgumentException if the output file is {@code null}.
      * @since 2.0.0
      */
     protected void validateOutputFile(final File output) {
-<span class="fc bfc" id="L450" title="All 2 branches covered.">        if (output == null) {</span>
-<span class="fc" id="L451">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
+<span class="fc bfc" id="L449" title="All 2 branches covered.">        if (output == null) {</span>
+<span class="fc" id="L450">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
         }
-<span class="fc" id="L453">    }</span>
+<span class="fc" id="L452">    }</span>
 
     /**
      * Creates a new instance of the {@link NativeLessCompilerOptionsBuilder} used to create configuration options for
@@ -459,30 +458,30 @@ public class LessCompiler {
      * @since 2.0.0
      */
     protected NativeLessCompilerOptionsBuilder createOptionsBuilder() {
-<span class="nc" id="L462">        return new NativeLessCompilerOptionsBuilder();</span>
+<span class="nc" id="L461">        return new NativeLessCompilerOptionsBuilder();</span>
     }
 
     /**
      * Creates a temporary file.
-     * @param content the file content (cannot be {@code null}).
+     * @param code the file content (cannot be {@code null}).
      * @return the temporary file.
      * @throws IllegalArgumentException if the file or the content is {@code null}.
      * @throws CompilerException if cannot create the temporary file.
      * @since 2.0.0
      */
-    protected File createTemporaryFileWithCode(final CharSequence content) {
-<span class="nc" id="L474">        File file = null;</span>
+    protected File createTemporaryFileWithCode(final CharSequence code) {
+<span class="nc" id="L473">        File file = null;</span>
         try {
-<span class="nc" id="L476">            file = fileFactory.create();</span>
-<span class="nc" id="L477">        } catch (final IOException e) {</span>
-<span class="nc" id="L478">            throw new CompilerException(&quot;Cannot create temporary file&quot;, e);</span>
-<span class="nc" id="L479">        }</span>
+<span class="nc" id="L475">            file = fileFactory.create();</span>
+<span class="nc" id="L476">        } catch (final IOException e) {</span>
+<span class="nc" id="L477">            throw new CompilerException(&quot;Cannot create temporary file&quot;, e);</span>
+<span class="nc" id="L478">        }</span>
         try {
-<span class="nc" id="L481">            IOUtils.write(file, content);</span>
-<span class="nc" id="L482">        } catch (final IOException e) {</span>
-<span class="nc" id="L483">            throw new CompilerException(&quot;Cannot create temporary file with Less source code&quot;, e);</span>
-<span class="nc" id="L484">        }</span>
-<span class="nc" id="L485">        return file;</span>
+<span class="nc" id="L480">            IOUtils.write(file, code);</span>
+<span class="nc" id="L481">        } catch (final IOException e) {</span>
+<span class="nc" id="L482">            throw new CompilerException(&quot;Cannot save source code in temporaty file: &quot; + file.getAbsolutePath(), e);</span>
+<span class="nc" id="L483">        }</span>
+<span class="nc" id="L484">        return file;</span>
     }
 
     /**
@@ -492,10 +491,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     protected void deleteFile(final File file) {
-<span class="fc bfc" id="L495" title="All 2 branches covered.">        if (file == null) {</span>
-<span class="fc" id="L496">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
+<span class="fc bfc" id="L494" title="All 2 branches covered.">        if (file == null) {</span>
+<span class="fc" id="L495">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
         }
-<span class="fc" id="L498">        file.delete();</span>
-<span class="fc" id="L499">    }</span>
+<span class="fc" id="L497">        file.delete();</span>
+<span class="fc" id="L498">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

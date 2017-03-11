@@ -65,7 +65,7 @@ public final class IOUtils {
 <span class="nc" id="L65">            writer = new PrintWriter(file, &quot;UTF-8&quot;);</span>
 <span class="nc" id="L66">            writer.write(content.toString());</span>
         } finally {
-<span class="nc" id="L68">            IOUtils.closeQuietly(writer);</span>
+<span class="nc" id="L68">            closeQuietly(writer);</span>
 <span class="nc" id="L69">        }</span>
 <span class="nc" id="L70">    }</span>
 }

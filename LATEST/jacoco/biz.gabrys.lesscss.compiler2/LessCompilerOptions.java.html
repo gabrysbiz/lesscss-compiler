@@ -20,31 +20,32 @@ import java.util.List;
  * Represents &lt;a href=&quot;http://lesscss.org/usage/index.html#command-line-usage-options&quot;&gt;Less compiler options&lt;/a&gt;
  * responsible for controlling the {@link LessCompiler} compilation process.
  * @since 2.0.0
+ * @see LessCompilerOptionsBuilder
  */
 public class LessCompilerOptions {
 
     private boolean silent;
-    private boolean strictImportsEnabled;
-    private boolean compressionEnabled;
-    private boolean ieCompatabilityEnabled;
-    private boolean javaScriptAllowed;
+    private boolean strictImports;
+    private boolean compress;
+    private boolean ieCompatibility;
+    private boolean javaScript;
     private List&lt;String&gt; includePaths;
     private LineNumbersValue lineNumbers;
     private String rootPath;
-    private boolean relativeUrlsRewriteEnabled;
-    private boolean strictMathEnabled;
-    private boolean strictUnitsEnabled;
+    private boolean relativeUrls;
+    private boolean strictMath;
+    private boolean strictUnits;
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L42">    public LessCompilerOptions() {</span>
-<span class="fc" id="L43">        ieCompatabilityEnabled = true;</span>
-<span class="fc" id="L44">        javaScriptAllowed = true;</span>
-<span class="fc" id="L45">        includePaths = Collections.emptyList();</span>
-<span class="fc" id="L46">        lineNumbers = LineNumbersValue.DISABLED;</span>
-<span class="fc" id="L47">    }</span>
+<span class="fc" id="L43">    public LessCompilerOptions() {</span>
+<span class="fc" id="L44">        ieCompatibility = true;</span>
+<span class="fc" id="L45">        javaScript = true;</span>
+<span class="fc" id="L46">        includePaths = Collections.emptyList();</span>
+<span class="fc" id="L47">        lineNumbers = LineNumbersValue.OFF;</span>
+<span class="fc" id="L48">    }</span>
 
     /**
      * Constructs a new instance as a copy of an another options object.
@@ -52,22 +53,22 @@ public class LessCompilerOptions {
      * @throws IllegalArgumentException if options is equal to {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L55">    public LessCompilerOptions(final LessCompilerOptions options) {</span>
-<span class="pc bpc" id="L56" title="1 of 2 branches missed.">        if (options == null) {</span>
-<span class="nc" id="L57">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="fc" id="L56">    public LessCompilerOptions(final LessCompilerOptions options) {</span>
+<span class="pc bpc" id="L57" title="1 of 2 branches missed.">        if (options == null) {</span>
+<span class="nc" id="L58">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="fc" id="L59">        silent = options.silent;</span>
-<span class="fc" id="L60">        strictImportsEnabled = options.strictImportsEnabled;</span>
-<span class="fc" id="L61">        compressionEnabled = options.compressionEnabled;</span>
-<span class="fc" id="L62">        ieCompatabilityEnabled = options.ieCompatabilityEnabled;</span>
-<span class="fc" id="L63">        javaScriptAllowed = options.javaScriptAllowed;</span>
-<span class="fc" id="L64">        includePaths = new ArrayList&lt;String&gt;(options.includePaths);</span>
-<span class="fc" id="L65">        lineNumbers = options.lineNumbers;</span>
-<span class="fc" id="L66">        rootPath = options.rootPath;</span>
-<span class="fc" id="L67">        relativeUrlsRewriteEnabled = options.relativeUrlsRewriteEnabled;</span>
-<span class="fc" id="L68">        strictMathEnabled = options.strictMathEnabled;</span>
-<span class="fc" id="L69">        strictUnitsEnabled = options.strictUnitsEnabled;</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L60">        silent = options.silent;</span>
+<span class="fc" id="L61">        strictImports = options.strictImports;</span>
+<span class="fc" id="L62">        compress = options.compress;</span>
+<span class="fc" id="L63">        ieCompatibility = options.ieCompatibility;</span>
+<span class="fc" id="L64">        javaScript = options.javaScript;</span>
+<span class="fc" id="L65">        includePaths = new ArrayList&lt;String&gt;(options.includePaths);</span>
+<span class="fc" id="L66">        lineNumbers = options.lineNumbers;</span>
+<span class="fc" id="L67">        rootPath = options.rootPath;</span>
+<span class="fc" id="L68">        relativeUrls = options.relativeUrls;</span>
+<span class="fc" id="L69">        strictMath = options.strictMath;</span>
+<span class="fc" id="L70">        strictUnits = options.strictUnits;</span>
+<span class="fc" id="L71">    }</span>
 
     /**
      * Checks whether a compiler shouldn't log compilation warnings (default: {@code false}).
@@ -75,7 +76,7 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public boolean isSilent() {
-<span class="fc" id="L78">        return silent;</span>
+<span class="fc" id="L79">        return silent;</span>
     }
 
     /**
@@ -84,8 +85,8 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public void setSilent(final boolean silent) {
-<span class="fc" id="L87">        this.silent = silent;</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L88">        this.silent = silent;</span>
+<span class="fc" id="L89">    }</span>
 
     /**
      * Checks whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
@@ -94,38 +95,38 @@ public class LessCompilerOptions {
      *         blocks or other selector blocks, otherwise {@code false}.
      * @since 2.0.0
      */
-    public boolean isStrictImportsEnabled() {
-<span class="fc" id="L98">        return strictImportsEnabled;</span>
+    public boolean isStrictImports() {
+<span class="fc" id="L99">        return strictImports;</span>
     }
 
     /**
      * Sets whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
      * selector blocks (default: {@code false}).
-     * @param enabled {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either
+     * @param strictImports {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either
      *            &amp;#64;media blocks or other selector blocks, otherwise {@code false}.
      * @since 2.0.0
      */
-    public void setStrictImportsEnabled(final boolean enabled) {
-<span class="fc" id="L109">        strictImportsEnabled = enabled;</span>
-<span class="fc" id="L110">    }</span>
+    public void setStrictImports(final boolean strictImports) {
+<span class="fc" id="L110">        this.strictImports = strictImports;</span>
+<span class="fc" id="L111">    }</span>
 
     /**
      * Checks whether a CSS code should be compressed (default: {@code false}).
      * @return {@code true} whether the CSS code should be compressed, otherwise {@code false}.
      * @since 2.0.0
      */
-    public boolean isCompressionEnabled() {
-<span class="fc" id="L118">        return compressionEnabled;</span>
+    public boolean isCompress() {
+<span class="fc" id="L119">        return compress;</span>
     }
 
     /**
      * Sets whether a CSS code should be compressed (default: {@code false}).
-     * @param enabled {@code true} whether the CSS code should be compressed, otherwise {@code false}.
+     * @param compress {@code true} whether the CSS code should be compressed, otherwise {@code false}.
      * @since 2.0.0
      */
-    public void setCompressionEnabled(final boolean enabled) {
-<span class="fc" id="L127">        compressionEnabled = enabled;</span>
-<span class="fc" id="L128">    }</span>
+    public void setCompress(final boolean compress) {
+<span class="fc" id="L128">        this.compress = compress;</span>
+<span class="fc" id="L129">    }</span>
 
     /**
      * Sets whether a CSS code should be compatible with IE browser (default: {@code true}). Used for the
@@ -133,38 +134,39 @@ public class LessCompilerOptions {
      * @return {@code true} whether the CSS code should be compatible with IE browser, otherwise {@code false}.
      * @since 2.0.0
      */
-    public boolean isIeCompatabilityEnabled() {
-<span class="fc" id="L137">        return ieCompatabilityEnabled;</span>
+    public boolean isIeCompatability() {
+<span class="fc" id="L138">        return ieCompatibility;</span>
     }
 
     /**
      * Sets whether a CSS code should be compatible with IE browser (default: {@code true}). Used for the
      * {@code data-uri} function to ensure that images aren't created that are too large for the browser to handle.
-     * @param enabled {@code true} whether the CSS code should be compatible with IE browser, otherwise {@code false}.
+     * @param ieCompatibility {@code true} whether the CSS code should be compatible with IE browser, otherwise
+     *            {@code false}.
      * @since 2.0.0
      */
-    public void setIeCompatabilityEnabled(final boolean enabled) {
-<span class="fc" id="L147">        ieCompatabilityEnabled = enabled;</span>
-<span class="fc" id="L148">    }</span>
+    public void setIeCompatibility(final boolean ieCompatibility) {
+<span class="fc" id="L149">        this.ieCompatibility = ieCompatibility;</span>
+<span class="fc" id="L150">    }</span>
 
     /**
      * Checks whether a compiler should allow usage of JavaScript language (default: {@code true}).
      * @return {@code true} whether the compiler should allow usage of JavaScript language, otherwise {@code false}.
      * @since 2.0.0
      */
-    public boolean isJavaScriptAllowed() {
-<span class="fc" id="L156">        return javaScriptAllowed;</span>
+    public boolean isJavaScript() {
+<span class="fc" id="L158">        return javaScript;</span>
     }
 
     /**
      * Sets whether a compiler should allow usage of JavaScript language (default: {@code true}).
-     * @param allowed {@code true} whether the compiler should allow usage of JavaScript language, otherwise
+     * @param javaScript {@code true} whether the compiler should allow usage of JavaScript language, otherwise
      *            {@code false}.
      * @since 2.0.0
      */
-    public void setJavaScriptAllowed(final boolean allowed) {
-<span class="fc" id="L166">        javaScriptAllowed = allowed;</span>
-<span class="fc" id="L167">    }</span>
+    public void setJavaScript(final boolean javaScript) {
+<span class="fc" id="L168">        this.javaScript = javaScript;</span>
+<span class="fc" id="L169">    }</span>
 
     /**
      * Returns available include paths (default: empty collection). If the file in an &amp;#64;import rule does not exist at
@@ -174,7 +176,7 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public List&lt;String&gt; getIncludePaths() {
-<span class="fc" id="L177">        return new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L179">        return new ArrayList&lt;String&gt;(includePaths);</span>
     }
 
     /**
@@ -185,36 +187,36 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public void setIncludePaths(final List&lt;String&gt; includePaths) {
-<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (includePaths == null) {</span>
-<span class="fc" id="L189">            this.includePaths = Collections.emptyList();</span>
+<span class="fc bfc" id="L190" title="All 2 branches covered.">        if (includePaths == null) {</span>
+<span class="fc" id="L191">            this.includePaths = Collections.emptyList();</span>
         } else {
-<span class="fc" id="L191">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L193">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
         }
-<span class="fc" id="L193">    }</span>
+<span class="fc" id="L195">    }</span>
 
     /**
-     * Returns whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#DISABLED}).
-     * This was the only option before browsers started supporting Source Maps.
+     * Returns whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This
+     * was the only option before browsers started supporting Source Maps.
      * @return the line numbers value (never {@code null}).
      * @since 2.0.0
      */
     public LineNumbersValue getLineNumbers() {
-<span class="fc" id="L202">        return lineNumbers;</span>
+<span class="fc" id="L204">        return lineNumbers;</span>
     }
 
     /**
-     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#DISABLED}). This
-     * was the only option before browsers started supporting Source Maps.
-     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#DISABLED}).
+     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This was
+     * the only option before browsers started supporting Source Maps.
+     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#OFF}).
      * @since 2.0.0
      */
     public void setLineNumbers(final LineNumbersValue lineNumbers) {
-<span class="fc bfc" id="L212" title="All 2 branches covered.">        if (lineNumbers == null) {</span>
-<span class="fc" id="L213">            this.lineNumbers = LineNumbersValue.DISABLED;</span>
+<span class="fc bfc" id="L214" title="All 2 branches covered.">        if (lineNumbers == null) {</span>
+<span class="fc" id="L215">            this.lineNumbers = LineNumbersValue.OFF;</span>
         } else {
-<span class="fc" id="L215">            this.lineNumbers = lineNumbers;</span>
+<span class="fc" id="L217">            this.lineNumbers = lineNumbers;</span>
         }
-<span class="fc" id="L217">    }</span>
+<span class="fc" id="L219">    }</span>
 
     /**
      * Returns a path which will be added to every generated import and URL in CSS code (default: {@code null}). This
@@ -227,7 +229,7 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public String getRootPath() {
-<span class="fc" id="L230">        return rootPath;</span>
+<span class="fc" id="L232">        return rootPath;</span>
     }
 
     /**
@@ -241,8 +243,8 @@ public class LessCompilerOptions {
      * @since 2.0.0
      */
     public void setRootPath(final String rootPath) {
-<span class="fc" id="L244">        this.rootPath = rootPath;</span>
-<span class="fc" id="L245">    }</span>
+<span class="fc" id="L246">        this.rootPath = rootPath;</span>
+<span class="fc" id="L247">    }</span>
 
     /**
      * Checks whether a compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is,
@@ -284,8 +286,8 @@ public class LessCompilerOptions {
      * @return {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
      * @since 2.0.0
      */
-    public boolean isRelativeUrlsRewriteEnabled() {
-<span class="fc" id="L288">        return relativeUrlsRewriteEnabled;</span>
+    public boolean isRelativeUrls() {
+<span class="fc" id="L290">        return relativeUrls;</span>
     }
 
     /**
@@ -325,12 +327,12 @@ public class LessCompilerOptions {
      * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images
      * into the CSS.
      * &lt;/p&gt;
-     * @param enabled {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
+     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
      * @since 2.0.0
      */
-    public void setRelativeUrlsRewriteEnabled(final boolean enabled) {
-<span class="fc" id="L332">        relativeUrlsRewriteEnabled = enabled;</span>
-<span class="fc" id="L333">    }</span>
+    public void setRelativeUrls(final boolean relativeUrls) {
+<span class="fc" id="L334">        this.relativeUrls = relativeUrls;</span>
+<span class="fc" id="L335">    }</span>
 
     /**
      * Checks whether a compiler should try and process all maths in Less code (default: {@code false}). By default the
@@ -371,8 +373,8 @@ public class LessCompilerOptions {
      *         {@code false}.
      * @since 2.0.0
      */
-    public boolean isStrictMathEnabled() {
-<span class="fc" id="L375">        return strictMathEnabled;</span>
+    public boolean isStrictMath() {
+<span class="fc" id="L377">        return strictMath;</span>
     }
 
     /**
@@ -410,13 +412,13 @@ public class LessCompilerOptions {
      * }
      * &lt;/pre&gt;
      * 
-     * @param enabled {@code true} whether the compiler should try and process all maths in the Less code, otherwise
+     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise
      *            {@code false}.
      * @since 2.0.0
      */
-    public void setStrictMathEnabled(final boolean enabled) {
-<span class="fc" id="L418">        strictMathEnabled = enabled;</span>
-<span class="fc" id="L419">    }</span>
+    public void setStrictMath(final boolean strictMath) {
+<span class="fc" id="L420">        this.strictMath = strictMath;</span>
+<span class="fc" id="L421">    }</span>
 
     /**
      * Checks whether a compiler should guess units in Less code when it does maths (default: {@code false}). By default
@@ -437,8 +439,8 @@ public class LessCompilerOptions {
      *         {@code false}.
      * @since 2.0.0
      */
-    public boolean isStrictUnitsEnabled() {
-<span class="fc" id="L441">        return strictUnitsEnabled;</span>
+    public boolean isStrictUnits() {
+<span class="fc" id="L443">        return strictUnits;</span>
     }
 
     /**
@@ -456,47 +458,47 @@ public class LessCompilerOptions {
      * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an
      * error.
      * &lt;/p&gt;
-     * @param enabled {@code true} whether the compiler should guess units in the Less code when it does maths,
+     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,
      *            otherwise {@code false}.
      * @since 2.0.0
      */
-    public void setStrictUnitsEnabled(final boolean enabled) {
-<span class="fc" id="L464">        strictUnitsEnabled = enabled;</span>
-<span class="fc" id="L465">    }</span>
+    public void setStrictUnits(final boolean strictUnits) {
+<span class="fc" id="L466">        this.strictUnits = strictUnits;</span>
+<span class="fc" id="L467">    }</span>
 
     /**
      * Available values of the {@code line numbers} option.
      * @since 2.0.0
      * @see LessCompilerOptions#setLineNumbers(LineNumbersValue)
      */
-<span class="pc" id="L472">    public enum LineNumbersValue {</span>
+<span class="pc" id="L474">    public enum LineNumbersValue {</span>
 
         /**
          * Line numbers won't be put in CSS code.
          * @since 2.0.0
          */
-<span class="fc" id="L478">        DISABLED(&quot;&quot;),</span>
+<span class="fc" id="L480">        OFF(&quot;&quot;),</span>
         /**
          * Line numbers will be put in CSS comments blocks.
          * @since 2.0.0
          */
-<span class="fc" id="L483">        COMMENTS(&quot;comments&quot;),</span>
+<span class="fc" id="L485">        COMMENTS(&quot;comments&quot;),</span>
         /**
          * Line numbers will be put in &amp;#64;media queries.
          * @since 2.0.0
          */
-<span class="fc" id="L488">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
+<span class="fc" id="L490">        MEDIA_QUERY(&quot;mediaquery&quot;),</span>
         /**
          * Line numbers will be put in CSS comments blocks and &amp;#64;media queries.
          * @since 2.0.0
          */
-<span class="fc" id="L493">        ALL(&quot;all&quot;);</span>
+<span class="fc" id="L495">        ALL(&quot;all&quot;);</span>
 
         private final String value;
 
-<span class="fc" id="L497">        LineNumbersValue(final String value) {</span>
-<span class="fc" id="L498">            this.value = value;</span>
-<span class="fc" id="L499">        }</span>
+<span class="fc" id="L499">        LineNumbersValue(final String value) {</span>
+<span class="fc" id="L500">            this.value = value;</span>
+<span class="fc" id="L501">        }</span>
 
         /**
          * Returns a value assigned to {@code this} object.
@@ -504,7 +506,7 @@ public class LessCompilerOptions {
          * @since 2.0.0
          */
         public String getValue() {
-<span class="fc" id="L507">            return value;</span>
+<span class="fc" id="L509">            return value;</span>
         }
     }
 }

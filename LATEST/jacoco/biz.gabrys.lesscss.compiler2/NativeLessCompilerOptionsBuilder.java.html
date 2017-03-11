@@ -50,28 +50,28 @@ public class NativeLessCompilerOptionsBuilder {
     /**
      * Sets compiler options. This method overwrites values set by:
      * &lt;ul&gt;
-     * &lt;li&gt;{@link #withSilent(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withStrictImports(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withCompress(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withIeCompatability(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withJavaScript(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withIncludePaths(List)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withLineNumbers(LessCompilerOptions.LineNumbersValue)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withRootPath(String)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withRelativeUrls(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withStrictMath(boolean)}&lt;/li&gt;
-     * &lt;li&gt;{@link #withStrictUnits(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #silent(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #strictImports(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #compress(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #ieCompatibility(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #javaScript(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #includePaths(List)}&lt;/li&gt;
+     * &lt;li&gt;{@link #lineNumbers(LessCompilerOptions.LineNumbersValue)}&lt;/li&gt;
+     * &lt;li&gt;{@link #rootPath(String)}&lt;/li&gt;
+     * &lt;li&gt;{@link #relativeUrls(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #strictMath(boolean)}&lt;/li&gt;
+     * &lt;li&gt;{@link #strictUnits(boolean)}&lt;/li&gt;
      * &lt;/ul&gt;
      * @param options the options object.
      * @return {@code this} builder.
+     * @throws IllegalArgumentException if the options object is equal to {@code null}.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withOptions(final LessCompilerOptions options) {
-<span class="pc bpc" id="L70" title="1 of 2 branches missed.">        if (options != null) {</span>
-<span class="fc" id="L71">            this.options = new LessCompilerOptions(options);</span>
-        } else {
-<span class="nc" id="L73">            this.options = new LessCompilerOptions();</span>
+    public NativeLessCompilerOptionsBuilder options(final LessCompilerOptions options) {
+<span class="pc bpc" id="L71" title="1 of 2 branches missed.">        if (options == null) {</span>
+<span class="nc" id="L72">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
+<span class="fc" id="L74">        this.options = new LessCompilerOptions(options);</span>
 <span class="fc" id="L75">        return this;</span>
     }
 
@@ -81,7 +81,7 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withInputFile(final File input) {
+    public NativeLessCompilerOptionsBuilder inputFile(final File input) {
 <span class="fc" id="L85">        this.input = input;</span>
 <span class="fc" id="L86">        return this;</span>
     }
@@ -90,7 +90,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which represents an absolute path of the input file.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withInputFile(File)
+     * @see #inputFile(File)
      */
     protected String getInputFileCompilerOption() {
 <span class="fc bfc" id="L96" title="All 2 branches covered.">        if (input != null) {</span>
@@ -101,13 +101,13 @@ public class NativeLessCompilerOptionsBuilder {
     }
 
     /**
-     * Sets an output (destination) file. This method must be used together with {@link #withInputFile(File)}.
+     * Sets an output (destination) file. This method must be used together with {@link #inputFile(File)}.
      * @param output the output file.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withInputFile(File)
+     * @see #inputFile(File)
      */
-    public NativeLessCompilerOptionsBuilder withOutputFile(final File output) {
+    public NativeLessCompilerOptionsBuilder outputFile(final File output) {
 <span class="fc" id="L111">        this.output = output;</span>
 <span class="fc" id="L112">        return this;</span>
     }
@@ -116,7 +116,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which represents an absolute path of the output file.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withOutputFile(File)
+     * @see #outputFile(File)
      */
     protected String getOutputFileCompilerOption() {
 <span class="fc bfc" id="L122" title="All 2 branches covered.">        if (output != null) {</span>
@@ -132,7 +132,7 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withSilent(final boolean silent) {
+    public NativeLessCompilerOptionsBuilder silent(final boolean silent) {
 <span class="fc" id="L136">        options.setSilent(silent);</span>
 <span class="fc" id="L137">        return this;</span>
     }
@@ -141,7 +141,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables logging compilation warnings.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSilent(boolean)
+     * @see #silent(boolean)
      */
     protected String getSilentCompilerOption() {
 <span class="fc bfc" id="L147" title="All 2 branches covered.">        if (options.isSilent()) {</span>
@@ -159,8 +159,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withStrictImports(final boolean strictImports) {
-<span class="fc" id="L163">        options.setStrictImportsEnabled(strictImports);</span>
+    public NativeLessCompilerOptionsBuilder strictImports(final boolean strictImports) {
+<span class="fc" id="L163">        options.setStrictImports(strictImports);</span>
 <span class="fc" id="L164">        return this;</span>
     }
 
@@ -168,10 +168,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables strict imports.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withStrictImports(boolean)
+     * @see #strictImports(boolean)
      */
     protected String getStrictImportsCompilerOption() {
-<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (options.isStrictImportsEnabled()) {</span>
+<span class="fc bfc" id="L174" title="All 2 branches covered.">        if (options.isStrictImports()) {</span>
 <span class="fc" id="L175">            return &quot;--strict-imports&quot;;</span>
         } else {
 <span class="fc" id="L177">            return &quot;&quot;;</span>
@@ -184,8 +184,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withCompress(final boolean compress) {
-<span class="fc" id="L188">        options.setCompressionEnabled(compress);</span>
+    public NativeLessCompilerOptionsBuilder compress(final boolean compress) {
+<span class="fc" id="L188">        options.setCompress(compress);</span>
 <span class="fc" id="L189">        return this;</span>
     }
 
@@ -193,10 +193,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables a CSS code compression.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withCompress(boolean)
+     * @see #compress(boolean)
      */
     protected String getCompressCompilerOption() {
-<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (options.isCompressionEnabled()) {</span>
+<span class="fc bfc" id="L199" title="All 2 branches covered.">        if (options.isCompress()) {</span>
 <span class="fc" id="L200">            return &quot;--compress&quot;;</span>
         } else {
 <span class="fc" id="L202">            return &quot;&quot;;</span>
@@ -206,13 +206,13 @@ public class NativeLessCompilerOptionsBuilder {
     /**
      * Sets whether a CSS code should be compatible with IE browser (default: {@code true}). Used for the
      * {@code data-uri} function to ensure that images aren't created that are too large for the browser to handle.
-     * @param ieCompatability {@code true} whether the CSS code should be compatible with IE browser, otherwise
+     * @param ieCompatibility {@code true} whether the CSS code should be compatible with IE browser, otherwise
      *            {@code false}.
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withIeCompatability(final boolean ieCompatability) {
-<span class="fc" id="L215">        options.setIeCompatabilityEnabled(ieCompatability);</span>
+    public NativeLessCompilerOptionsBuilder ieCompatibility(final boolean ieCompatibility) {
+<span class="fc" id="L215">        options.setIeCompatibility(ieCompatibility);</span>
 <span class="fc" id="L216">        return this;</span>
     }
 
@@ -220,10 +220,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables compatibility with IE browser.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withIeCompatability(boolean)
+     * @see #ieCompatibility(boolean)
      */
-    protected String getIeCompatabilityCompilerOption() {
-<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (options.isIeCompatabilityEnabled()) {</span>
+    protected String getIeCompatibilityCompilerOption() {
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        if (options.isIeCompatability()) {</span>
 <span class="fc" id="L227">            return &quot;&quot;;</span>
         } else {
 <span class="fc" id="L229">            return &quot;--no-ie-compat&quot;;</span>
@@ -237,8 +237,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withJavaScript(final boolean javaScript) {
-<span class="fc" id="L241">        options.setJavaScriptAllowed(javaScript);</span>
+    public NativeLessCompilerOptionsBuilder javaScript(final boolean javaScript) {
+<span class="fc" id="L241">        options.setJavaScript(javaScript);</span>
 <span class="fc" id="L242">        return this;</span>
     }
 
@@ -246,10 +246,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which allows/disallows usage of JavaScript language.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withJavaScript(boolean)
+     * @see #javaScript(boolean)
      */
     protected String getJavaScriptCompilerOption() {
-<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (options.isJavaScriptAllowed()) {</span>
+<span class="fc bfc" id="L252" title="All 2 branches covered.">        if (options.isJavaScript()) {</span>
 <span class="fc" id="L253">            return &quot;&quot;;</span>
         } else {
 <span class="fc" id="L255">            return &quot;--no-js&quot;;</span>
@@ -264,7 +264,7 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withIncludePaths(final List&lt;String&gt; includePaths) {
+    public NativeLessCompilerOptionsBuilder includePaths(final List&lt;String&gt; includePaths) {
 <span class="fc" id="L268">        options.setIncludePaths(includePaths);</span>
 <span class="fc" id="L269">        return this;</span>
     }
@@ -273,7 +273,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option representation of the available include paths.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withIncludePaths(List)
+     * @see #includePaths(List)
      */
     protected String getIncludePathsCompilerOption() {
 <span class="fc" id="L279">        final Collection&lt;String&gt; includePaths = options.getIncludePaths();</span>
@@ -294,13 +294,13 @@ public class NativeLessCompilerOptionsBuilder {
     }
 
     /**
-     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#DISABLED}). This
-     * was the only option before browsers started supporting Source Maps.
-     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#DISABLED}).
+     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This was
+     * the only option before browsers started supporting Source Maps.
+     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#OFF}).
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withLineNumbers(final LineNumbersValue lineNumbers) {
+    public NativeLessCompilerOptionsBuilder lineNumbers(final LineNumbersValue lineNumbers) {
 <span class="fc" id="L304">        options.setLineNumbers(lineNumbers);</span>
 <span class="fc" id="L305">        return this;</span>
     }
@@ -309,11 +309,11 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables generating inline source-mapping.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withJavaScript(boolean)
+     * @see #javaScript(boolean)
      */
     protected String getLineNumbersCompilerOption() {
 <span class="fc" id="L315">        final LineNumbersValue lineNumbers = options.getLineNumbers();</span>
-<span class="fc bfc" id="L316" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.DISABLED) {</span>
+<span class="fc bfc" id="L316" title="All 2 branches covered.">        if (lineNumbers == LineNumbersValue.OFF) {</span>
 <span class="fc" id="L317">            return &quot;&quot;;</span>
         } else {
 <span class="fc" id="L319">            return &quot;--line-numbers=&quot; + lineNumbers.getValue();</span>
@@ -321,21 +321,21 @@ public class NativeLessCompilerOptionsBuilder {
     }
 
     /**
-     * Sets whether a compiler should generate a Source Map file with a default name equal to
-     * {@link #withOutputFile(File) output file name} plus {@code .map} suffix. It does not matter whether you call this
-     * method before or after the {@link #withOutputFile(File)} method.
+     * Sets whether a compiler should generate a Source Map file with a default name equal to {@link #outputFile(File)
+     * output file name} plus {@code .map} suffix. It does not matter whether you call this method before or after the
+     * {@link #outputFile(File)} method.
      * &lt;p&gt;
-     * This method clears bulider's data set by the {@link #withSourceMapFile(File)} and the
-     * {@link #withSourceMapInline(boolean)} methods.
+     * This method clears bulider's data set by the {@link #sourceMapFile(File)} and the
+     * {@link #sourceMapInline(boolean)} methods.
      * &lt;/p&gt;
      * @param enabled {@code true} whether the compiler should generate the Source Map file, otherwise {@code false}.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withOutputFile(File)
-     * @see #withSourceMapFile(File)
-     * @see #withSourceMapInline(boolean)
+     * @see #outputFile(File)
+     * @see #sourceMapFile(File)
+     * @see #sourceMapInline(boolean)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapDefault(final boolean enabled) {
+    public NativeLessCompilerOptionsBuilder sourceMapDefault(final boolean enabled) {
 <span class="fc" id="L339">        sourceMapDefault = enabled;</span>
 <span class="fc" id="L340">        sourceMapFile = null;</span>
 <span class="fc" id="L341">        sourceMapInline = false;</span>
@@ -346,7 +346,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables generating a Source Map file with default name.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapDefault(boolean)
+     * @see #sourceMapDefault(boolean)
      */
     protected String getSourceMapDefaultCompilerOption() {
 <span class="fc bfc" id="L352" title="All 2 branches covered.">        if (sourceMapDefault) {</span>
@@ -359,16 +359,16 @@ public class NativeLessCompilerOptionsBuilder {
     /**
      * Sets whether a compiler should generate a Source Map file.
      * &lt;p&gt;
-     * This method clears bulider's data set by the {@link #withSourceMapDefault(boolean)} and the
-     * {@link #withSourceMapInline(boolean)} methods.
+     * This method clears bulider's data set by the {@link #sourceMapDefault(boolean)} and the
+     * {@link #sourceMapInline(boolean)} methods.
      * &lt;/p&gt;
      * @param sourceMap the Source Map file.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapDefault(boolean)
-     * @see #withSourceMapInline(boolean)
+     * @see #sourceMapDefault(boolean)
+     * @see #sourceMapInline(boolean)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapFile(final File sourceMap) {
+    public NativeLessCompilerOptionsBuilder sourceMapFile(final File sourceMap) {
 <span class="fc" id="L372">        sourceMapDefault = false;</span>
 <span class="fc" id="L373">        sourceMapFile = sourceMap;</span>
 <span class="fc" id="L374">        sourceMapInline = false;</span>
@@ -379,7 +379,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables generating a Source Map file.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapFile(File)
+     * @see #sourceMapFile(File)
      */
     protected String getSourceMapFileCompilerOption() {
 <span class="fc bfc" id="L385" title="All 2 branches covered.">        if (sourceMapFile != null) {</span>
@@ -394,17 +394,17 @@ public class NativeLessCompilerOptionsBuilder {
      * production, but for development it allows the compiler to produce a single output file which in browsers that
      * support it, use the compiled CSS but show you the non-compiled Less source.
      * &lt;p&gt;
-     * This method clears bulider's data set by the {@link #withSourceMapDefault(boolean)} and the
-     * {@link #withSourceMapFile(File)} methods.
+     * This method clears bulider's data set by the {@link #sourceMapDefault(boolean)} and the
+     * {@link #sourceMapFile(File)} methods.
      * &lt;/p&gt;
      * @param inline {@code true} whether the compiler should generate a Source Map, otherwise {@code false}.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapDefault(boolean)
-     * @see #withSourceMapFile(File)
-     * @see #withSourceMapLessInline(boolean)
+     * @see #sourceMapDefault(boolean)
+     * @see #sourceMapFile(File)
+     * @see #sourceMapLessInline(boolean)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapInline(final boolean inline) {
+    public NativeLessCompilerOptionsBuilder sourceMapInline(final boolean inline) {
 <span class="fc" id="L408">        sourceMapDefault = false;</span>
 <span class="fc" id="L409">        sourceMapFile = null;</span>
 <span class="fc" id="L410">        sourceMapInline = inline;</span>
@@ -415,7 +415,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line options which enables/disables generating a Source Map which will be put to CSS code.
      * @return the command line options (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapInline(boolean)
+     * @see #sourceMapInline(boolean)
      */
     protected String[] getSourceMapInlineCompilerOptions() {
 <span class="fc bfc" id="L421" title="All 2 branches covered.">        if (sourceMapInline) {</span>
@@ -429,16 +429,16 @@ public class NativeLessCompilerOptionsBuilder {
      * Sets whether a compiler should include all of the Less files in to the Source Map. This means that you only need
      * your map file to get to your original source.
      * &lt;p&gt;
-     * This can be used in conjunction with the {@link #withSourceMapInline(boolean) map inline} option so that you do
-     * not need to have any additional external files at all.
+     * This can be used in conjunction with the {@link #sourceMapInline(boolean) map inline} option so that you do not
+     * need to have any additional external files at all.
      * &lt;/p&gt;
      * @param inline {@code true} whether the compiler should include all of the Less files in to the Source Map,
      *            otherwise {@code false}.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapInline(boolean)
+     * @see #sourceMapInline(boolean)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapLessInline(final boolean inline) {
+    public NativeLessCompilerOptionsBuilder sourceMapLessInline(final boolean inline) {
 <span class="fc" id="L442">        sourceMapLessInline = inline;</span>
 <span class="fc" id="L443">        return this;</span>
     }
@@ -447,7 +447,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line options which enables/disables generating a Source Map which will be put to CSS code.
      * @return the command line options (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapLessInline(boolean)
+     * @see #sourceMapLessInline(boolean)
      */
     protected String getSourceMapLessInlineCompilerOption() {
 <span class="fc bfc" id="L453" title="All 2 branches covered.">        if (sourceMapLessInline) {</span>
@@ -477,16 +477,16 @@ public class NativeLessCompilerOptionsBuilder {
      * then you should set the Source Map root path to {@code dev-files/}.
      * &lt;/p&gt;
      * &lt;p&gt;
-     * This option is the opposite of the {@link NativeLessCompilerOptionsBuilder#withSourceMapBasePath(String) Source
-     * Map base path} option.
+     * This option is the opposite of the {@link NativeLessCompilerOptionsBuilder#sourceMapBasePath(String) Source Map
+     * base path} option.
      * &lt;/p&gt;
      * @param rootPath the path which will be added.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapBasePath(String)
-     * @see #withSourceMapUrl(String)
+     * @see #sourceMapBasePath(String)
+     * @see #sourceMapUrl(String)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapRootPath(final String rootPath) {
+    public NativeLessCompilerOptionsBuilder sourceMapRootPath(final String rootPath) {
 <span class="fc" id="L490">        sourceMapRootPath = rootPath;</span>
 <span class="fc" id="L491">        return this;</span>
     }
@@ -495,7 +495,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option representation of the Source Map root path.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapRootPath(String)
+     * @see #sourceMapRootPath(String)
      */
     protected String getSourceMapRootPathCompilerOption() {
 <span class="fc bfc" id="L501" title="All 2 branches covered.">        if (sourceMapRootPath != null) {</span>
@@ -514,16 +514,16 @@ public class NativeLessCompilerOptionsBuilder {
      * directory, you can specify this to remove the additional less-files part of the path.
      * &lt;/p&gt;
      * &lt;p&gt;
-     * This option is the opposite of the {@link NativeLessCompilerOptionsBuilder#withSourceMapRootPath(String) Source
-     * Map root path} option.
+     * This option is the opposite of the {@link NativeLessCompilerOptionsBuilder#sourceMapRootPath(String) Source Map
+     * root path} option.
      * &lt;/p&gt;
      * @param basePath the path which will be removed.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapRootPath(String)
-     * @see #withSourceMapUrl(String)
+     * @see #sourceMapRootPath(String)
+     * @see #sourceMapUrl(String)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapBasePath(final String basePath) {
+    public NativeLessCompilerOptionsBuilder sourceMapBasePath(final String basePath) {
 <span class="fc" id="L527">        sourceMapBasePath = basePath;</span>
 <span class="fc" id="L528">        return this;</span>
     }
@@ -532,7 +532,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option representation of the Source Map base path.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapBasePath(String)
+     * @see #sourceMapBasePath(String)
      */
     protected String getSourceMapBasePathCompilerOption() {
 <span class="fc bfc" id="L538" title="All 2 branches covered.">        if (sourceMapBasePath != null) {</span>
@@ -544,15 +544,15 @@ public class NativeLessCompilerOptionsBuilder {
 
     /**
      * Sets a path which will overwrite the URL in the CSS that points at the Source Map map file. This is for cases
-     * when the {@link #withSourceMapRootPath(String) root path} and the {@link #withSourceMapBasePath(String) base
-     * path} options are not producing exactly what you need.
+     * when the {@link #sourceMapRootPath(String) root path} and the {@link #sourceMapBasePath(String) base path}
+     * options are not producing exactly what you need.
      * @param url the Source Map URL.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #withSourceMapBasePath(String)
-     * @see #withSourceMapRootPath(String)
+     * @see #sourceMapBasePath(String)
+     * @see #sourceMapRootPath(String)
      */
-    public NativeLessCompilerOptionsBuilder withSourceMapUrl(final String url) {
+    public NativeLessCompilerOptionsBuilder sourceMapUrl(final String url) {
 <span class="fc" id="L556">        sourceMapUrl = url;</span>
 <span class="fc" id="L557">        return this;</span>
     }
@@ -561,7 +561,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option representation of the Source Map URL.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withSourceMapUrl(String)
+     * @see #sourceMapUrl(String)
      */
     protected String getSourceMapUrlCompilerOption() {
 <span class="fc bfc" id="L567" title="All 2 branches covered.">        if (sourceMapUrl != null) {</span>
@@ -582,7 +582,7 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withRootPath(final String rootPath) {
+    public NativeLessCompilerOptionsBuilder rootPath(final String rootPath) {
 <span class="fc" id="L586">        options.setRootPath(rootPath);</span>
 <span class="fc" id="L587">        return this;</span>
     }
@@ -591,7 +591,7 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option representation of the root path.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withRootPath(String)
+     * @see #rootPath(String)
      */
     protected String getRootPathCompilerOption() {
 <span class="fc" id="L597">        final String rootPath = options.getRootPath();</span>
@@ -643,8 +643,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withRelativeUrls(final boolean relativeUrls) {
-<span class="fc" id="L647">        options.setRelativeUrlsRewriteEnabled(relativeUrls);</span>
+    public NativeLessCompilerOptionsBuilder relativeUrls(final boolean relativeUrls) {
+<span class="fc" id="L647">        options.setRelativeUrls(relativeUrls);</span>
 <span class="fc" id="L648">        return this;</span>
     }
 
@@ -652,10 +652,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables rewriting relative URLs.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withRelativeUrls(boolean)
+     * @see #relativeUrls(boolean)
      */
     protected String getRelativeUrlsCompilerOption() {
-<span class="fc bfc" id="L658" title="All 2 branches covered.">        if (options.isRelativeUrlsRewriteEnabled()) {</span>
+<span class="fc bfc" id="L658" title="All 2 branches covered.">        if (options.isRelativeUrls()) {</span>
 <span class="fc" id="L659">            return &quot;--relative-urls&quot;;</span>
         } else {
 <span class="fc" id="L661">            return &quot;&quot;;</span>
@@ -702,8 +702,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withStrictMath(final boolean strictMath) {
-<span class="fc" id="L706">        options.setStrictMathEnabled(strictMath);</span>
+    public NativeLessCompilerOptionsBuilder strictMath(final boolean strictMath) {
+<span class="fc" id="L706">        options.setStrictMath(strictMath);</span>
 <span class="fc" id="L707">        return this;</span>
     }
 
@@ -711,10 +711,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables strict math.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withStrictMath(boolean)
+     * @see #strictMath(boolean)
      */
     protected String getStrictMathCompilerOption() {
-<span class="fc bfc" id="L717" title="All 2 branches covered.">        if (options.isStrictMathEnabled()) {</span>
+<span class="fc bfc" id="L717" title="All 2 branches covered.">        if (options.isStrictMath()) {</span>
 <span class="fc" id="L718">            return &quot;--strict-math=on&quot;;</span>
         } else {
 <span class="fc" id="L720">            return &quot;&quot;;</span>
@@ -741,8 +741,8 @@ public class NativeLessCompilerOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessCompilerOptionsBuilder withStrictUnits(final boolean strictUnits) {
-<span class="fc" id="L745">        options.setStrictUnitsEnabled(strictUnits);</span>
+    public NativeLessCompilerOptionsBuilder strictUnits(final boolean strictUnits) {
+<span class="fc" id="L745">        options.setStrictUnits(strictUnits);</span>
 <span class="fc" id="L746">        return this;</span>
     }
 
@@ -750,10 +750,10 @@ public class NativeLessCompilerOptionsBuilder {
      * Returns a command line option which enables/disables strict units.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #withStrictUnits(boolean)
+     * @see #strictUnits(boolean)
      */
     protected String getStrictUnitsCompilerOption() {
-<span class="fc bfc" id="L756" title="All 2 branches covered.">        if (options.isStrictUnitsEnabled()) {</span>
+<span class="fc bfc" id="L756" title="All 2 branches covered.">        if (options.isStrictUnits()) {</span>
 <span class="fc" id="L757">            return &quot;--strict-units=on&quot;;</span>
         } else {
 <span class="fc" id="L759">            return &quot;&quot;;</span>
@@ -761,17 +761,17 @@ public class NativeLessCompilerOptionsBuilder {
     }
 
     /**
-     * Creates a collection with configuration options for the {@link NativeLessCompiler} compilation process.
+     * Builds a collection with configuration options for the {@link NativeLessCompiler} compilation process.
      * @return the collection with configuration options.
      * @throws BuilderCreationException if you set an output file without setting an input file.
      * @since 2.0.0
      */
-    public Collection&lt;Object&gt; create() {
+    public Collection&lt;Object&gt; build() {
 <span class="fc" id="L770">        final ListWithoutEmptyValuesBuilder configurationOptions = new ListWithoutEmptyValuesBuilder();</span>
 <span class="fc" id="L771">        configurationOptions.add(getSilentCompilerOption());</span>
 <span class="fc" id="L772">        configurationOptions.add(getStrictImportsCompilerOption());</span>
 <span class="fc" id="L773">        configurationOptions.add(getCompressCompilerOption());</span>
-<span class="fc" id="L774">        configurationOptions.add(getIeCompatabilityCompilerOption());</span>
+<span class="fc" id="L774">        configurationOptions.add(getIeCompatibilityCompilerOption());</span>
 <span class="fc" id="L775">        configurationOptions.add(getJavaScriptCompilerOption());</span>
 <span class="fc" id="L776">        configurationOptions.add(getIncludePathsCompilerOption());</span>
 <span class="fc" id="L777">        configurationOptions.add(getLineNumbersCompilerOption());</span>
@@ -794,7 +794,7 @@ public class NativeLessCompilerOptionsBuilder {
 <span class="fc" id="L794">        final String outputPath = getOutputFileCompilerOption();</span>
 <span class="fc bfc" id="L795" title="All 2 branches covered.">        if (StringUtils.isNotBlank(outputPath)) {</span>
 <span class="fc bfc" id="L796" title="All 2 branches covered.">            if (StringUtils.isBlank(inputPath)) {</span>
-<span class="fc" id="L797">                throw new BuilderCreationException(&quot;Input file is required when otuput file is set (see #withInputFile(File))&quot;);</span>
+<span class="fc" id="L797">                throw new BuilderCreationException(&quot;Input file is required when otuput file is set (see inputFile(File) method)&quot;);</span>
             }
 <span class="fc" id="L799">            configurationOptions.add(outputPath);</span>
         }
