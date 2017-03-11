@@ -29,7 +29,7 @@ import biz.gabrys.lesscss.compiler2.util.io.TemporaryFileFactory;
  * &lt;/p&gt;
  * 
  * &lt;pre&gt;
- * // create compiler and source file
+ * // create compiler
  * LessCompiler compiler = new LessCompiler();
  *
  * // compile source code
@@ -418,9 +418,9 @@ public class LessCompiler {
      * @throws IllegalArgumentException if the source code is {@code null}.
      * @since 2.0.0
      */
-    protected void validateSourceCode(final CharSequence source) {
+    void validateSourceCode(final CharSequence source) {
 <span class="fc bfc" id="L422" title="All 2 branches covered.">        if (source == null) {</span>
-<span class="fc" id="L423">            throw new IllegalArgumentException(&quot;Source text cannot be null&quot;);</span>
+<span class="fc" id="L423">            throw new IllegalArgumentException(&quot;Source code cannot be null&quot;);</span>
         }
 <span class="fc" id="L425">    }</span>
 
@@ -430,7 +430,7 @@ public class LessCompiler {
      * @throws IllegalArgumentException if the source file is {@code null} or does not exist.
      * @since 2.0.0
      */
-    protected void validateSourceFile(final File source) {
+    void validateSourceFile(final File source) {
 <span class="fc bfc" id="L434" title="All 2 branches covered.">        if (source == null) {</span>
 <span class="fc" id="L435">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
         }
@@ -445,7 +445,7 @@ public class LessCompiler {
      * @throws IllegalArgumentException if the output file is {@code null}.
      * @since 2.0.0
      */
-    protected void validateOutputFile(final File output) {
+    void validateOutputFile(final File output) {
 <span class="fc bfc" id="L449" title="All 2 branches covered.">        if (output == null) {</span>
 <span class="fc" id="L450">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
         }
@@ -457,7 +457,7 @@ public class LessCompiler {
      * @return the new instance of the {@link NativeLessCompilerOptionsBuilder}.
      * @since 2.0.0
      */
-    protected NativeLessCompilerOptionsBuilder createOptionsBuilder() {
+    NativeLessCompilerOptionsBuilder createOptionsBuilder() {
 <span class="nc" id="L461">        return new NativeLessCompilerOptionsBuilder();</span>
     }
 
@@ -469,7 +469,7 @@ public class LessCompiler {
      * @throws CompilerException if cannot create the temporary file.
      * @since 2.0.0
      */
-    protected File createTemporaryFileWithCode(final CharSequence code) {
+    File createTemporaryFileWithCode(final CharSequence code) {
 <span class="nc" id="L473">        File file = null;</span>
         try {
 <span class="nc" id="L475">            file = fileFactory.create();</span>
@@ -490,7 +490,7 @@ public class LessCompiler {
      * @throws IllegalArgumentException if the file is {@code null}.
      * @since 2.0.0
      */
-    protected void deleteFile(final File file) {
+    void deleteFile(final File file) {
 <span class="fc bfc" id="L494" title="All 2 branches covered.">        if (file == null) {</span>
 <span class="fc" id="L495">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
         }

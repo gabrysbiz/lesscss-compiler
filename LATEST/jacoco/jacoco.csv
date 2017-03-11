@@ -7,7 +7,7 @@ LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,8,5,0,0,4,2,2,1,2,
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompilerOptions,5,162,1,5,1,57,1,26,0,24
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,InitializationException,13,0,0,0,6,0,3,0,3,0
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,26,243,2,8,5,51,2,7,0,4
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ImportFileExceptionConverter,0,30,0,0,0,4,0,3,0,3
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ImportFileExceptionConverter,0,30,0,0,0,5,0,3,0,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompilerOptionsBuilder,5,534,2,52,1,150,2,68,0,43
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,52,402,0,10,15,102,4,26,4,21
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ConfigurationExceptionConverter,0,14,0,0,0,3,0,3,0,3
@@ -16,5 +16,5 @@ LessCSS Compiler,biz.gabrys.lesscss.compiler2,ReadFileException,14,11,0,0,6,4,2,
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompilerOptions.LineNumbersValue,5,63,0,0,0,9,1,4,1,4
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,BuilderCreationException,9,4,0,0,4,2,2,1,2,1
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,CompilerException,8,5,0,0,4,2,2,1,2,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompilerOptionsBuilder,19,173,2,2,6,51,3,36,2,35
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompilerOptionsBuilder,16,188,2,2,5,55,2,37,1,36
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,ConfigurationException,8,5,0,0,4,2,2,1,2,1

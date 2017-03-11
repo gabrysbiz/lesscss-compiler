@@ -156,18 +156,20 @@
             </p>
             
 <div>
-<pre>// create compiler and source file
+<pre>// create compiler
 LessCompiler compiler = new LessCompiler();
-File source = new File(&quot;/source.less&quot;);
+
+// compile source code
+String cssCode1 = compiler.compile(&quot;.basic { display: block; }&quot;);
 
 // compile source file
-String cssCode = compiler.compile(source);
+String cssCode2 = compiler.compile(new File(&quot;/source.less&quot;));
 
-// compile source file and save to output file
-compiler.compile(source, new File(&quot;/output.css&quot;));
+// compile source file and save CSS code in an output file
+compiler.compile(new File(&quot;/source.less&quot;), new File(&quot;/output.css&quot;));
 
 // compile source file and compress CSS code
-String compressedCssCode = compiler.compileAndCompress(source);</pre></div>
+String compressedCssCode = compiler.compileAndCompress(new File(&quot;/source.less&quot;));</pre></div>
         </div>
     
 

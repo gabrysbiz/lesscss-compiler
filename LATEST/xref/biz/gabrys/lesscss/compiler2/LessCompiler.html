@@ -37,7 +37,7 @@
 <a class="jxr_linenumber" name="L29" href="#L29">29</a>  <em class="jxr_javadoccomment"> * &lt;/p&gt;</em>
 <a class="jxr_linenumber" name="L30" href="#L30">30</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L31" href="#L31">31</a>  <em class="jxr_javadoccomment"> * &lt;pre&gt;</em>
-<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * // create compiler and source file</em>
+<a class="jxr_linenumber" name="L32" href="#L32">32</a>  <em class="jxr_javadoccomment"> * // create compiler</em>
 <a class="jxr_linenumber" name="L33" href="#L33">33</a>  <em class="jxr_javadoccomment"> * LessCompiler compiler = new LessCompiler();</em>
 <a class="jxr_linenumber" name="L34" href="#L34">34</a>  <em class="jxr_javadoccomment"> *</em>
 <a class="jxr_linenumber" name="L35" href="#L35">35</a>  <em class="jxr_javadoccomment"> * // compile source code</em>
@@ -426,9 +426,9 @@
 <a class="jxr_linenumber" name="L418" href="#L418">418</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the source code is {@code null}.</em>
 <a class="jxr_linenumber" name="L419" href="#L419">419</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L420" href="#L420">420</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L421" href="#L421">421</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> validateSourceCode(<strong class="jxr_keyword">final</strong> CharSequence source) {
+<a class="jxr_linenumber" name="L421" href="#L421">421</a>     <strong class="jxr_keyword">void</strong> validateSourceCode(<strong class="jxr_keyword">final</strong> CharSequence source) {
 <a class="jxr_linenumber" name="L422" href="#L422">422</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L423" href="#L423">423</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source text cannot be null"</span>);
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source code cannot be null"</span>);
 <a class="jxr_linenumber" name="L424" href="#L424">424</a>         }
 <a class="jxr_linenumber" name="L425" href="#L425">425</a>     }
 <a class="jxr_linenumber" name="L426" href="#L426">426</a> 
@@ -438,7 +438,7 @@
 <a class="jxr_linenumber" name="L430" href="#L430">430</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the source file is {@code null} or does not exist.</em>
 <a class="jxr_linenumber" name="L431" href="#L431">431</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L432" href="#L432">432</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L433" href="#L433">433</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> validateSourceFile(<strong class="jxr_keyword">final</strong> File source) {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>     <strong class="jxr_keyword">void</strong> validateSourceFile(<strong class="jxr_keyword">final</strong> File source) {
 <a class="jxr_linenumber" name="L434" href="#L434">434</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L435" href="#L435">435</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source file cannot be null"</span>);
 <a class="jxr_linenumber" name="L436" href="#L436">436</a>         }
@@ -453,7 +453,7 @@
 <a class="jxr_linenumber" name="L445" href="#L445">445</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the output file is {@code null}.</em>
 <a class="jxr_linenumber" name="L446" href="#L446">446</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L447" href="#L447">447</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> validateOutputFile(<strong class="jxr_keyword">final</strong> File output) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>     <strong class="jxr_keyword">void</strong> validateOutputFile(<strong class="jxr_keyword">final</strong> File output) {
 <a class="jxr_linenumber" name="L449" href="#L449">449</a>         <strong class="jxr_keyword">if</strong> (output == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L450" href="#L450">450</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Output file cannot be null"</span>);
 <a class="jxr_linenumber" name="L451" href="#L451">451</a>         }
@@ -465,7 +465,7 @@
 <a class="jxr_linenumber" name="L457" href="#L457">457</a> <em class="jxr_javadoccomment">     * @return the new instance of the {@link NativeLessCompilerOptionsBuilder}.</em>
 <a class="jxr_linenumber" name="L458" href="#L458">458</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L459" href="#L459">459</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L460" href="#L460">460</a>     <strong class="jxr_keyword">protected</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompilerOptionsBuilder.html">NativeLessCompilerOptionsBuilder</a> createOptionsBuilder() {
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompilerOptionsBuilder.html">NativeLessCompilerOptionsBuilder</a> createOptionsBuilder() {
 <a class="jxr_linenumber" name="L461" href="#L461">461</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompilerOptionsBuilder.html">NativeLessCompilerOptionsBuilder</a>();
 <a class="jxr_linenumber" name="L462" href="#L462">462</a>     }
 <a class="jxr_linenumber" name="L463" href="#L463">463</a> 
@@ -477,7 +477,7 @@
 <a class="jxr_linenumber" name="L469" href="#L469">469</a> <em class="jxr_javadoccomment">     * @throws CompilerException if cannot create the temporary file.</em>
 <a class="jxr_linenumber" name="L470" href="#L470">470</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L471" href="#L471">471</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L472" href="#L472">472</a>     <strong class="jxr_keyword">protected</strong> File createTemporaryFileWithCode(<strong class="jxr_keyword">final</strong> CharSequence code) {
+<a class="jxr_linenumber" name="L472" href="#L472">472</a>     File createTemporaryFileWithCode(<strong class="jxr_keyword">final</strong> CharSequence code) {
 <a class="jxr_linenumber" name="L473" href="#L473">473</a>         File file = <strong class="jxr_keyword">null</strong>;
 <a class="jxr_linenumber" name="L474" href="#L474">474</a>         <strong class="jxr_keyword">try</strong> {
 <a class="jxr_linenumber" name="L475" href="#L475">475</a>             file = fileFactory.create();
@@ -498,7 +498,7 @@
 <a class="jxr_linenumber" name="L490" href="#L490">490</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file is {@code null}.</em>
 <a class="jxr_linenumber" name="L491" href="#L491">491</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L492" href="#L492">492</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L493" href="#L493">493</a>     <strong class="jxr_keyword">protected</strong> <strong class="jxr_keyword">void</strong> deleteFile(<strong class="jxr_keyword">final</strong> File file) {
+<a class="jxr_linenumber" name="L493" href="#L493">493</a>     <strong class="jxr_keyword">void</strong> deleteFile(<strong class="jxr_keyword">final</strong> File file) {
 <a class="jxr_linenumber" name="L494" href="#L494">494</a>         <strong class="jxr_keyword">if</strong> (file == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L495" href="#L495">495</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"File cannot be null"</span>);
 <a class="jxr_linenumber" name="L496" href="#L496">496</a>         }
