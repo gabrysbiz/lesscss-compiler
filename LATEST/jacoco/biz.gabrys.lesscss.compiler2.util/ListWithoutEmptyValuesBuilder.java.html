@@ -33,8 +33,8 @@ public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
      * @since 2.0.0
      */
 <span class="fc" id="L35">    public ListWithoutEmptyValuesBuilder(final Checker&lt;T&gt; checker) {</span>
-<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (checker == null) {</span>
-<span class="nc" id="L37">            throw new IllegalArgumentException(&quot;Checker cannot be null&quot;);</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (checker == null) {</span>
+<span class="fc" id="L37">            throw new IllegalArgumentException(&quot;Checker cannot be null&quot;);</span>
         }
 <span class="fc" id="L39">        this.checker = checker;</span>
 <span class="fc" id="L40">    }</span>

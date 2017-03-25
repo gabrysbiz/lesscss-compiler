@@ -174,7 +174,7 @@ public class NativeLessCompiler {
 <span class="fc" id="L174">            compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);</span>
 
 <span class="nc" id="L176">        } catch (final Exception e) {</span>
-<span class="nc" id="L177">            throw new InitializationException(&quot;Failed to initialize Less compiler&quot;, e);</span>
+<span class="nc" id="L177">            throw new InitializationException(&quot;Failed to initialize native Less compiler&quot;, e);</span>
 
         } finally {
 <span class="pc" id="L180">            IOUtils.closeQuietly(streamReader);</span>

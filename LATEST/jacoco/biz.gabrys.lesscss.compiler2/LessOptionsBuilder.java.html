@@ -25,7 +25,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  */
 public class LessOptionsBuilder {
 
-    LessOptions options;
+    private final LessOptions options;
 
     /**
      * Constructs a new instance.
@@ -559,17 +559,6 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Builds a new instance of the {@link LessOptions} and resets {@code this} builder state.
-     * @return the new instance of the {@link LessOptions}.
-     * @since 2.0.0
-     */
-    public LessOptions build() {
-<span class="fc" id="L567">        final LessOptions result = options;</span>
-<span class="fc" id="L568">        options = new LessOptions();</span>
-<span class="fc" id="L569">        return result;</span>
-    }
-
-    /**
      * Sets a path which will overwrite the URL in the CSS that points at the Source Map map file (default:
      * {@code null}).
      * @param url the Source Map URL.
@@ -578,8 +567,8 @@ public class LessOptionsBuilder {
      * @see #sourceMapUrlOff()
      */
     public LessOptionsBuilder sourceMapUrl(final CharSequence url) {
-<span class="fc" id="L581">        options.setSourceMapUrl(StringUtils.toStringIfNotNull(url));</span>
-<span class="fc" id="L582">        return this;</span>
+<span class="fc" id="L570">        options.setSourceMapUrl(StringUtils.toStringIfNotNull(url));</span>
+<span class="fc" id="L571">        return this;</span>
     }
 
     /**
@@ -589,7 +578,16 @@ public class LessOptionsBuilder {
      * @see #sourceMapUrl(CharSequence)
      */
     public LessOptionsBuilder sourceMapUrlOff() {
-<span class="fc" id="L592">        return sourceMapUrl(null);</span>
+<span class="fc" id="L581">        return sourceMapUrl(null);</span>
+    }
+
+    /**
+     * Builds a new instance of the {@link LessOptions}.
+     * @return the new instance of the {@link LessOptions}.
+     * @since 2.0.0
+     */
+    public LessOptions build() {
+<span class="fc" id="L590">        return new LessOptions(options);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

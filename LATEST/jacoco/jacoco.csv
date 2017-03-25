@@ -1,7 +1,7 @@
 GROUP,PACKAGE,CLASS,INSTRUCTION_MISSED,INSTRUCTION_COVERED,BRANCH_MISSED,BRANCH_COVERED,LINE_MISSED,LINE_COVERED,COMPLEXITY_MISSED,COMPLEXITY_COVERED,METHOD_MISSED,METHOD_COVERED
 LessCSS Compiler,biz.gabrys.lesscss.compiler2.util.io,IOUtils,24,22,1,5,8,10,2,4,1,2
 LessCSS Compiler,biz.gabrys.lesscss.compiler2.util.io,SystemDefaultTemporaryFileFactory,4,3,0,0,1,1,1,1,1,1
-LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,5,55,1,7,1,13,1,7,0,4
+LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,ListWithoutEmptyValuesBuilder,0,60,0,8,0,14,0,8,0,4
 LessCSS Compiler,biz.gabrys.lesscss.compiler2.util,StringUtils,3,39,0,12,2,10,1,9,1,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,SyntaxException,8,5,0,0,4,2,2,1,2,1
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,InitializationException,13,0,0,0,6,0,3,0,3,0
@@ -9,10 +9,10 @@ LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,26,243,2,8,5,51
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ImportFileExceptionConverter,0,30,0,0,0,5,0,3,0,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessOptionsBuilder.new ListWithoutEmptyValuesBuilder.Checker() {...},0,9,0,0,0,2,0,2,0,2
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessOptionsBuilder,5,552,2,52,1,153,2,68,0,43
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,52,356,0,12,15,90,4,24,4,18
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,52,370,0,16,15,94,4,26,4,18
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LineNumbersValue,5,63,0,0,0,9,1,4,1,4
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ConfigurationExceptionConverter,0,14,0,0,0,3,0,3,0,3
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessOptionsBuilder,16,265,2,6,5,75,2,48,1,45
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessOptionsBuilder,16,261,2,6,5,73,2,48,1,45
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.SourceFileExceptionConverter,0,15,0,0,0,3,0,3,0,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,ReadFileException,14,11,0,0,6,4,2,2,2,2
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessOptions,5,206,1,5,1,73,1,34,0,32
