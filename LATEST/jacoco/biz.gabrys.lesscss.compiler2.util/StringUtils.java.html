@@ -50,5 +50,18 @@ public final class StringUtils {
         }
 <span class="fc" id="L51">        return false;</span>
     }
+
+    /**
+     * Returns a text representation of an object or {@code null} if the object is {@code null}.
+     * @param obj the object.
+     * @return the text representation of the object or {@code null}.
+     * @since 2.0.0
+     */
+    public static String toStringIfNotNull(final Object obj) {
+<span class="fc bfc" id="L61" title="All 2 branches covered.">        if (obj != null) {</span>
+<span class="fc" id="L62">            return obj.toString();</span>
+        }
+<span class="fc" id="L64">        return null;</span>
+    }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

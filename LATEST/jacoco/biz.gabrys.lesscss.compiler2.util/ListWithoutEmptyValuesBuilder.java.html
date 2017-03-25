@@ -18,19 +18,26 @@ import java.util.List;
 
 /**
  * Responsible for creating new instances of the {@link List} which stores not empty values.
+ * @param &lt;T&gt; the type of values.
  * @since 2.0.0
  */
-public class ListWithoutEmptyValuesBuilder {
+public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
 
-<span class="fc" id="L25">    private final List&lt;Object&gt; values = new LinkedList&lt;Object&gt;();</span>
+    private final Checker&lt;T&gt; checker;
+<span class="fc" id="L27">    private final List&lt;T&gt; values = new LinkedList&lt;T&gt;();</span>
 
     /**
      * Constructs a new instance.
+     * @param checker the checker responsible for testing if values are empty or not.
+     * @throws IllegalArgumentException if the checker is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L31">    public ListWithoutEmptyValuesBuilder() {</span>
-        // do nothing
-<span class="fc" id="L33">    }</span>
+<span class="fc" id="L35">    public ListWithoutEmptyValuesBuilder(final Checker&lt;T&gt; checker) {</span>
+<span class="pc bpc" id="L36" title="1 of 2 branches missed.">        if (checker == null) {</span>
+<span class="nc" id="L37">            throw new IllegalArgumentException(&quot;Checker cannot be null&quot;);</span>
+        }
+<span class="fc" id="L39">        this.checker = checker;</span>
+<span class="fc" id="L40">    }</span>
 
     /**
      * Appends all values which are not blank.
@@ -38,13 +45,13 @@ public class ListWithoutEmptyValuesBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public ListWithoutEmptyValuesBuilder add(final String[] values) {
-<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (values != null) {</span>
-<span class="fc bfc" id="L43" title="All 2 branches covered.">            for (final String value : values) {</span>
-<span class="fc" id="L44">                add(value);</span>
+    public ListWithoutEmptyValuesBuilder&lt;T&gt; append(final T[] values) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (values != null) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (final T value : values) {</span>
+<span class="fc" id="L51">                append(value);</span>
             }
         }
-<span class="fc" id="L47">        return this;</span>
+<span class="fc" id="L54">        return this;</span>
     }
 
     /**
@@ -53,20 +60,36 @@ public class ListWithoutEmptyValuesBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public ListWithoutEmptyValuesBuilder add(final String value) {
-<span class="fc bfc" id="L57" title="All 2 branches covered.">        if (StringUtils.isNotBlank(value)) {</span>
-<span class="fc" id="L58">            values.add(value);</span>
+    public ListWithoutEmptyValuesBuilder&lt;T&gt; append(final T value) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (checker.isNotEmpty(value)) {</span>
+<span class="fc" id="L65">            values.add(value);</span>
         }
-<span class="fc" id="L60">        return this;</span>
+<span class="fc" id="L67">        return this;</span>
     }
 
     /**
-     * Creates a new instance of the {@link List}.
+     * Builds a new instance of the {@link List}.
      * @return the new instance of the {@link List}.
      * @since 2.0.0
      */
-    public List&lt;Object&gt; create() {
-<span class="fc" id="L69">        return new ArrayList&lt;Object&gt;(values);</span>
+    public List&lt;T&gt; build() {
+<span class="fc" id="L76">        return new ArrayList&lt;T&gt;(values);</span>
+    }
+
+    /**
+     * Responsible for testing if values are empty or not.
+     * @param &lt;T&gt; the type of values.
+     * @since 2.0.0
+     */
+    public interface Checker&lt;T&gt; {
+
+        /**
+         * Tests whether a value is not empty.
+         * @param value the tested value.
+         * @return {@code true} whether the value is not empty, otherwise {@code false}.
+         * @since 2.0.0
+         */
+        boolean isNotEmpty(T value);
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

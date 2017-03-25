@@ -58,10 +58,10 @@ import biz.gabrys.lesscss.compiler2.util.io.IOUtils;
  * File input = new File(&quot;/less/file.less&quot;);
  * 
  * // compile source file
- * String cssCode = compiler.execute(new NativeLessCompilerOptionsBuilder().withInputFile(input).create());
+ * String cssCode = compiler.execute(new NativeLessOptionsBuilder().inputFile(input).create());
  * 
  * // compile source file and compress CSS code
- * Collection&amp;lt;Object&amp;gt; options = new NativeLessCompilerOptionsBuilder().withInputFile(input).withCompress(true).create();
+ * Collection&amp;lt;Object&amp;gt; options = new NativeLessOptionsBuilder().inputFile(input).compress(true).create();
  * String cssCompressedCode = compiler.execute(options);
  * &lt;/pre&gt;
  * 
@@ -117,7 +117,7 @@ public class NativeLessCompiler {
      * @throws SyntaxException if a syntax error occurred during source file compilation.
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
-     * @see NativeLessCompilerOptionsBuilder
+     * @see NativeLessOptionsBuilder
      */
     public String execute(final Collection&lt;Object&gt; options) {
 <span class="fc" id="L123">        synchronized (mutex) {</span>
