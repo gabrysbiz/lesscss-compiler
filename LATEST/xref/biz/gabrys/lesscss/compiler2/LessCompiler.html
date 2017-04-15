@@ -23,9 +23,9 @@
 <a class="jxr_linenumber" name="L15" href="#L15">15</a>  <strong class="jxr_keyword">import</strong> java.io.File;
 <a class="jxr_linenumber" name="L16" href="#L16">16</a>  <strong class="jxr_keyword">import</strong> java.io.IOException;
 <a class="jxr_linenumber" name="L17" href="#L17">17</a>  
-<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.util.io.IOUtils;
-<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.util.io.SystemDefaultTemporaryFileFactory;
-<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.util.io.TemporaryFileFactory;
+<a class="jxr_linenumber" name="L18" href="#L18">18</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.io.IOUtils;
+<a class="jxr_linenumber" name="L19" href="#L19">19</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.io.SystemDefaultTemporaryFileFactory;
+<a class="jxr_linenumber" name="L20" href="#L20">20</a>  <strong class="jxr_keyword">import</strong> biz.gabrys.lesscss.compiler2.io.TemporaryFileFactory;
 <a class="jxr_linenumber" name="L21" href="#L21">21</a>  
 <a class="jxr_linenumber" name="L22" href="#L22">22</a>  <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L23" href="#L23">23</a>  <em class="jxr_javadoccomment"> * &lt;p&gt;</em>
@@ -58,7 +58,7 @@
 <a class="jxr_linenumber" name="L50" href="#L50">50</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a> {
 <a class="jxr_linenumber" name="L51" href="#L51">51</a>  
 <a class="jxr_linenumber" name="L52" href="#L52">52</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a> compiler;
-<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory;
+<a class="jxr_linenumber" name="L53" href="#L53">53</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory;
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>  
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>  <em class="jxr_javadoccomment">     * Constructs a new instance.</em>
@@ -75,7 +75,7 @@
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L69" href="#L69">69</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a> compiler) {
-<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">this</strong>(compiler, <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/io/SystemDefaultTemporaryFileFactory.html">SystemDefaultTemporaryFileFactory</a>());
+<a class="jxr_linenumber" name="L70" href="#L70">70</a>          <strong class="jxr_keyword">this</strong>(compiler, <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/io/SystemDefaultTemporaryFileFactory.html">SystemDefaultTemporaryFileFactory</a>());
 <a class="jxr_linenumber" name="L71" href="#L71">71</a>      }
 <a class="jxr_linenumber" name="L72" href="#L72">72</a>  
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>      <em class="jxr_javadoccomment">/**</em>
@@ -85,7 +85,7 @@
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file factory is {@code null}.</em>
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory) {
+<a class="jxr_linenumber" name="L80" href="#L80">80</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory) {
 <a class="jxr_linenumber" name="L81" href="#L81">81</a>          <strong class="jxr_keyword">this</strong>(<strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>(), fileFactory);
 <a class="jxr_linenumber" name="L82" href="#L82">82</a>      }
 <a class="jxr_linenumber" name="L83" href="#L83">83</a>  
@@ -97,7 +97,7 @@
 <a class="jxr_linenumber" name="L89" href="#L89">89</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the native compiler or file factory is {@code null}.</em>
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a> compiler, <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/util/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory) {
+<a class="jxr_linenumber" name="L92" href="#L92">92</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>(<strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a> compiler, <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/io/TemporaryFileFactory.html">TemporaryFileFactory</a> fileFactory) {
 <a class="jxr_linenumber" name="L93" href="#L93">93</a>          <strong class="jxr_keyword">if</strong> (compiler == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Native Less compiler cannot be null"</span>);
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>          }
@@ -304,7 +304,7 @@
 <a class="jxr_linenumber" name="L296" href="#L296">296</a>     }
 <a class="jxr_linenumber" name="L297" href="#L297">297</a> 
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L299" href="#L299">299</a> <em class="jxr_javadoccomment">     * Compiles a Less source code with custom configuration options to a CSS code with inline Source Map.</em>
+<a class="jxr_linenumber" name="L299" href="#L299">299</a> <em class="jxr_javadoccomment">     * Compiles a Less source code with custom configuration options to a CSS code with an inline Source Map.</em>
 <a class="jxr_linenumber" name="L300" href="#L300">300</a> <em class="jxr_javadoccomment">     * @param source the Less code (cannot be {@code null}).</em>
 <a class="jxr_linenumber" name="L301" href="#L301">301</a> <em class="jxr_javadoccomment">     * @param options the configuration options (can be {@code null}).</em>
 <a class="jxr_linenumber" name="L302" href="#L302">302</a> <em class="jxr_javadoccomment">     * @return the CSS code with inline Source Map.</em>
@@ -327,7 +327,7 @@
 <a class="jxr_linenumber" name="L319" href="#L319">319</a>     }
 <a class="jxr_linenumber" name="L320" href="#L320">320</a> 
 <a class="jxr_linenumber" name="L321" href="#L321">321</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L322" href="#L322">322</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration options to a CSS code with inline Source Map.</em>
+<a class="jxr_linenumber" name="L322" href="#L322">322</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration options to a CSS code with an inline Source Map.</em>
 <a class="jxr_linenumber" name="L323" href="#L323">323</a> <em class="jxr_javadoccomment">     * @param source the source file (cannot be {@code null} and must exist).</em>
 <a class="jxr_linenumber" name="L324" href="#L324">324</a> <em class="jxr_javadoccomment">     * @param options the configuration options (can be {@code null}).</em>
 <a class="jxr_linenumber" name="L325" href="#L325">325</a> <em class="jxr_javadoccomment">     * @return the CSS code with inline Source Map.</em>
@@ -348,7 +348,7 @@
 <a class="jxr_linenumber" name="L340" href="#L340">340</a>     }
 <a class="jxr_linenumber" name="L341" href="#L341">341</a> 
 <a class="jxr_linenumber" name="L342" href="#L342">342</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration to a CSS code with inline Source Map and saves it in an</em>
+<a class="jxr_linenumber" name="L343" href="#L343">343</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration to a CSS code with an inline Source Map and saves it in an</em>
 <a class="jxr_linenumber" name="L344" href="#L344">344</a> <em class="jxr_javadoccomment">     * output file.</em>
 <a class="jxr_linenumber" name="L345" href="#L345">345</a> <em class="jxr_javadoccomment">     * @param source the source file (cannot be {@code null} and must exist).</em>
 <a class="jxr_linenumber" name="L346" href="#L346">346</a> <em class="jxr_javadoccomment">     * @param output the output file (cannot be {@code null}).</em>
@@ -371,55 +371,111 @@
 <a class="jxr_linenumber" name="L363" href="#L363">363</a>         compiler.execute(builder.build());
 <a class="jxr_linenumber" name="L364" href="#L364">364</a>     }
 <a class="jxr_linenumber" name="L365" href="#L365">365</a> 
-<a class="jxr_linenumber" name="L366" href="#L366">366</a>     <strong class="jxr_keyword">void</strong> validateSourceCode(<strong class="jxr_keyword">final</strong> CharSequence source) {
-<a class="jxr_linenumber" name="L367" href="#L367">367</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L368" href="#L368">368</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source code cannot be null"</span>);
-<a class="jxr_linenumber" name="L369" href="#L369">369</a>         }
-<a class="jxr_linenumber" name="L370" href="#L370">370</a>     }
-<a class="jxr_linenumber" name="L371" href="#L371">371</a> 
-<a class="jxr_linenumber" name="L372" href="#L372">372</a>     <strong class="jxr_keyword">void</strong> validateSourceFile(<strong class="jxr_keyword">final</strong> File source) {
-<a class="jxr_linenumber" name="L373" href="#L373">373</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L374" href="#L374">374</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source file cannot be null"</span>);
-<a class="jxr_linenumber" name="L375" href="#L375">375</a>         }
-<a class="jxr_linenumber" name="L376" href="#L376">376</a>         <strong class="jxr_keyword">if</strong> (!source.exists()) {
-<a class="jxr_linenumber" name="L377" href="#L377">377</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source file does not exist: "</span> + source.getAbsolutePath());
-<a class="jxr_linenumber" name="L378" href="#L378">378</a>         }
-<a class="jxr_linenumber" name="L379" href="#L379">379</a>     }
-<a class="jxr_linenumber" name="L380" href="#L380">380</a> 
-<a class="jxr_linenumber" name="L381" href="#L381">381</a>     <strong class="jxr_keyword">void</strong> validateOutputFile(<strong class="jxr_keyword">final</strong> File output) {
-<a class="jxr_linenumber" name="L382" href="#L382">382</a>         <strong class="jxr_keyword">if</strong> (output == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L383" href="#L383">383</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Output file cannot be null"</span>);
-<a class="jxr_linenumber" name="L384" href="#L384">384</a>         }
-<a class="jxr_linenumber" name="L385" href="#L385">385</a>     }
-<a class="jxr_linenumber" name="L386" href="#L386">386</a> 
-<a class="jxr_linenumber" name="L387" href="#L387">387</a>     <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a> createOptionsBuilder() {
-<a class="jxr_linenumber" name="L388" href="#L388">388</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a>();
-<a class="jxr_linenumber" name="L389" href="#L389">389</a>     }
-<a class="jxr_linenumber" name="L390" href="#L390">390</a> 
-<a class="jxr_linenumber" name="L391" href="#L391">391</a>     File createTemporaryFileWithCode(<strong class="jxr_keyword">final</strong> CharSequence code) {
-<a class="jxr_linenumber" name="L392" href="#L392">392</a>         File file = <strong class="jxr_keyword">null</strong>;
-<a class="jxr_linenumber" name="L393" href="#L393">393</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L394" href="#L394">394</a>             file = fileFactory.create();
-<a class="jxr_linenumber" name="L395" href="#L395">395</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="L396" href="#L396">396</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot create temporary file"</span>, e);
-<a class="jxr_linenumber" name="L397" href="#L397">397</a>         }
-<a class="jxr_linenumber" name="L398" href="#L398">398</a>         <strong class="jxr_keyword">try</strong> {
-<a class="jxr_linenumber" name="L399" href="#L399">399</a>             IOUtils.write(file, code);
-<a class="jxr_linenumber" name="L400" href="#L400">400</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
-<a class="jxr_linenumber" name="L401" href="#L401">401</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot save source code in temporaty file: "</span> + file.getAbsolutePath(), e);
-<a class="jxr_linenumber" name="L402" href="#L402">402</a>         }
-<a class="jxr_linenumber" name="L403" href="#L403">403</a>         <strong class="jxr_keyword">return</strong> file;
-<a class="jxr_linenumber" name="L404" href="#L404">404</a>     }
-<a class="jxr_linenumber" name="L405" href="#L405">405</a> 
-<a class="jxr_linenumber" name="L406" href="#L406">406</a>     <strong class="jxr_keyword">void</strong> deleteFile(<strong class="jxr_keyword">final</strong> File file) {
-<a class="jxr_linenumber" name="L407" href="#L407">407</a>         <strong class="jxr_keyword">if</strong> (file == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L408" href="#L408">408</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"File cannot be null"</span>);
-<a class="jxr_linenumber" name="L409" href="#L409">409</a>         }
-<a class="jxr_linenumber" name="L410" href="#L410">410</a>         <strong class="jxr_keyword">if</strong> (!file.delete()) {
-<a class="jxr_linenumber" name="L411" href="#L411">411</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot delete temporary file: "</span> + file.getAbsolutePath());
-<a class="jxr_linenumber" name="L412" href="#L412">412</a>         }
-<a class="jxr_linenumber" name="L413" href="#L413">413</a>     }
-<a class="jxr_linenumber" name="L414" href="#L414">414</a> }
+<a class="jxr_linenumber" name="L366" href="#L366">366</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L367" href="#L367">367</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved</em>
+<a class="jxr_linenumber" name="L368" href="#L368">368</a> <em class="jxr_javadoccomment">     * in an output file and the Source Map in a file with name equal to the output file name with map extension.</em>
+<a class="jxr_linenumber" name="L369" href="#L369">369</a> <em class="jxr_javadoccomment">     * @param source the source file (cannot be {@code null} and must exist).</em>
+<a class="jxr_linenumber" name="L370" href="#L370">370</a> <em class="jxr_javadoccomment">     * @param output the output file (cannot be {@code null}).</em>
+<a class="jxr_linenumber" name="L371" href="#L371">371</a> <em class="jxr_javadoccomment">     * @param options the configuration options (can be {@code null}).</em>
+<a class="jxr_linenumber" name="L372" href="#L372">372</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is</em>
+<a class="jxr_linenumber" name="L373" href="#L373">373</a> <em class="jxr_javadoccomment">     *             {@code null}.</em>
+<a class="jxr_linenumber" name="L374" href="#L374">374</a> <em class="jxr_javadoccomment">     * @throws InitializationException if an error occurred during compiler initialization.</em>
+<a class="jxr_linenumber" name="L375" href="#L375">375</a> <em class="jxr_javadoccomment">     * @throws ConfigurationException if the compiler is configured incorrectly.</em>
+<a class="jxr_linenumber" name="L376" href="#L376">376</a> <em class="jxr_javadoccomment">     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to</em>
+<a class="jxr_linenumber" name="L377" href="#L377">377</a> <em class="jxr_javadoccomment">     *             non-existent file.</em>
+<a class="jxr_linenumber" name="L378" href="#L378">378</a> <em class="jxr_javadoccomment">     * @throws SyntaxException if a syntax error occurred during source file compilation.</em>
+<a class="jxr_linenumber" name="L379" href="#L379">379</a> <em class="jxr_javadoccomment">     * @throws CompilerException if an other error occurred during execution.</em>
+<a class="jxr_linenumber" name="L380" href="#L380">380</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L381" href="#L381">381</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L382" href="#L382">382</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> compileWithSourceMap(<strong class="jxr_keyword">final</strong> File source, <strong class="jxr_keyword">final</strong> File output, <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptions.html">LessOptions</a> options) {
+<a class="jxr_linenumber" name="L383" href="#L383">383</a>         validateSourceFile(source);
+<a class="jxr_linenumber" name="L384" href="#L384">384</a>         validateOutputFile(output);
+<a class="jxr_linenumber" name="L385" href="#L385">385</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a> builder = createOptionsBuilder();
+<a class="jxr_linenumber" name="L386" href="#L386">386</a>         builder.inputFile(source).outputFile(output).sourceMapDefault(<strong class="jxr_keyword">true</strong>).options(options);
+<a class="jxr_linenumber" name="L387" href="#L387">387</a>         compiler.execute(builder.build());
+<a class="jxr_linenumber" name="L388" href="#L388">388</a>     }
+<a class="jxr_linenumber" name="L389" href="#L389">389</a> 
+<a class="jxr_linenumber" name="L390" href="#L390">390</a>     <em class="jxr_javadoccomment">/**</em>
+<a class="jxr_linenumber" name="L391" href="#L391">391</a> <em class="jxr_javadoccomment">     * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved</em>
+<a class="jxr_linenumber" name="L392" href="#L392">392</a> <em class="jxr_javadoccomment">     * in an output file and the Source Map in an output Source Map file.</em>
+<a class="jxr_linenumber" name="L393" href="#L393">393</a> <em class="jxr_javadoccomment">     * @param source the source file (cannot be {@code null} and must exist).</em>
+<a class="jxr_linenumber" name="L394" href="#L394">394</a> <em class="jxr_javadoccomment">     * @param output the output file (cannot be {@code null}).</em>
+<a class="jxr_linenumber" name="L395" href="#L395">395</a> <em class="jxr_javadoccomment">     * @param outputSourceMap the output file for Source Map (cannot be {@code null}).</em>
+<a class="jxr_linenumber" name="L396" href="#L396">396</a> <em class="jxr_javadoccomment">     * @param options the configuration options (can be {@code null}).</em>
+<a class="jxr_linenumber" name="L397" href="#L397">397</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output/sourceMap</em>
+<a class="jxr_linenumber" name="L398" href="#L398">398</a> <em class="jxr_javadoccomment">     *             file is {@code null}.</em>
+<a class="jxr_linenumber" name="L399" href="#L399">399</a> <em class="jxr_javadoccomment">     * @throws InitializationException if an error occurred during compiler initialization.</em>
+<a class="jxr_linenumber" name="L400" href="#L400">400</a> <em class="jxr_javadoccomment">     * @throws ConfigurationException if the compiler is configured incorrectly.</em>
+<a class="jxr_linenumber" name="L401" href="#L401">401</a> <em class="jxr_javadoccomment">     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to</em>
+<a class="jxr_linenumber" name="L402" href="#L402">402</a> <em class="jxr_javadoccomment">     *             non-existent file.</em>
+<a class="jxr_linenumber" name="L403" href="#L403">403</a> <em class="jxr_javadoccomment">     * @throws SyntaxException if a syntax error occurred during source file compilation.</em>
+<a class="jxr_linenumber" name="L404" href="#L404">404</a> <em class="jxr_javadoccomment">     * @throws CompilerException if an other error occurred during execution.</em>
+<a class="jxr_linenumber" name="L405" href="#L405">405</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
+<a class="jxr_linenumber" name="L406" href="#L406">406</a> <em class="jxr_javadoccomment">     */</em>
+<a class="jxr_linenumber" name="L407" href="#L407">407</a>     <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">void</strong> compileWithSourceMap(<strong class="jxr_keyword">final</strong> File source, <strong class="jxr_keyword">final</strong> File output, <strong class="jxr_keyword">final</strong> File outputSourceMap, <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptions.html">LessOptions</a> options) {
+<a class="jxr_linenumber" name="L408" href="#L408">408</a>         validateSourceFile(source);
+<a class="jxr_linenumber" name="L409" href="#L409">409</a>         validateOutputFile(output);
+<a class="jxr_linenumber" name="L410" href="#L410">410</a>         validateOutputSourceMapFile(outputSourceMap);
+<a class="jxr_linenumber" name="L411" href="#L411">411</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a> builder = createOptionsBuilder();
+<a class="jxr_linenumber" name="L412" href="#L412">412</a>         builder.inputFile(source).outputFile(output).sourceMapFile(outputSourceMap).options(options);
+<a class="jxr_linenumber" name="L413" href="#L413">413</a>         compiler.execute(builder.build());
+<a class="jxr_linenumber" name="L414" href="#L414">414</a>     }
+<a class="jxr_linenumber" name="L415" href="#L415">415</a> 
+<a class="jxr_linenumber" name="L416" href="#L416">416</a>     <strong class="jxr_keyword">void</strong> validateSourceCode(<strong class="jxr_keyword">final</strong> CharSequence source) {
+<a class="jxr_linenumber" name="L417" href="#L417">417</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L418" href="#L418">418</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source code cannot be null"</span>);
+<a class="jxr_linenumber" name="L419" href="#L419">419</a>         }
+<a class="jxr_linenumber" name="L420" href="#L420">420</a>     }
+<a class="jxr_linenumber" name="L421" href="#L421">421</a> 
+<a class="jxr_linenumber" name="L422" href="#L422">422</a>     <strong class="jxr_keyword">void</strong> validateSourceFile(<strong class="jxr_keyword">final</strong> File source) {
+<a class="jxr_linenumber" name="L423" href="#L423">423</a>         <strong class="jxr_keyword">if</strong> (source == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L424" href="#L424">424</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source file cannot be null"</span>);
+<a class="jxr_linenumber" name="L425" href="#L425">425</a>         }
+<a class="jxr_linenumber" name="L426" href="#L426">426</a>         <strong class="jxr_keyword">if</strong> (!source.exists()) {
+<a class="jxr_linenumber" name="L427" href="#L427">427</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Source file does not exist: "</span> + source.getAbsolutePath());
+<a class="jxr_linenumber" name="L428" href="#L428">428</a>         }
+<a class="jxr_linenumber" name="L429" href="#L429">429</a>     }
+<a class="jxr_linenumber" name="L430" href="#L430">430</a> 
+<a class="jxr_linenumber" name="L431" href="#L431">431</a>     <strong class="jxr_keyword">void</strong> validateOutputFile(<strong class="jxr_keyword">final</strong> File output) {
+<a class="jxr_linenumber" name="L432" href="#L432">432</a>         <strong class="jxr_keyword">if</strong> (output == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L433" href="#L433">433</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Output file cannot be null"</span>);
+<a class="jxr_linenumber" name="L434" href="#L434">434</a>         }
+<a class="jxr_linenumber" name="L435" href="#L435">435</a>     }
+<a class="jxr_linenumber" name="L436" href="#L436">436</a> 
+<a class="jxr_linenumber" name="L437" href="#L437">437</a>     <strong class="jxr_keyword">void</strong> validateOutputSourceMapFile(<strong class="jxr_keyword">final</strong> File outputSourceMap) {
+<a class="jxr_linenumber" name="L438" href="#L438">438</a>         <strong class="jxr_keyword">if</strong> (outputSourceMap == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L439" href="#L439">439</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Output Source Map file cannot be null"</span>);
+<a class="jxr_linenumber" name="L440" href="#L440">440</a>         }
+<a class="jxr_linenumber" name="L441" href="#L441">441</a>     }
+<a class="jxr_linenumber" name="L442" href="#L442">442</a> 
+<a class="jxr_linenumber" name="L443" href="#L443">443</a>     <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a> createOptionsBuilder() {
+<a class="jxr_linenumber" name="L444" href="#L444">444</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/NativeLessOptionsBuilder.html">NativeLessOptionsBuilder</a>();
+<a class="jxr_linenumber" name="L445" href="#L445">445</a>     }
+<a class="jxr_linenumber" name="L446" href="#L446">446</a> 
+<a class="jxr_linenumber" name="L447" href="#L447">447</a>     File createTemporaryFileWithCode(<strong class="jxr_keyword">final</strong> CharSequence code) {
+<a class="jxr_linenumber" name="L448" href="#L448">448</a>         File file = <strong class="jxr_keyword">null</strong>;
+<a class="jxr_linenumber" name="L449" href="#L449">449</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L450" href="#L450">450</a>             file = fileFactory.create();
+<a class="jxr_linenumber" name="L451" href="#L451">451</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="L452" href="#L452">452</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot create temporary file"</span>, e);
+<a class="jxr_linenumber" name="L453" href="#L453">453</a>         }
+<a class="jxr_linenumber" name="L454" href="#L454">454</a>         <strong class="jxr_keyword">try</strong> {
+<a class="jxr_linenumber" name="L455" href="#L455">455</a>             IOUtils.write(file, code);
+<a class="jxr_linenumber" name="L456" href="#L456">456</a>         } <strong class="jxr_keyword">catch</strong> (<strong class="jxr_keyword">final</strong> IOException e) {
+<a class="jxr_linenumber" name="L457" href="#L457">457</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot save source code in temporaty file: "</span> + file.getAbsolutePath(), e);
+<a class="jxr_linenumber" name="L458" href="#L458">458</a>         }
+<a class="jxr_linenumber" name="L459" href="#L459">459</a>         <strong class="jxr_keyword">return</strong> file;
+<a class="jxr_linenumber" name="L460" href="#L460">460</a>     }
+<a class="jxr_linenumber" name="L461" href="#L461">461</a> 
+<a class="jxr_linenumber" name="L462" href="#L462">462</a>     <strong class="jxr_keyword">void</strong> deleteFile(<strong class="jxr_keyword">final</strong> File file) {
+<a class="jxr_linenumber" name="L463" href="#L463">463</a>         <strong class="jxr_keyword">if</strong> (file == <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L464" href="#L464">464</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"File cannot be null"</span>);
+<a class="jxr_linenumber" name="L465" href="#L465">465</a>         }
+<a class="jxr_linenumber" name="L466" href="#L466">466</a>         <strong class="jxr_keyword">if</strong> (!file.delete()) {
+<a class="jxr_linenumber" name="L467" href="#L467">467</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/CompilerException.html">CompilerException</a>(<span class="jxr_string">"Cannot delete temporary file: "</span> + file.getAbsolutePath());
+<a class="jxr_linenumber" name="L468" href="#L468">468</a>         }
+<a class="jxr_linenumber" name="L469" href="#L469">469</a>     }
+<a class="jxr_linenumber" name="L470" href="#L470">470</a> }
 </pre>
 <hr/>
 <div id="footer">Copyright &#169; 2015&#x2013;2017 <a href="http://www.gabrys.biz/">gabrys.biz</a>. All rights reserved.</div>

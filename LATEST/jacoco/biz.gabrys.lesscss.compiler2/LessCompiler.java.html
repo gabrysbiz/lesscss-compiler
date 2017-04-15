@@ -15,9 +15,9 @@ package biz.gabrys.lesscss.compiler2;
 import java.io.File;
 import java.io.IOException;
 
-import biz.gabrys.lesscss.compiler2.util.io.IOUtils;
-import biz.gabrys.lesscss.compiler2.util.io.SystemDefaultTemporaryFileFactory;
-import biz.gabrys.lesscss.compiler2.util.io.TemporaryFileFactory;
+import biz.gabrys.lesscss.compiler2.io.IOUtils;
+import biz.gabrys.lesscss.compiler2.io.SystemDefaultTemporaryFileFactory;
+import biz.gabrys.lesscss.compiler2.io.TemporaryFileFactory;
 
 /**
  * &lt;p&gt;
@@ -296,7 +296,7 @@ public class LessCompiler {
 <span class="fc" id="L296">    }</span>
 
     /**
-     * Compiles a Less source code with custom configuration options to a CSS code with inline Source Map.
+     * Compiles a Less source code with custom configuration options to a CSS code with an inline Source Map.
      * @param source the Less code (cannot be {@code null}).
      * @param options the configuration options (can be {@code null}).
      * @return the CSS code with inline Source Map.
@@ -319,7 +319,7 @@ public class LessCompiler {
     }
 
     /**
-     * Compiles a Less source file with custom configuration options to a CSS code with inline Source Map.
+     * Compiles a Less source file with custom configuration options to a CSS code with an inline Source Map.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param options the configuration options (can be {@code null}).
      * @return the CSS code with inline Source Map.
@@ -340,7 +340,7 @@ public class LessCompiler {
     }
 
     /**
-     * Compiles a Less source file with custom configuration to a CSS code with inline Source Map and saves it in an
+     * Compiles a Less source file with custom configuration to a CSS code with an inline Source Map and saves it in an
      * output file.
      * @param source the source file (cannot be {@code null} and must exist).
      * @param output the output file (cannot be {@code null}).
@@ -363,53 +363,109 @@ public class LessCompiler {
 <span class="fc" id="L363">        compiler.execute(builder.build());</span>
 <span class="fc" id="L364">    }</span>
 
+    /**
+     * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved
+     * in an output file and the Source Map in a file with name equal to the output file name with map extension.
+     * @param source the source file (cannot be {@code null} and must exist).
+     * @param output the output file (cannot be {@code null}).
+     * @param options the configuration options (can be {@code null}).
+     * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output file is
+     *             {@code null}.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
+     *             non-existent file.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public void compileWithSourceMap(final File source, final File output, final LessOptions options) {
+<span class="fc" id="L383">        validateSourceFile(source);</span>
+<span class="fc" id="L384">        validateOutputFile(output);</span>
+<span class="fc" id="L385">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L386">        builder.inputFile(source).outputFile(output).sourceMapDefault(true).options(options);</span>
+<span class="fc" id="L387">        compiler.execute(builder.build());</span>
+<span class="fc" id="L388">    }</span>
+
+    /**
+     * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved
+     * in an output file and the Source Map in an output Source Map file.
+     * @param source the source file (cannot be {@code null} and must exist).
+     * @param output the output file (cannot be {@code null}).
+     * @param outputSourceMap the output file for Source Map (cannot be {@code null}).
+     * @param options the configuration options (can be {@code null}).
+     * @throws IllegalArgumentException if the source file is {@code null} or does not exist or the output/sourceMap
+     *             file is {@code null}.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
+     *             non-existent file.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public void compileWithSourceMap(final File source, final File output, final File outputSourceMap, final LessOptions options) {
+<span class="fc" id="L408">        validateSourceFile(source);</span>
+<span class="fc" id="L409">        validateOutputFile(output);</span>
+<span class="fc" id="L410">        validateOutputSourceMapFile(outputSourceMap);</span>
+<span class="fc" id="L411">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L412">        builder.inputFile(source).outputFile(output).sourceMapFile(outputSourceMap).options(options);</span>
+<span class="fc" id="L413">        compiler.execute(builder.build());</span>
+<span class="fc" id="L414">    }</span>
+
     void validateSourceCode(final CharSequence source) {
-<span class="fc bfc" id="L367" title="All 2 branches covered.">        if (source == null) {</span>
-<span class="fc" id="L368">            throw new IllegalArgumentException(&quot;Source code cannot be null&quot;);</span>
+<span class="fc bfc" id="L417" title="All 2 branches covered.">        if (source == null) {</span>
+<span class="fc" id="L418">            throw new IllegalArgumentException(&quot;Source code cannot be null&quot;);</span>
         }
-<span class="fc" id="L370">    }</span>
+<span class="fc" id="L420">    }</span>
 
     void validateSourceFile(final File source) {
-<span class="fc bfc" id="L373" title="All 2 branches covered.">        if (source == null) {</span>
-<span class="fc" id="L374">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
+<span class="fc bfc" id="L423" title="All 2 branches covered.">        if (source == null) {</span>
+<span class="fc" id="L424">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L376" title="All 2 branches covered.">        if (!source.exists()) {</span>
-<span class="fc" id="L377">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + source.getAbsolutePath());</span>
+<span class="fc bfc" id="L426" title="All 2 branches covered.">        if (!source.exists()) {</span>
+<span class="fc" id="L427">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + source.getAbsolutePath());</span>
         }
-<span class="fc" id="L379">    }</span>
+<span class="fc" id="L429">    }</span>
 
     void validateOutputFile(final File output) {
-<span class="fc bfc" id="L382" title="All 2 branches covered.">        if (output == null) {</span>
-<span class="fc" id="L383">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
+<span class="fc bfc" id="L432" title="All 2 branches covered.">        if (output == null) {</span>
+<span class="fc" id="L433">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
         }
-<span class="fc" id="L385">    }</span>
+<span class="fc" id="L435">    }</span>
+
+    void validateOutputSourceMapFile(final File outputSourceMap) {
+<span class="pc bpc" id="L438" title="1 of 2 branches missed.">        if (outputSourceMap == null) {</span>
+<span class="nc" id="L439">            throw new IllegalArgumentException(&quot;Output Source Map file cannot be null&quot;);</span>
+        }
+<span class="fc" id="L441">    }</span>
 
     NativeLessOptionsBuilder createOptionsBuilder() {
-<span class="nc" id="L388">        return new NativeLessOptionsBuilder();</span>
+<span class="nc" id="L444">        return new NativeLessOptionsBuilder();</span>
     }
 
     File createTemporaryFileWithCode(final CharSequence code) {
-<span class="nc" id="L392">        File file = null;</span>
+<span class="nc" id="L448">        File file = null;</span>
         try {
-<span class="nc" id="L394">            file = fileFactory.create();</span>
-<span class="nc" id="L395">        } catch (final IOException e) {</span>
-<span class="nc" id="L396">            throw new CompilerException(&quot;Cannot create temporary file&quot;, e);</span>
-<span class="nc" id="L397">        }</span>
+<span class="nc" id="L450">            file = fileFactory.create();</span>
+<span class="nc" id="L451">        } catch (final IOException e) {</span>
+<span class="nc" id="L452">            throw new CompilerException(&quot;Cannot create temporary file&quot;, e);</span>
+<span class="nc" id="L453">        }</span>
         try {
-<span class="nc" id="L399">            IOUtils.write(file, code);</span>
-<span class="nc" id="L400">        } catch (final IOException e) {</span>
-<span class="nc" id="L401">            throw new CompilerException(&quot;Cannot save source code in temporaty file: &quot; + file.getAbsolutePath(), e);</span>
-<span class="nc" id="L402">        }</span>
-<span class="nc" id="L403">        return file;</span>
+<span class="nc" id="L455">            IOUtils.write(file, code);</span>
+<span class="nc" id="L456">        } catch (final IOException e) {</span>
+<span class="nc" id="L457">            throw new CompilerException(&quot;Cannot save source code in temporaty file: &quot; + file.getAbsolutePath(), e);</span>
+<span class="nc" id="L458">        }</span>
+<span class="nc" id="L459">        return file;</span>
     }
 
     void deleteFile(final File file) {
-<span class="fc bfc" id="L407" title="All 2 branches covered.">        if (file == null) {</span>
-<span class="fc" id="L408">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
+<span class="fc bfc" id="L463" title="All 2 branches covered.">        if (file == null) {</span>
+<span class="fc" id="L464">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L410" title="All 2 branches covered.">        if (!file.delete()) {</span>
-<span class="fc" id="L411">            throw new CompilerException(&quot;Cannot delete temporary file: &quot; + file.getAbsolutePath());</span>
+<span class="fc bfc" id="L466" title="All 2 branches covered.">        if (!file.delete()) {</span>
+<span class="fc" id="L467">            throw new CompilerException(&quot;Cannot delete temporary file: &quot; + file.getAbsolutePath());</span>
         }
-<span class="fc" id="L413">    }</span>
+<span class="fc" id="L469">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
