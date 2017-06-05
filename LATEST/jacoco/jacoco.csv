@@ -10,7 +10,7 @@ LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler,26,243,2,8,5,51
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ImportFileExceptionConverter,0,30,0,0,0,5,0,3,0,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessOptionsBuilder.new ListWithoutEmptyValuesBuilder.Checker() {...},0,9,0,0,0,2,0,2,0,2
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessOptionsBuilder,5,577,2,54,1,160,2,71,0,45
-LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,61,490,1,19,17,124,6,31,5,22
+LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessCompiler,61,602,1,21,17,151,6,37,5,27
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LineNumbersValue,5,63,0,0,0,9,1,4,1,4
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,NativeLessCompiler.ConfigurationExceptionConverter,0,14,0,0,0,3,0,3,0,3
 LessCSS Compiler,biz.gabrys.lesscss.compiler2,LessOptionsBuilder,25,271,2,6,7,75,4,50,3,47
