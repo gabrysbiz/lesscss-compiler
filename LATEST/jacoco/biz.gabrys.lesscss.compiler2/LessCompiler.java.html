@@ -358,6 +358,26 @@ public class LessCompiler {
     }
 
     /**
+     * Compiles a Less source file to a compressed CSS code.
+     * @param source the source code (cannot be {@code null}).
+     * @return the compressed CSS code.
+     * @throws IllegalArgumentException if the source file is {@code null} or does not exist.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
+     *             non-existent file.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public String compileAndCompress(final File source) {
+<span class="fc" id="L374">        validateSourceFile(source);</span>
+<span class="fc" id="L375">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L376">        builder.inputFile(source).compress(true);</span>
+<span class="fc" id="L377">        return compiler.execute(builder.build());</span>
+    }
+
+    /**
      * Compiles a Less source file to a compressed CSS code using custom encoding.
      * @param source the source code (cannot be {@code null}).
      * @param encoding the encoding used to read the source file (cannot be {@code null}).
@@ -372,18 +392,18 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final File source, final Charset encoding) {
-<span class="fc" id="L375">        validateSourceFile(source);</span>
-<span class="fc" id="L376">        validateEncoding(encoding);</span>
-<span class="fc" id="L377">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L378">        builder.inputFile(source).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L379">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L395">        validateSourceFile(source);</span>
+<span class="fc" id="L396">        validateEncoding(encoding);</span>
+<span class="fc" id="L397">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L398">        builder.inputFile(source).encoding(encoding.name()).compress(true);</span>
+<span class="fc" id="L399">        return compiler.execute(builder.build());</span>
     }
 
     /**
-     * Compiles a Less source file to a compressed CSS code.
-     * @param source the source code (cannot be {@code null}).
-     * @return the compressed CSS code.
-     * @throws IllegalArgumentException if the source file is {@code null} or does not exist.
+     * Compiles a Less source file to a compressed CSS code and saves it in an output file.
+     * @param source the source file (cannot be {@code null} and must exist).
+     * @param output the output file (cannot be {@code null}).
+     * @throws IllegalArgumentException if any parameter is invalid.
      * @throws InitializationException if an error occurred during compiler initialization.
      * @throws ConfigurationException if the compiler is configured incorrectly.
      * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
@@ -392,12 +412,13 @@ public class LessCompiler {
      * @throws CompilerException if an other error occurred during execution.
      * @since 2.0.0
      */
-    public String compileAndCompress(final File source) {
-<span class="fc" id="L396">        validateSourceFile(source);</span>
-<span class="fc" id="L397">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L398">        builder.inputFile(source).compress(true);</span>
-<span class="fc" id="L399">        return compiler.execute(builder.build());</span>
-    }
+    public void compileAndCompress(final File source, final File output) {
+<span class="fc" id="L416">        validateSourceFile(source);</span>
+<span class="fc" id="L417">        validateOutputFile(output);</span>
+<span class="fc" id="L418">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L419">        builder.inputFile(source).outputFile(output).compress(true);</span>
+<span class="fc" id="L420">        compiler.execute(builder.build());</span>
+<span class="fc" id="L421">    }</span>
 
     /**
      * Compiles a Less source file to a compressed CSS code and saves it in an output file using custom encoding.
@@ -414,32 +435,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final File source, final File output, final Charset encoding) {
-<span class="fc" id="L417">        validateSourceFile(source);</span>
-<span class="fc" id="L418">        validateOutputFile(output);</span>
-<span class="fc" id="L419">        validateEncoding(encoding);</span>
-<span class="fc" id="L420">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L421">        builder.inputFile(source).outputFile(output).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L422">        compiler.execute(builder.build());</span>
-<span class="fc" id="L423">    }</span>
-
-    /**
-     * Compiles a Less source file to a compressed CSS code and saves it in an output file.
-     * @param source the source file (cannot be {@code null} and must exist).
-     * @param output the output file (cannot be {@code null}).
-     * @throws IllegalArgumentException if any parameter is invalid.
-     * @throws InitializationException if an error occurred during compiler initialization.
-     * @throws ConfigurationException if the compiler is configured incorrectly.
-     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
-     *             non-existent file.
-     * @throws SyntaxException if a syntax error occurred during source file compilation.
-     * @throws CompilerException if an other error occurred during execution.
-     * @since 2.0.0
-     */
-    public void compileAndCompress(final File source, final File output) {
-<span class="fc" id="L439">        validateSourceFile(source);</span>
-<span class="fc" id="L440">        validateOutputFile(output);</span>
+<span class="fc" id="L438">        validateSourceFile(source);</span>
+<span class="fc" id="L439">        validateOutputFile(output);</span>
+<span class="fc" id="L440">        validateEncoding(encoding);</span>
 <span class="fc" id="L441">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L442">        builder.inputFile(source).outputFile(output).compress(true);</span>
+<span class="fc" id="L442">        builder.inputFile(source).outputFile(output).encoding(encoding.name()).compress(true);</span>
 <span class="fc" id="L443">        compiler.execute(builder.build());</span>
 <span class="fc" id="L444">    }</span>
 
