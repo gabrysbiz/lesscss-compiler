@@ -13,8 +13,12 @@
 package biz.gabrys.lesscss.compiler2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import biz.gabrys.lesscss.compiler2.loader.HttpFileLoader;
+import biz.gabrys.lesscss.compiler2.loader.LocalFileLoader;
 
 /**
  * &lt;p&gt;
@@ -28,7 +32,7 @@ import java.util.List;
  * &lt;li&gt;{@link #isCompress() compress} - whether a CSS code should be compressed (default: {@code false})&lt;/li&gt;
  * &lt;li&gt;{@link #isIeCompatibility() IE compatibility} - whether a CSS code should be compatible with Internet Explorer
  * browser (default: {@code true})&lt;/li&gt;
- * &lt;li&gt;{@link #getIncludePaths() included paths} - available include paths (default: {@code empty collection})&lt;/li&gt;
+ * &lt;li&gt;{@link #getIncludePaths() included paths} - available include paths (default: {@code []})&lt;/li&gt;
  * &lt;li&gt;{@link #isJavaScript() JavaScript} - whether a compiler should allow usage of JavaScript language (default:
  * {@code true})&lt;/li&gt;
  * &lt;li&gt;{@link #getLineNumbers() line numbers} - whether a compiler should generate inline source-mapping (default:
@@ -88,17 +92,19 @@ public class LessOptions {
     private String sourceMapUrl;
 
     private String encoding;
+    private List&lt;String&gt; fileLoaders;
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L96">    public LessOptions() {</span>
-<span class="fc" id="L97">        ieCompatibility = true;</span>
-<span class="fc" id="L98">        javaScript = true;</span>
-<span class="fc" id="L99">        includePaths = Collections.emptyList();</span>
-<span class="fc" id="L100">        lineNumbers = LineNumbersValue.OFF;</span>
-<span class="fc" id="L101">    }</span>
+<span class="fc" id="L101">    public LessOptions() {</span>
+<span class="fc" id="L102">        ieCompatibility = true;</span>
+<span class="fc" id="L103">        javaScript = true;</span>
+<span class="fc" id="L104">        includePaths = createDefaultIncludePaths();</span>
+<span class="fc" id="L105">        lineNumbers = LineNumbersValue.OFF;</span>
+<span class="fc" id="L106">        fileLoaders = createDefaultFileLoaders();</span>
+<span class="fc" id="L107">    }</span>
 
     /**
      * Constructs a new instance as a copy of an another options object.
@@ -106,29 +112,38 @@ public class LessOptions {
      * @throws IllegalArgumentException if options is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L109">    public LessOptions(final LessOptions options) {</span>
-<span class="pc bpc" id="L110" title="1 of 2 branches missed.">        if (options == null) {</span>
-<span class="nc" id="L111">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="nc" id="L115">    public LessOptions(final LessOptions options) {</span>
+<span class="nc bnc" id="L116" title="All 2 branches missed.">        if (options == null) {</span>
+<span class="nc" id="L117">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="fc" id="L113">        silent = options.silent;</span>
-<span class="fc" id="L114">        strictImports = options.strictImports;</span>
-<span class="fc" id="L115">        compress = options.compress;</span>
-<span class="fc" id="L116">        ieCompatibility = options.ieCompatibility;</span>
-<span class="fc" id="L117">        javaScript = options.javaScript;</span>
-<span class="fc" id="L118">        includePaths = new ArrayList&lt;String&gt;(options.includePaths);</span>
-<span class="fc" id="L119">        lineNumbers = options.lineNumbers;</span>
-<span class="fc" id="L120">        rootPath = options.rootPath;</span>
-<span class="fc" id="L121">        relativeUrls = options.relativeUrls;</span>
-<span class="fc" id="L122">        strictMath = options.strictMath;</span>
-<span class="fc" id="L123">        strictUnits = options.strictUnits;</span>
+<span class="nc" id="L119">        silent = options.silent;</span>
+<span class="nc" id="L120">        strictImports = options.strictImports;</span>
+<span class="nc" id="L121">        compress = options.compress;</span>
+<span class="nc" id="L122">        ieCompatibility = options.ieCompatibility;</span>
+<span class="nc" id="L123">        javaScript = options.javaScript;</span>
+<span class="nc" id="L124">        includePaths = new ArrayList&lt;String&gt;(options.includePaths);</span>
+<span class="nc" id="L125">        lineNumbers = options.lineNumbers;</span>
+<span class="nc" id="L126">        rootPath = options.rootPath;</span>
+<span class="nc" id="L127">        relativeUrls = options.relativeUrls;</span>
+<span class="nc" id="L128">        strictMath = options.strictMath;</span>
+<span class="nc" id="L129">        strictUnits = options.strictUnits;</span>
 
-<span class="fc" id="L125">        sourceMapRootPath = options.sourceMapRootPath;</span>
-<span class="fc" id="L126">        sourceMapBasePath = options.sourceMapBasePath;</span>
-<span class="fc" id="L127">        sourceMapLessInline = options.sourceMapLessInline;</span>
-<span class="fc" id="L128">        sourceMapUrl = options.sourceMapUrl;</span>
+<span class="nc" id="L131">        sourceMapRootPath = options.sourceMapRootPath;</span>
+<span class="nc" id="L132">        sourceMapBasePath = options.sourceMapBasePath;</span>
+<span class="nc" id="L133">        sourceMapLessInline = options.sourceMapLessInline;</span>
+<span class="nc" id="L134">        sourceMapUrl = options.sourceMapUrl;</span>
 
-<span class="fc" id="L130">        encoding = options.encoding;</span>
-<span class="fc" id="L131">    }</span>
+<span class="nc" id="L136">        encoding = options.encoding;</span>
+<span class="nc" id="L137">        fileLoaders = new ArrayList&lt;String&gt;(options.fileLoaders);</span>
+<span class="nc" id="L138">    }</span>
+
+    private static List&lt;String&gt; createDefaultIncludePaths() {
+<span class="fc" id="L141">        return Collections.emptyList();</span>
+    }
+
+    private static List&lt;String&gt; createDefaultFileLoaders() {
+<span class="fc" id="L145">        return Arrays.asList(HttpFileLoader.class.getName(), LocalFileLoader.class.getName());</span>
+    }
 
     /**
      * Checks whether a compiler shouldn't log compilation warnings (default: {@code false}).
@@ -136,7 +151,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isSilent() {
-<span class="fc" id="L139">        return silent;</span>
+<span class="fc" id="L154">        return silent;</span>
     }
 
     /**
@@ -145,8 +160,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setSilent(final boolean silent) {
-<span class="fc" id="L148">        this.silent = silent;</span>
-<span class="fc" id="L149">    }</span>
+<span class="fc" id="L163">        this.silent = silent;</span>
+<span class="fc" id="L164">    }</span>
 
     /**
      * Checks whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
@@ -156,7 +171,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isStrictImports() {
-<span class="fc" id="L159">        return strictImports;</span>
+<span class="fc" id="L174">        return strictImports;</span>
     }
 
     /**
@@ -167,8 +182,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setStrictImports(final boolean strictImports) {
-<span class="fc" id="L170">        this.strictImports = strictImports;</span>
-<span class="fc" id="L171">    }</span>
+<span class="fc" id="L185">        this.strictImports = strictImports;</span>
+<span class="fc" id="L186">    }</span>
 
     /**
      * Checks whether a CSS code should be compressed (default: {@code false}).
@@ -176,7 +191,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isCompress() {
-<span class="fc" id="L179">        return compress;</span>
+<span class="fc" id="L194">        return compress;</span>
     }
 
     /**
@@ -185,8 +200,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setCompress(final boolean compress) {
-<span class="fc" id="L188">        this.compress = compress;</span>
-<span class="fc" id="L189">    }</span>
+<span class="fc" id="L203">        this.compress = compress;</span>
+<span class="fc" id="L204">    }</span>
 
     /**
      * Sets whether a CSS code should be compatible with Internet Explorer browser (default: {@code true}). Used for the
@@ -196,7 +211,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isIeCompatibility() {
-<span class="fc" id="L199">        return ieCompatibility;</span>
+<span class="fc" id="L214">        return ieCompatibility;</span>
     }
 
     /**
@@ -207,8 +222,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setIeCompatibility(final boolean ieCompatibility) {
-<span class="fc" id="L210">        this.ieCompatibility = ieCompatibility;</span>
-<span class="fc" id="L211">    }</span>
+<span class="fc" id="L225">        this.ieCompatibility = ieCompatibility;</span>
+<span class="fc" id="L226">    }</span>
 
     /**
      * Checks whether a compiler should allow usage of JavaScript language (default: {@code true}).
@@ -216,7 +231,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isJavaScript() {
-<span class="fc" id="L219">        return javaScript;</span>
+<span class="fc" id="L234">        return javaScript;</span>
     }
 
     /**
@@ -226,36 +241,34 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setJavaScript(final boolean javaScript) {
-<span class="fc" id="L229">        this.javaScript = javaScript;</span>
-<span class="fc" id="L230">    }</span>
+<span class="fc" id="L244">        this.javaScript = javaScript;</span>
+<span class="fc" id="L245">    }</span>
 
     /**
-     * Returns available include paths (default: {@code empty collection}). If the file in an &amp;#64;import rule does not
-     * exist at that exact location, a compiler will look for it at the location(s) passed to this option. You might use
-     * this for instance to specify a path to a library which you want to be referenced simply and relatively in the
-     * less files.
+     * Returns available include paths (default: {@code []}). If the file in an &amp;#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @return the available include paths (never {@code null}).
      * @since 2.0.0
      */
     public List&lt;String&gt; getIncludePaths() {
-<span class="fc" id="L241">        return new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L255">        return new ArrayList&lt;String&gt;(includePaths);</span>
     }
 
     /**
-     * Sets available include paths (default: {@code empty collection}). If the file in an &amp;#64;import rule does not
-     * exist at that exact location, a compiler will look for it at the location(s) passed to this option. You might use
-     * this for instance to specify a path to a library which you want to be referenced simply and relatively in the
-     * less files.
+     * Sets available include paths (default: {@code []}). If the file in an &amp;#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @param includePaths the available include paths ({@code null} is treated as an empty collection).
      * @since 2.0.0
      */
     public void setIncludePaths(final List&lt;String&gt; includePaths) {
-<span class="fc bfc" id="L253" title="All 2 branches covered.">        if (includePaths == null) {</span>
-<span class="fc" id="L254">            this.includePaths = Collections.emptyList();</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">        if (includePaths == null) {</span>
+<span class="fc" id="L267">            this.includePaths = createDefaultIncludePaths();</span>
         } else {
-<span class="fc" id="L256">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L269">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
         }
-<span class="fc" id="L258">    }</span>
+<span class="fc" id="L271">    }</span>
 
     /**
      * Returns whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This
@@ -264,7 +277,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public LineNumbersValue getLineNumbers() {
-<span class="fc" id="L267">        return lineNumbers;</span>
+<span class="fc" id="L280">        return lineNumbers;</span>
     }
 
     /**
@@ -274,12 +287,12 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setLineNumbers(final LineNumbersValue lineNumbers) {
-<span class="fc bfc" id="L277" title="All 2 branches covered.">        if (lineNumbers == null) {</span>
-<span class="fc" id="L278">            this.lineNumbers = LineNumbersValue.OFF;</span>
+<span class="fc bfc" id="L290" title="All 2 branches covered.">        if (lineNumbers == null) {</span>
+<span class="fc" id="L291">            this.lineNumbers = LineNumbersValue.OFF;</span>
         } else {
-<span class="fc" id="L280">            this.lineNumbers = lineNumbers;</span>
+<span class="fc" id="L293">            this.lineNumbers = lineNumbers;</span>
         }
-<span class="fc" id="L282">    }</span>
+<span class="fc" id="L295">    }</span>
 
     /**
      * Returns a path which will be added to every generated import and URL in CSS code (default: {@code null}). This
@@ -292,7 +305,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public String getRootPath() {
-<span class="fc" id="L295">        return rootPath;</span>
+<span class="fc" id="L308">        return rootPath;</span>
     }
 
     /**
@@ -306,8 +319,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setRootPath(final String rootPath) {
-<span class="fc" id="L309">        this.rootPath = rootPath;</span>
-<span class="fc" id="L310">    }</span>
+<span class="fc" id="L322">        this.rootPath = rootPath;</span>
+<span class="fc" id="L323">    }</span>
 
     /**
      * Checks whether a compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is,
@@ -350,7 +363,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isRelativeUrls() {
-<span class="fc" id="L353">        return relativeUrls;</span>
+<span class="fc" id="L366">        return relativeUrls;</span>
     }
 
     /**
@@ -394,8 +407,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setRelativeUrls(final boolean relativeUrls) {
-<span class="fc" id="L397">        this.relativeUrls = relativeUrls;</span>
-<span class="fc" id="L398">    }</span>
+<span class="fc" id="L410">        this.relativeUrls = relativeUrls;</span>
+<span class="fc" id="L411">    }</span>
 
     /**
      * Checks whether a compiler should try and process all maths in Less code (default: {@code false}). By default the
@@ -438,7 +451,7 @@ public class LessOptions {
      * @see #isStrictUnits()
      */
     public boolean isStrictMath() {
-<span class="fc" id="L441">        return strictMath;</span>
+<span class="fc" id="L454">        return strictMath;</span>
     }
 
     /**
@@ -482,8 +495,8 @@ public class LessOptions {
      * @see #setStrictUnits(boolean)
      */
     public void setStrictMath(final boolean strictMath) {
-<span class="fc" id="L485">        this.strictMath = strictMath;</span>
-<span class="fc" id="L486">    }</span>
+<span class="fc" id="L498">        this.strictMath = strictMath;</span>
+<span class="fc" id="L499">    }</span>
 
     /**
      * Checks whether a compiler should guess units in Less code when it does maths (default: {@code false}). By default
@@ -506,7 +519,7 @@ public class LessOptions {
      * @see #isStrictMath()
      */
     public boolean isStrictUnits() {
-<span class="fc" id="L509">        return strictUnits;</span>
+<span class="fc" id="L522">        return strictUnits;</span>
     }
 
     /**
@@ -530,8 +543,8 @@ public class LessOptions {
      * @see #setStrictMath(boolean)
      */
     public void setStrictUnits(final boolean strictUnits) {
-<span class="fc" id="L533">        this.strictUnits = strictUnits;</span>
-<span class="fc" id="L534">    }</span>
+<span class="fc" id="L546">        this.strictUnits = strictUnits;</span>
+<span class="fc" id="L547">    }</span>
 
     /**
      * Returns a path that will be prepended to each of the Less file paths inside the Source Map and also to the path
@@ -561,7 +574,7 @@ public class LessOptions {
      * @see #getSourceMapUrl()
      */
     public String getSourceMapRootPath() {
-<span class="fc" id="L564">        return sourceMapRootPath;</span>
+<span class="fc" id="L577">        return sourceMapRootPath;</span>
     }
 
     /**
@@ -592,8 +605,8 @@ public class LessOptions {
      * @see #setSourceMapUrl(String)
      */
     public void setSourceMapRootPath(final String sourceMapRootPath) {
-<span class="fc" id="L595">        this.sourceMapRootPath = sourceMapRootPath;</span>
-<span class="fc" id="L596">    }</span>
+<span class="fc" id="L608">        this.sourceMapRootPath = sourceMapRootPath;</span>
+<span class="fc" id="L609">    }</span>
 
     /**
      * Returns a path that will be removed from each of the Less file paths inside the Source Map and also from the path
@@ -612,7 +625,7 @@ public class LessOptions {
      * @see #getSourceMapUrl()
      */
     public String getSourceMapBasePath() {
-<span class="fc" id="L615">        return sourceMapBasePath;</span>
+<span class="fc" id="L628">        return sourceMapBasePath;</span>
     }
 
     /**
@@ -632,8 +645,8 @@ public class LessOptions {
      * @see #setSourceMapUrl(String)
      */
     public void setSourceMapBasePath(final String sourceMapBasePath) {
-<span class="fc" id="L635">        this.sourceMapBasePath = sourceMapBasePath;</span>
-<span class="fc" id="L636">    }</span>
+<span class="fc" id="L648">        this.sourceMapBasePath = sourceMapBasePath;</span>
+<span class="fc" id="L649">    }</span>
 
     /**
      * Checks whether a compiler should include all of the Less files in to the Source Map (default: {@code false}).
@@ -643,7 +656,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public boolean isSourceMapLessInline() {
-<span class="fc" id="L646">        return sourceMapLessInline;</span>
+<span class="fc" id="L659">        return sourceMapLessInline;</span>
     }
 
     /**
@@ -654,8 +667,8 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setSourceMapLessInline(final boolean sourceMapLessInline) {
-<span class="fc" id="L657">        this.sourceMapLessInline = sourceMapLessInline;</span>
-<span class="fc" id="L658">    }</span>
+<span class="fc" id="L670">        this.sourceMapLessInline = sourceMapLessInline;</span>
+<span class="fc" id="L671">    }</span>
 
     /**
      * Returns a path which will overwrite the URL in the CSS that points at the Source Map file (default:
@@ -667,7 +680,7 @@ public class LessOptions {
      * @see #getSourceMapRootPath()
      */
     public String getSourceMapUrl() {
-<span class="fc" id="L670">        return sourceMapUrl;</span>
+<span class="fc" id="L683">        return sourceMapUrl;</span>
     }
 
     /**
@@ -680,8 +693,8 @@ public class LessOptions {
      * @see #setSourceMapRootPath(String)
      */
     public void setSourceMapUrl(final String sourceMapUrl) {
-<span class="fc" id="L683">        this.sourceMapUrl = sourceMapUrl;</span>
-<span class="fc" id="L684">    }</span>
+<span class="fc" id="L696">        this.sourceMapUrl = sourceMapUrl;</span>
+<span class="fc" id="L697">    }</span>
 
     /**
      * Returns an encoding used to read source files and save generated code (default: {@code null} - means platform
@@ -690,7 +703,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public String getEncoding() {
-<span class="fc" id="L693">        return encoding;</span>
+<span class="fc" id="L706">        return encoding;</span>
     }
 
     /**
@@ -700,7 +713,31 @@ public class LessOptions {
      * @since 2.0.0
      */
     public void setEncoding(final String encoding) {
-<span class="fc" id="L703">        this.encoding = encoding;</span>
-<span class="fc" id="L704">    }</span>
+<span class="fc" id="L716">        this.encoding = encoding;</span>
+<span class="fc" id="L717">    }</span>
+
+    /**
+     * Returns file loaders used to fetch content of the source files (default:
+     * &lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.loader.{@link HttpFileLoader}&quot;, &quot;biz.gabrys.lesscss.compiler2.loader.{@link LocalFileLoader}&quot;]&lt;/code&gt;).
+     * @return the file loaders (never {@code null}).
+     * @since 2.0.0
+     */
+    public List&lt;String&gt; getFileLoaders() {
+<span class="nc" id="L726">        return new ArrayList&lt;String&gt;(fileLoaders);</span>
+    }
+
+    /**
+     * Sets file loaders used to fetch content of the source files (default:
+     * &lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.loader.{@link HttpFileLoader}&quot;, &quot;biz.gabrys.lesscss.compiler2.loader.{@link LocalFileLoader}&quot;]&lt;/code&gt;).
+     * @param fileLoaders the file loaders ({@code null} is treated as an collection with default values).
+     * @since 2.0.0
+     */
+    public void setFileLoaders(final List&lt;String&gt; fileLoaders) {
+<span class="nc bnc" id="L736" title="All 2 branches missed.">        if (fileLoaders == null) {</span>
+<span class="nc" id="L737">            this.fileLoaders = createDefaultFileLoaders();</span>
+        } else {
+<span class="nc" id="L739">            this.fileLoaders = new ArrayList&lt;String&gt;(fileLoaders);</span>
+        }
+<span class="nc" id="L741">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

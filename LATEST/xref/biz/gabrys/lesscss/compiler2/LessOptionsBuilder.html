@@ -259,11 +259,11 @@
 <a class="jxr_linenumber" name="L251" href="#L251">251</a>     }
 <a class="jxr_linenumber" name="L252" href="#L252">252</a> 
 <a class="jxr_linenumber" name="L253" href="#L253">253</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * Sets available include paths (default: {@code empty collection}).</em>
+<a class="jxr_linenumber" name="L254" href="#L254">254</a> <em class="jxr_javadoccomment">     * Sets available include paths (default: {@code []}).</em>
 <a class="jxr_linenumber" name="L255" href="#L255">255</a> <em class="jxr_javadoccomment">     * @param includePaths the available include paths ({@code null} is treated as an empty collection).</em>
 <a class="jxr_linenumber" name="L256" href="#L256">256</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L257" href="#L257">257</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">     * @see #includePaths(String[])</em>
+<a class="jxr_linenumber" name="L258" href="#L258">258</a> <em class="jxr_javadoccomment">     * @see #includePaths(CharSequence...)</em>
 <a class="jxr_linenumber" name="L259" href="#L259">259</a> <em class="jxr_javadoccomment">     * @see #includePathsOff()</em>
 <a class="jxr_linenumber" name="L260" href="#L260">260</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L261" href="#L261">261</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> includePaths(<strong class="jxr_keyword">final</strong> Collection&lt;? <strong class="jxr_keyword">extends</strong> CharSequence&gt; includePaths) {
@@ -280,18 +280,18 @@
 <a class="jxr_linenumber" name="L272" href="#L272">272</a>     }
 <a class="jxr_linenumber" name="L273" href="#L273">273</a> 
 <a class="jxr_linenumber" name="L274" href="#L274">274</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">     * Sets available include paths (default: {@code empty array}).</em>
-<a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_javadoccomment">     * @param includePaths the available include paths ({@code null} is treated as an empty array).</em>
+<a class="jxr_linenumber" name="L275" href="#L275">275</a> <em class="jxr_javadoccomment">     * Sets available include paths (default: {@code []}).</em>
+<a class="jxr_linenumber" name="L276" href="#L276">276</a> <em class="jxr_javadoccomment">     * @param includePaths the available include paths.</em>
 <a class="jxr_linenumber" name="L277" href="#L277">277</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L278" href="#L278">278</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L279" href="#L279">279</a> <em class="jxr_javadoccomment">     * @see #includePaths(Collection)</em>
 <a class="jxr_linenumber" name="L280" href="#L280">280</a> <em class="jxr_javadoccomment">     * @see #includePathsOff()</em>
 <a class="jxr_linenumber" name="L281" href="#L281">281</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> includePaths(<strong class="jxr_keyword">final</strong> String[] includePaths) {
-<a class="jxr_linenumber" name="L283" href="#L283">283</a>         <strong class="jxr_keyword">if</strong> (includePaths == <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L284" href="#L284">284</a>             <strong class="jxr_keyword">return</strong> includePaths((Collection&lt;CharSequence&gt;) <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L282" href="#L282">282</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> includePaths(<strong class="jxr_keyword">final</strong> CharSequence... includePaths) {
+<a class="jxr_linenumber" name="L283" href="#L283">283</a>         <strong class="jxr_keyword">if</strong> (includePaths != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L284" href="#L284">284</a>             <strong class="jxr_keyword">return</strong> includePaths(Arrays.asList(includePaths));
 <a class="jxr_linenumber" name="L285" href="#L285">285</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L286" href="#L286">286</a>             <strong class="jxr_keyword">return</strong> includePaths(Arrays.asList(includePaths));
+<a class="jxr_linenumber" name="L286" href="#L286">286</a>             <strong class="jxr_keyword">return</strong> includePaths((Collection&lt;CharSequence&gt;) <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L287" href="#L287">287</a>         }
 <a class="jxr_linenumber" name="L288" href="#L288">288</a>     }
 <a class="jxr_linenumber" name="L289" href="#L289">289</a> 
@@ -300,7 +300,7 @@
 <a class="jxr_linenumber" name="L292" href="#L292">292</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L293" href="#L293">293</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L294" href="#L294">294</a> <em class="jxr_javadoccomment">     * @see #includePaths(Collection)</em>
-<a class="jxr_linenumber" name="L295" href="#L295">295</a> <em class="jxr_javadoccomment">     * @see #includePaths(String[])</em>
+<a class="jxr_linenumber" name="L295" href="#L295">295</a> <em class="jxr_javadoccomment">     * @see #includePaths(CharSequence...)</em>
 <a class="jxr_linenumber" name="L296" href="#L296">296</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L297" href="#L297">297</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> includePathsOff() {
 <a class="jxr_linenumber" name="L298" href="#L298">298</a>         <strong class="jxr_keyword">return</strong> includePaths((Collection&lt;CharSequence&gt;) <strong class="jxr_keyword">null</strong>);
