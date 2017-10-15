@@ -22,26 +22,34 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * Responsible for fetching source files stored in local file system.
  * @since 2.0.0
  */
-<span class="fc" id="L25">public class LocalFileLoader implements FileLoader {</span>
+public class LocalFileLoader implements FileLoader {
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L31">    public LocalFileLoader() {</span>
+        // do nothing
+<span class="fc" id="L33">    }</span>
 
     @Override
     public boolean isSupported(final String path) {
-<span class="fc" id="L29">        return new File(path).exists();</span>
+<span class="fc" id="L37">        return new File(path).exists();</span>
     }
 
     @Override
     public String normalize(final String path) throws IOException {
-<span class="fc" id="L34">        return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L42">        return new File(path).getCanonicalPath();</span>
     }
 
     @Override
     public String expandRedirection(final String path) throws IOException {
-<span class="fc" id="L39">        return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L47">        return new File(path).getCanonicalPath();</span>
     }
 
     @Override
     public FileData fetch(final String file) throws IOException {
-<span class="fc" id="L44">        return new FileData(IOUtils.toByteArray(new FileInputStream(file)));</span>
+<span class="fc" id="L52">        return new FileData(IOUtils.toByteArray(new FileInputStream(file)));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

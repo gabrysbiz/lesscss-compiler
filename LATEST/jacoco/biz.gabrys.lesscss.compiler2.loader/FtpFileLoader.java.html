@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FtpFileLoader.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.loader</a> &gt; <span class="el_source">FtpFileLoader.java</span></div><h1>FtpFileLoader.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.loader;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+
+import biz.gabrys.lesscss.compiler2.io.IOUtils;
+
+/**
+ * &lt;p&gt;
+ * Responsible for fetching source files accessible via &lt;a href=&quot;https://www.w3.org/Protocols/rfc959/&quot;&gt;FTP&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * &lt;strong&gt;Warning&lt;/strong&gt;: requires &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons Net&lt;/a&gt;
+ * library in the classpath.
+ * &lt;/p&gt;
+ * @since 2.0.0
+ */
+public class FtpFileLoader implements FileLoader {
+
+    /**
+     * Constructs a new instance.
+     * @throws IllegalStateException if &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons Net&lt;/a&gt;
+     *             library is not available in the classpath.
+     * @since 2.0.0
+     */
+<span class="nc" id="L44">    public FtpFileLoader() {</span>
+        try {
+<span class="nc" id="L46">            Class.forName(&quot;org.apache.commons.net.ftp.FTP&quot;);</span>
+<span class="nc" id="L47">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L48">            throw new IllegalStateException(&quot;Apache Commons Net library is required to work with FTP file loader&quot;, e);</span>
+<span class="nc" id="L49">        }</span>
+<span class="nc" id="L50">    }</span>
+
+    @Override
+    public boolean isSupported(final String path) {
+<span class="nc" id="L54">        return path.startsWith(&quot;ftp://&quot;);</span>
+    }
+
+    @Override
+    public String normalize(final String path) throws URISyntaxException {
+<span class="nc" id="L59">        return new URI(path).normalize().toString();</span>
+    }
+
+    @Override
+    public String expandRedirection(final String path) {
+<span class="nc" id="L64">        return path;</span>
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+<span class="nc" id="L69">        final URL url = new URL(path);</span>
+<span class="nc" id="L70">        FTPClient connection = null;</span>
+        try {
+<span class="nc" id="L72">            connection = makeConnection(url);</span>
+<span class="nc" id="L73">            return new FileData(fetchContent(connection, url));</span>
+<span class="nc" id="L74">        } catch (final IOException e) {</span>
+<span class="nc" id="L75">            throw new IOException(String.format(&quot;cannot download source \&quot;%s\&quot; file&quot;, url), e);</span>
+        } finally {
+<span class="nc" id="L77">            disconnect(connection);</span>
+        }
+    }
+
+    private static FTPClient makeConnection(final URL url) throws IOException {
+<span class="nc" id="L82">        final FTPClient connection = new FTPClient();</span>
+<span class="nc" id="L83">        connection.setAutodetectUTF8(true);</span>
+<span class="nc bnc" id="L84" title="All 2 branches missed.">        final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;</span>
+<span class="nc" id="L85">        connection.connect(url.getHost(), port);</span>
+<span class="nc" id="L86">        connection.enterLocalActiveMode();</span>
+<span class="nc bnc" id="L87" title="All 2 branches missed.">        if (!connection.login(&quot;anonymous&quot;, &quot;gabrys.biz LessCSS Compiler&quot;)) {</span>
+<span class="nc" id="L88">            throw new IOException(String.format(&quot;cannot login as anonymous user, reason %s&quot;, connection.getReplyString()));</span>
+        }
+<span class="nc" id="L90">        connection.enterLocalPassiveMode();</span>
+<span class="nc" id="L91">        connection.setFileType(FTP.BINARY_FILE_TYPE);</span>
+<span class="nc" id="L92">        return connection;</span>
+    }
+
+    private static byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
+<span class="nc" id="L96">        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
+        try {
+<span class="nc bnc" id="L98" title="All 2 branches missed.">            if (!connection.retrieveFile(url.getPath(), outputStream)) {</span>
+<span class="nc" id="L99">                throw new IOException(String.format(&quot;cannot retrieve file, reason: %s&quot;, connection.getReplyString()));</span>
+            }
+<span class="nc" id="L101">            return outputStream.toByteArray();</span>
+        } finally {
+<span class="nc" id="L103">            IOUtils.closeQuietly(outputStream);</span>
+        }
+    }
+
+    private static void disconnect(final FTPClient connection) {
+<span class="nc bnc" id="L108" title="All 2 branches missed.">        if (connection == null) {</span>
+<span class="nc" id="L109">            return;</span>
+        }
+        try {
+<span class="nc" id="L112">            connection.disconnect();</span>
+<span class="nc" id="L113">        } catch (final IOException e) {</span>
+            // do nothing
+<span class="nc" id="L115">        }</span>
+<span class="nc" id="L116">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>

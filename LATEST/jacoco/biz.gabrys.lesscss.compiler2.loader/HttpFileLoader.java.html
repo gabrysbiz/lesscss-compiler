@@ -28,7 +28,7 @@ import java.util.List;
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
 /**
- * Responsible for fetching source files accessible via &lt;a href=&quot;http://www.w3.org/Protocols/&quot;&gt;HTTP&lt;/a&gt; or HTTPS. The
+ * Responsible for fetching source files accessible via &lt;a href=&quot;https://www.w3.org/Protocols/&quot;&gt;HTTP&lt;/a&gt; or HTTPS. The
  * loader handles HTTP codes:
  * &lt;ul&gt;
  * &lt;li&gt;200 OK&lt;/li&gt;
@@ -38,76 +38,84 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * &lt;/ul&gt;
  * @since 2.0.0
  */
-<span class="fc" id="L41">public class HttpFileLoader implements FileLoader {</span>
+public class HttpFileLoader implements FileLoader {
 
-<span class="fc" id="L43">    private static final Collection&lt;Integer&gt; REDIRECT_CODES = new HashSet&lt;Integer&gt;(</span>
-<span class="fc" id="L44">            Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));</span>
+<span class="nc" id="L43">    private static final Collection&lt;Integer&gt; REDIRECT_CODES = new HashSet&lt;Integer&gt;(</span>
+<span class="nc" id="L44">            Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));</span>
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="nc" id="L50">    public HttpFileLoader() {</span>
+        // do nothing
+<span class="nc" id="L52">    }</span>
 
     @Override
     public boolean isSupported(final String path) {
-<span class="pc bpc" id="L48" title="2 of 4 branches missed.">        return path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;);</span>
+<span class="nc bnc" id="L56" title="All 4 branches missed.">        return path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;);</span>
     }
 
     @Override
     public String normalize(final String path) throws URISyntaxException {
-<span class="nc" id="L53">        return new URI(path).normalize().toString();</span>
+<span class="nc" id="L61">        return new URI(path).normalize().toString();</span>
     }
 
     @Override
     public String expandRedirection(final String path) throws IOException, URISyntaxException {
-<span class="nc" id="L58">        final HttpURLConnection connection = makeConnection(new URL(path), false);</span>
-<span class="nc" id="L59">        final String expandedUrl = connection.getURL().toURI().normalize().toString();</span>
-<span class="nc" id="L60">        connection.disconnect();</span>
-<span class="nc" id="L61">        return expandedUrl;</span>
+<span class="nc" id="L66">        final HttpURLConnection connection = makeConnection(new URL(path), false);</span>
+<span class="nc" id="L67">        final String expandedUrl = connection.getURL().toURI().normalize().toString();</span>
+<span class="nc" id="L68">        connection.disconnect();</span>
+<span class="nc" id="L69">        return expandedUrl;</span>
     }
 
     @Override
     public FileData fetch(final String path) throws IOException {
-<span class="nc" id="L66">        final HttpURLConnection connection = makeConnection(new URL(path), true);</span>
-<span class="nc" id="L67">        final String responseEncoding = getEncodingFromContentType(connection.getContentType());</span>
+<span class="nc" id="L74">        final HttpURLConnection connection = makeConnection(new URL(path), true);</span>
+<span class="nc" id="L75">        final String responseEncoding = getEncodingFromContentType(connection.getContentType());</span>
         FileData fileData;
         try {
-<span class="nc" id="L70">            fileData = new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);</span>
-<span class="nc" id="L71">        } catch (final IOException e) {</span>
-<span class="nc" id="L72">            throw new IOException(&quot;cannot read file's content&quot;, e);</span>
+<span class="nc" id="L78">            fileData = new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);</span>
+<span class="nc" id="L79">        } catch (final IOException e) {</span>
+<span class="nc" id="L80">            throw new IOException(&quot;cannot read file's content&quot;, e);</span>
         } finally {
-<span class="nc" id="L74">            connection.disconnect();</span>
-<span class="nc" id="L75">        }</span>
-<span class="nc" id="L76">        return fileData;</span>
+<span class="nc" id="L82">            connection.disconnect();</span>
+<span class="nc" id="L83">        }</span>
+<span class="nc" id="L84">        return fileData;</span>
     }
 
     private static HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody) throws IOException {
         HttpURLConnection connection;
         int responseCode;
-<span class="nc" id="L82">        URL resourceUrl = url;</span>
+<span class="nc" id="L90">        URL resourceUrl = url;</span>
         while (true) {
-<span class="nc" id="L84">            connection = (HttpURLConnection) resourceUrl.openConnection();</span>
-<span class="nc bnc" id="L85" title="All 2 branches missed.">            connection.setRequestMethod(fetchResponseBody ? &quot;GET&quot; : &quot;HEAD&quot;);</span>
-<span class="nc" id="L86">            responseCode = connection.getResponseCode();</span>
-<span class="nc bnc" id="L87" title="All 2 branches missed.">            if (!REDIRECT_CODES.contains(responseCode)) {</span>
-<span class="nc" id="L88">                break;</span>
+<span class="nc" id="L92">            connection = (HttpURLConnection) resourceUrl.openConnection();</span>
+<span class="nc bnc" id="L93" title="All 2 branches missed.">            connection.setRequestMethod(fetchResponseBody ? &quot;GET&quot; : &quot;HEAD&quot;);</span>
+<span class="nc" id="L94">            responseCode = connection.getResponseCode();</span>
+<span class="nc bnc" id="L95" title="All 2 branches missed.">            if (!REDIRECT_CODES.contains(responseCode)) {</span>
+<span class="nc" id="L96">                break;</span>
             }
-<span class="nc" id="L90">            final String location = connection.getHeaderField(&quot;Location&quot;);</span>
+<span class="nc" id="L98">            final String location = connection.getHeaderField(&quot;Location&quot;);</span>
             try {
-<span class="nc" id="L92">                resourceUrl = new URL(location);</span>
-<span class="nc" id="L93">            } catch (final MalformedURLException e) {</span>
-<span class="nc" id="L94">                throw new IOException(String.format(&quot;Invalid \&quot;Location\&quot; header: %s&quot;, location), e);</span>
-<span class="nc" id="L95">            }</span>
-<span class="nc" id="L96">        }</span>
-<span class="nc bnc" id="L97" title="All 2 branches missed.">        if (responseCode != HttpURLConnection.HTTP_OK) {</span>
-<span class="nc" id="L98">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(REDIRECT_CODES);</span>
-<span class="nc" id="L99">            supportedCodes.add(0, HttpURLConnection.HTTP_OK);</span>
-<span class="nc" id="L100">            throw new IllegalArgumentException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;,</span>
-<span class="nc" id="L101">                    responseCode, supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
+<span class="nc" id="L100">                resourceUrl = new URL(location);</span>
+<span class="nc" id="L101">            } catch (final MalformedURLException e) {</span>
+<span class="nc" id="L102">                throw new IOException(String.format(&quot;invalid \&quot;Location\&quot; header: %s&quot;, location), e);</span>
+<span class="nc" id="L103">            }</span>
+<span class="nc" id="L104">        }</span>
+<span class="nc bnc" id="L105" title="All 2 branches missed.">        if (responseCode != HttpURLConnection.HTTP_OK) {</span>
+<span class="nc" id="L106">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(REDIRECT_CODES);</span>
+<span class="nc" id="L107">            supportedCodes.add(0, HttpURLConnection.HTTP_OK);</span>
+<span class="nc" id="L108">            throw new IllegalArgumentException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;,</span>
+<span class="nc" id="L109">                    responseCode, supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
         }
-<span class="nc" id="L103">        return connection;</span>
+<span class="nc" id="L111">        return connection;</span>
     }
 
     private static String getEncodingFromContentType(final String contentType) {
-<span class="nc bnc" id="L107" title="All 4 branches missed.">        if (contentType == null || !contentType.contains(&quot;charset=&quot;)) {</span>
-<span class="nc" id="L108">            return Charset.defaultCharset().toString();</span>
+<span class="nc bnc" id="L115" title="All 4 branches missed.">        if (contentType == null || !contentType.contains(&quot;charset=&quot;)) {</span>
+<span class="nc" id="L116">            return Charset.defaultCharset().toString();</span>
         }
-<span class="nc" id="L110">        return contentType.substring(contentType.lastIndexOf('=') + 1);</span>
+<span class="nc" id="L118">        return contentType.substring(contentType.lastIndexOf('=') + 1);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
