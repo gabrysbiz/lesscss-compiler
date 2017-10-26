@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> * &lt;/pre&gt;</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> * </em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * @see FileLoadersOptionBuilder</em>
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <em class="jxr_javadoccomment"> * @see FileSystemsOptionBuilder</em>
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  <em class="jxr_javadoccomment"> */</em>
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> {
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>  
@@ -129,7 +129,7 @@
 <a class="jxr_linenumber" name="L121" href="#L121">121</a>     }
 <a class="jxr_linenumber" name="L122" href="#L122">122</a> 
 <a class="jxr_linenumber" name="L123" href="#L123">123</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L124" href="#L124">124</a> <em class="jxr_javadoccomment">     * Disallows usage of an &amp;#64;import operation inside of either &amp;#64;media blocks or other selector blocks (default:</em>
+<a class="jxr_linenumber" name="L124" href="#L124">124</a> <em class="jxr_javadoccomment">     * Disallows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:</em>
 <a class="jxr_linenumber" name="L125" href="#L125">125</a> <em class="jxr_javadoccomment">     * {@code off}).</em>
 <a class="jxr_linenumber" name="L126" href="#L126">126</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
@@ -141,7 +141,7 @@
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     }
 <a class="jxr_linenumber" name="L134" href="#L134">134</a> 
 <a class="jxr_linenumber" name="L135" href="#L135">135</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Allows usage of an &amp;#64;import operation inside of either &amp;#64;media blocks or other selector blocks (default:</em>
+<a class="jxr_linenumber" name="L136" href="#L136">136</a> <em class="jxr_javadoccomment">     * Allows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:</em>
 <a class="jxr_linenumber" name="L137" href="#L137">137</a> <em class="jxr_javadoccomment">     * {@code off}).</em>
 <a class="jxr_linenumber" name="L138" href="#L138">138</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L139" href="#L139">139</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
@@ -650,43 +650,43 @@
 <a class="jxr_linenumber" name="L642" href="#L642">642</a>     }
 <a class="jxr_linenumber" name="L643" href="#L643">643</a> 
 <a class="jxr_linenumber" name="L644" href="#L644">644</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L645" href="#L645">645</a> <em class="jxr_javadoccomment">     * Sets available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:</em>
-<a class="jxr_linenumber" name="L646" href="#L646">646</a> <em class="jxr_javadoccomment">     * {@link LessOptions#DEFAULT_FILE_LOADERS}).</em>
-<a class="jxr_linenumber" name="L647" href="#L647">647</a> <em class="jxr_javadoccomment">     * @param fileLoaders the available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders}</em>
+<a class="jxr_linenumber" name="L645" href="#L645">645</a> <em class="jxr_javadoccomment">     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:</em>
+<a class="jxr_linenumber" name="L646" href="#L646">646</a> <em class="jxr_javadoccomment">     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).</em>
+<a class="jxr_linenumber" name="L647" href="#L647">647</a> <em class="jxr_javadoccomment">     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}</em>
 <a class="jxr_linenumber" name="L648" href="#L648">648</a> <em class="jxr_javadoccomment">     *            ({@code null} is treated as a collection with default values).</em>
 <a class="jxr_linenumber" name="L649" href="#L649">649</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L650" href="#L650">650</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L651" href="#L651">651</a> <em class="jxr_javadoccomment">     * @see #fileLoaders(CharSequence...)</em>
-<a class="jxr_linenumber" name="L652" href="#L652">652</a> <em class="jxr_javadoccomment">     * @see FileLoadersOptionBuilder</em>
+<a class="jxr_linenumber" name="L651" href="#L651">651</a> <em class="jxr_javadoccomment">     * @see #fileSystems(CharSequence...)</em>
+<a class="jxr_linenumber" name="L652" href="#L652">652</a> <em class="jxr_javadoccomment">     * @see FileSystemsOptionBuilder</em>
 <a class="jxr_linenumber" name="L653" href="#L653">653</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> fileLoaders(<strong class="jxr_keyword">final</strong> Collection&lt;? <strong class="jxr_keyword">extends</strong> CharSequence&gt; fileLoaders) {
-<a class="jxr_linenumber" name="L655" href="#L655">655</a>         <strong class="jxr_keyword">if</strong> (fileLoaders != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L656" href="#L656">656</a>             <strong class="jxr_keyword">final</strong> List&lt;String&gt; paths = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(fileLoaders.size());
-<a class="jxr_linenumber" name="L657" href="#L657">657</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> CharSequence path : fileLoaders) {
+<a class="jxr_linenumber" name="L654" href="#L654">654</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> fileSystems(<strong class="jxr_keyword">final</strong> Collection&lt;? <strong class="jxr_keyword">extends</strong> CharSequence&gt; fileSystems) {
+<a class="jxr_linenumber" name="L655" href="#L655">655</a>         <strong class="jxr_keyword">if</strong> (fileSystems != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L656" href="#L656">656</a>             <strong class="jxr_keyword">final</strong> List&lt;String&gt; paths = <strong class="jxr_keyword">new</strong> ArrayList&lt;String&gt;(fileSystems.size());
+<a class="jxr_linenumber" name="L657" href="#L657">657</a>             <strong class="jxr_keyword">for</strong> (<strong class="jxr_keyword">final</strong> CharSequence path : fileSystems) {
 <a class="jxr_linenumber" name="L658" href="#L658">658</a>                 paths.add(StringUtils.toStringIfNotNull(path));
 <a class="jxr_linenumber" name="L659" href="#L659">659</a>             }
-<a class="jxr_linenumber" name="L660" href="#L660">660</a>             getOptions().setFileLoaders(paths);
+<a class="jxr_linenumber" name="L660" href="#L660">660</a>             getOptions().setFileSystems(paths);
 <a class="jxr_linenumber" name="L661" href="#L661">661</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L662" href="#L662">662</a>             getOptions().setFileLoaders(<strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L662" href="#L662">662</a>             getOptions().setFileSystems(<strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L663" href="#L663">663</a>         }
 <a class="jxr_linenumber" name="L664" href="#L664">664</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">this</strong>;
 <a class="jxr_linenumber" name="L665" href="#L665">665</a>     }
 <a class="jxr_linenumber" name="L666" href="#L666">666</a> 
 <a class="jxr_linenumber" name="L667" href="#L667">667</a>     <em class="jxr_javadoccomment">/**</em>
-<a class="jxr_linenumber" name="L668" href="#L668">668</a> <em class="jxr_javadoccomment">     * Sets available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:</em>
-<a class="jxr_linenumber" name="L669" href="#L669">669</a> <em class="jxr_javadoccomment">     * {@link LessOptions#DEFAULT_FILE_LOADERS}).</em>
-<a class="jxr_linenumber" name="L670" href="#L670">670</a> <em class="jxr_javadoccomment">     * @param fileLoaders the available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders}</em>
+<a class="jxr_linenumber" name="L668" href="#L668">668</a> <em class="jxr_javadoccomment">     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:</em>
+<a class="jxr_linenumber" name="L669" href="#L669">669</a> <em class="jxr_javadoccomment">     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).</em>
+<a class="jxr_linenumber" name="L670" href="#L670">670</a> <em class="jxr_javadoccomment">     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}</em>
 <a class="jxr_linenumber" name="L671" href="#L671">671</a> <em class="jxr_javadoccomment">     *            ({@code null} is treated as a collection with default values).</em>
 <a class="jxr_linenumber" name="L672" href="#L672">672</a> <em class="jxr_javadoccomment">     * @return {@code this} builder.</em>
 <a class="jxr_linenumber" name="L673" href="#L673">673</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
-<a class="jxr_linenumber" name="L674" href="#L674">674</a> <em class="jxr_javadoccomment">     * @see #fileLoaders(Collection)</em>
-<a class="jxr_linenumber" name="L675" href="#L675">675</a> <em class="jxr_javadoccomment">     * @see FileLoadersOptionBuilder</em>
+<a class="jxr_linenumber" name="L674" href="#L674">674</a> <em class="jxr_javadoccomment">     * @see #fileSystems(Collection)</em>
+<a class="jxr_linenumber" name="L675" href="#L675">675</a> <em class="jxr_javadoccomment">     * @see FileSystemsOptionBuilder</em>
 <a class="jxr_linenumber" name="L676" href="#L676">676</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L677" href="#L677">677</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> fileLoaders(<strong class="jxr_keyword">final</strong> CharSequence... fileLoaders) {
-<a class="jxr_linenumber" name="L678" href="#L678">678</a>         <strong class="jxr_keyword">if</strong> (fileLoaders != <strong class="jxr_keyword">null</strong>) {
-<a class="jxr_linenumber" name="L679" href="#L679">679</a>             <strong class="jxr_keyword">return</strong> fileLoaders(Arrays.asList(fileLoaders));
+<a class="jxr_linenumber" name="L677" href="#L677">677</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">LessOptionsBuilder</a> fileSystems(<strong class="jxr_keyword">final</strong> CharSequence... fileSystems) {
+<a class="jxr_linenumber" name="L678" href="#L678">678</a>         <strong class="jxr_keyword">if</strong> (fileSystems != <strong class="jxr_keyword">null</strong>) {
+<a class="jxr_linenumber" name="L679" href="#L679">679</a>             <strong class="jxr_keyword">return</strong> fileSystems(Arrays.asList(fileSystems));
 <a class="jxr_linenumber" name="L680" href="#L680">680</a>         } <strong class="jxr_keyword">else</strong> {
-<a class="jxr_linenumber" name="L681" href="#L681">681</a>             <strong class="jxr_keyword">return</strong> fileLoaders((Collection&lt;CharSequence&gt;) <strong class="jxr_keyword">null</strong>);
+<a class="jxr_linenumber" name="L681" href="#L681">681</a>             <strong class="jxr_keyword">return</strong> fileSystems((Collection&lt;CharSequence&gt;) <strong class="jxr_keyword">null</strong>);
 <a class="jxr_linenumber" name="L682" href="#L682">682</a>         }
 <a class="jxr_linenumber" name="L683" href="#L683">683</a>     }
 <a class="jxr_linenumber" name="L684" href="#L684">684</a> 

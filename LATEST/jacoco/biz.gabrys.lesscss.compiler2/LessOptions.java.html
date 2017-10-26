@@ -17,7 +17,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
-import biz.gabrys.lesscss.compiler2.loader.LocalFileLoader;
+import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
 
 /**
  * &lt;p&gt;
@@ -67,22 +67,22 @@ import biz.gabrys.lesscss.compiler2.loader.LocalFileLoader;
  * &lt;ul&gt;
  * &lt;li&gt;{@link #getEncoding() encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)&lt;/li&gt;
- * &lt;li&gt;{@link #getFileLoaders() file loaders} - a list with class names of the
- * {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:
- * &lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.loader.{@link LocalFileLoader}&quot;]&lt;/code&gt;)&lt;/li&gt;
+ * &lt;li&gt;{@link #getFileSystems() file systems} - a list with class names of the
+ * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * &lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}&quot;]&lt;/code&gt;)&lt;/li&gt;
  * &lt;/ul&gt;
  * @since 2.0.0
  * @see LessOptionsBuilder
- * @see FileLoadersOptionBuilder
+ * @see FileSystemsOptionBuilder
  */
 public class LessOptions {
 
     /**
-     * Stores a default value of the file loaders option
-     * (&lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.loader.{@link LocalFileLoader}&quot;]&lt;/code&gt;).
+     * Stores a default value of the file systems option
+     * (&lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}&quot;]&lt;/code&gt;).
      * @since 2.0.0
      */
-<span class="fc" id="L85">    public static final List&lt;String&gt; DEFAULT_FILE_LOADERS = Collections.unmodifiableList(Arrays.asList(LocalFileLoader.class.getName()));</span>
+<span class="fc" id="L85">    public static final List&lt;String&gt; DEFAULT_FILE_SYSTEMS = Collections.unmodifiableList(Arrays.asList(LocalFileSystem.class.getName()));</span>
 
     private boolean silent;
     private boolean strictImports;
@@ -102,7 +102,7 @@ public class LessOptions {
     private String sourceMapUrl;
 
     private String encoding;
-    private List&lt;String&gt; fileLoaders;
+    private List&lt;String&gt; fileSystems;
 
     /**
      * Constructs a new instance.
@@ -113,11 +113,11 @@ public class LessOptions {
 <span class="fc" id="L113">        javaScript = true;</span>
 <span class="fc" id="L114">        includePaths = Collections.emptyList();</span>
 <span class="fc" id="L115">        lineNumbers = LineNumbersValue.OFF;</span>
-<span class="fc" id="L116">        fileLoaders = DEFAULT_FILE_LOADERS;</span>
+<span class="fc" id="L116">        fileSystems = DEFAULT_FILE_SYSTEMS;</span>
 <span class="fc" id="L117">    }</span>
 
     /**
-     * Constructs a new instance as a copy of an another options object.
+     * Constructs a new instance as a copy of the another options object.
      * @param options the another options object (cannot be {@code null}).
      * @throws IllegalArgumentException if options is {@code null}.
      * @since 2.0.0
@@ -144,7 +144,7 @@ public class LessOptions {
 <span class="nc" id="L144">        sourceMapUrl = options.sourceMapUrl;</span>
 
 <span class="nc" id="L146">        encoding = options.encoding;</span>
-<span class="nc" id="L147">        fileLoaders = new ArrayList&lt;String&gt;(options.fileLoaders);</span>
+<span class="nc" id="L147">        fileSystems = new ArrayList&lt;String&gt;(options.fileSystems);</span>
 <span class="nc" id="L148">    }</span>
 
     /**
@@ -719,26 +719,26 @@ public class LessOptions {
 <span class="fc" id="L719">    }</span>
 
     /**
-     * Returns {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} used to fetch content of the source
-     * files (default: {@link #DEFAULT_FILE_LOADERS}).
-     * @return the file loaders (never {@code null}).
+     * Returns {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the
+     * source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @return the file systems (never {@code null}).
      * @since 2.0.0
      */
-    public List&lt;String&gt; getFileLoaders() {
-<span class="fc" id="L728">        return new ArrayList&lt;String&gt;(fileLoaders);</span>
+    public List&lt;String&gt; getFileSystems() {
+<span class="fc" id="L728">        return new ArrayList&lt;String&gt;(fileSystems);</span>
     }
 
     /**
-     * Sets {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} used to fetch content of the source
-     * files (default: {@link #DEFAULT_FILE_LOADERS}).
-     * @param fileLoaders the file loaders ({@code null} is treated as a collection with default values).
+     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
+     * files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
      * @since 2.0.0
      */
-    public void setFileLoaders(final List&lt;String&gt; fileLoaders) {
-<span class="fc bfc" id="L738" title="All 2 branches covered.">        if (fileLoaders == null) {</span>
-<span class="fc" id="L739">            this.fileLoaders = DEFAULT_FILE_LOADERS;</span>
+    public void setFileSystems(final List&lt;String&gt; fileSystems) {
+<span class="fc bfc" id="L738" title="All 2 branches covered.">        if (fileSystems == null) {</span>
+<span class="fc" id="L739">            this.fileSystems = DEFAULT_FILE_SYSTEMS;</span>
         } else {
-<span class="fc" id="L741">            this.fileLoaders = new ArrayList&lt;String&gt;(fileLoaders);</span>
+<span class="fc" id="L741">            this.fileSystems = new ArrayList&lt;String&gt;(fileSystems);</span>
         }
 <span class="fc" id="L743">    }</span>
 }

@@ -33,7 +33,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * &lt;li&gt;{@link #ieCompatibility(boolean) IE compatibility} - whether a CSS code should be compatible with Internet
  * Explorer browser (default: {@code true})&lt;/li&gt;
  * &lt;li&gt;{@link #includePaths(List) included paths} - available include paths (default: {@code []})&lt;/li&gt;
- * &lt;li&gt;{@link #inputFile(String) path} - an input (source) file's path&lt;/li&gt;
+ * &lt;li&gt;{@link #inputFile(String) path} - an input (source) file path&lt;/li&gt;
  * &lt;li&gt;{@link #javaScript(boolean) JavaScript} - whether a compiler should allow usage of JavaScript language (default:
  * {@code true})&lt;/li&gt;
  * &lt;li&gt;{@link #lineNumbers(LineNumbersValue) line numbers} - whether a compiler should generate inline source-mapping
@@ -80,9 +80,9 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * &lt;ul&gt;
  * &lt;li&gt;{@link #encoding(String) encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)&lt;/li&gt;
- * &lt;li&gt;{@link #fileLoaders(List) file loaders} - a list with class names of the
- * {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:
- * {@link LessOptions#DEFAULT_FILE_LOADERS})&lt;/li&gt;
+ * &lt;li&gt;{@link #fileSystems(List) file systems} - a list with class names of the
+ * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * {@link LessOptions#DEFAULT_FILE_SYSTEMS})&lt;/li&gt;
  * &lt;/ul&gt;
  * &lt;p&gt;
  * Example code:
@@ -129,7 +129,7 @@ public class NativeLessOptionsBuilder {
      * &lt;ul&gt;
      * &lt;li&gt;{@link #compress(boolean)}&lt;/li&gt;
      * &lt;li&gt;{@link #encoding(String)}&lt;/li&gt;
-     * &lt;li&gt;{@link #fileLoaders(List)}&lt;/li&gt;
+     * &lt;li&gt;{@link #fileSystems(List)}&lt;/li&gt;
      * &lt;li&gt;{@link #ieCompatibility(boolean)}&lt;/li&gt;
      * &lt;li&gt;{@link #includePaths(List)}&lt;/li&gt;
      * &lt;li&gt;{@link #javaScript(boolean)}&lt;/li&gt;
@@ -159,8 +159,8 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Sets an input (source) file's path.
-     * @param input the input file's path.
+     * Sets an input (source) file path.
+     * @param input the input file path.
      * @return {@code this} builder.
      * @since 2.0.0
      */
@@ -873,39 +873,39 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Sets {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} used to fetch content of the source
+     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
      * files.
-     * @param fileLoaders the file loaders ({@code null} is treated as a collection with default values).
+     * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessOptionsBuilder fileLoaders(final List&lt;String&gt; fileLoaders) {
-<span class="fc" id="L883">        options.setFileLoaders(fileLoaders);</span>
+    public NativeLessOptionsBuilder fileSystems(final List&lt;String&gt; fileSystems) {
+<span class="fc" id="L883">        options.setFileSystems(fileSystems);</span>
 <span class="fc" id="L884">        return this;</span>
     }
 
     /**
-     * Returns a command line option representation of the available file loaders.
+     * Returns a command line option representation of the available file systems.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #fileLoaders(List)
+     * @see #fileSystems(List)
      */
-    protected String getFileLoadersOption() {
-<span class="fc" id="L894">        final Collection&lt;String&gt; fileLoaders = options.getFileLoaders();</span>
-<span class="fc bfc" id="L895" title="All 4 branches covered.">        if (fileLoaders.isEmpty() || LessOptions.DEFAULT_FILE_LOADERS.equals(fileLoaders)) {</span>
+    protected String getFileSystemsOption() {
+<span class="fc" id="L894">        final Collection&lt;String&gt; fileSystems = options.getFileSystems();</span>
+<span class="fc bfc" id="L895" title="All 4 branches covered.">        if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {</span>
 <span class="fc" id="L896">            return &quot;&quot;;</span>
         }
-<span class="fc" id="L898">        final StringBuilder loaders = new StringBuilder();</span>
-<span class="fc bfc" id="L899" title="All 2 branches covered.">        for (final String loader : fileLoaders) {</span>
-<span class="pc bpc" id="L900" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(loader)) {</span>
-<span class="fc bfc" id="L901" title="All 2 branches covered.">                final boolean separatorRequired = loaders.length() != 0;</span>
+<span class="fc" id="L898">        final StringBuilder systems = new StringBuilder();</span>
+<span class="fc bfc" id="L899" title="All 2 branches covered.">        for (final String system : fileSystems) {</span>
+<span class="pc bpc" id="L900" title="1 of 2 branches missed.">            if (StringUtils.isNotBlank(system)) {</span>
+<span class="fc bfc" id="L901" title="All 2 branches covered.">                final boolean separatorRequired = systems.length() != 0;</span>
 <span class="fc bfc" id="L902" title="All 2 branches covered.">                if (separatorRequired) {</span>
-<span class="fc" id="L903">                    loaders.append(',');</span>
+<span class="fc" id="L903">                    systems.append(',');</span>
                 }
-<span class="fc" id="L905">                loaders.append(loader.trim());</span>
+<span class="fc" id="L905">                systems.append(system.trim());</span>
             }
 <span class="fc" id="L907">        }</span>
-<span class="fc" id="L908">        return &quot;--file-loaders=&quot; + loaders.toString();</span>
+<span class="fc" id="L908">        return &quot;--file-systems=&quot; + systems.toString();</span>
     }
 
     /**
@@ -944,7 +944,7 @@ public class NativeLessOptionsBuilder {
 <span class="fc" id="L944">        configurationOptions.append(getStrictUnitsOption());</span>
 
 <span class="fc" id="L946">        configurationOptions.append(getEncodingOption());</span>
-<span class="fc" id="L947">        configurationOptions.append(getFileLoadersOption());</span>
+<span class="fc" id="L947">        configurationOptions.append(getFileSystemsOption());</span>
 
 <span class="fc" id="L949">        final String inputPath = getInputFileOption();</span>
 <span class="fc" id="L950">        configurationOptions.append(inputPath);</span>

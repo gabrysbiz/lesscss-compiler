@@ -52,7 +52,7 @@ public final class StringUtils {
     }
 
     /**
-     * Returns a text representation of an object or {@code null} if the object is {@code null}.
+     * Returns a text representation of the object or {@code null} if the object is {@code null}.
      * @param object the object.
      * @return the text representation of the object or {@code null}.
      * @since 2.0.0

@@ -146,7 +146,7 @@ public class NativeLessCompiler {
             } finally {
 <span class="fc" id="L147">                console.reset();</span>
 <span class="fc" id="L148">                Context.exit();</span>
-            }
+<span class="fc" id="L149">            }</span>
 <span class="fc" id="L150">        }</span>
     }
 
@@ -182,7 +182,7 @@ public class NativeLessCompiler {
 <span class="pc" id="L182">            IOUtils.closeQuietly(streamReader);</span>
 <span class="pc" id="L183">            IOUtils.closeQuietly(inputStream);</span>
 <span class="pc" id="L184">            Context.exit();</span>
-<span class="fc" id="L185">        }</span>
+<span class="pc" id="L185">        }</span>
 <span class="fc" id="L186">    }</span>
 
     private static CompilerException parseException(final JavaScriptException exception) {
@@ -214,7 +214,7 @@ public class NativeLessCompiler {
 
 <span class="fc" id="L215">    private static class ReadFileErrorExceptionConverter implements ExceptionConverter {</span>
 
-        private static final String MARKUP = &quot;\\{gabrys-lesscss-compiler-loader-exception\\}&quot;;
+        private static final String MARKUP = &quot;\\{gabrys-lesscss-compiler-filesystem-exception\\}&quot;;
 
         private static final int ORIGINAL_EXCEPTION_MESSAGE = 1;
         private static final int IMPORTED_FILENAME_GROUP_INDEX = 2;
@@ -222,7 +222,7 @@ public class NativeLessCompiler {
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L225">            return Pattern.compile(&quot;^FileError:\\sLoaderError:&quot; + MARKUP + &quot;[^:]+:\\s(.+)&quot; + MARKUP + &quot;:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
+<span class="fc" id="L225">            return Pattern.compile(&quot;^FileError:\\sFileSystemError:&quot; + MARKUP + &quot;[^:]+:\\s(.+)&quot; + MARKUP + &quot;:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
         }
 
         @Override

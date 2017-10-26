@@ -43,7 +43,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * &lt;/pre&gt;
  * 
  * @since 2.0.0
- * @see FileLoadersOptionBuilder
+ * @see FileSystemsOptionBuilder
  */
 public class LessOptionsBuilder {
 
@@ -121,7 +121,7 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Disallows usage of an &amp;#64;import operation inside of either &amp;#64;media blocks or other selector blocks (default:
+     * Disallows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:
      * {@code off}).
      * @return {@code this} builder.
      * @since 2.0.0
@@ -133,7 +133,7 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Allows usage of an &amp;#64;import operation inside of either &amp;#64;media blocks or other selector blocks (default:
+     * Allows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:
      * {@code off}).
      * @return {@code this} builder.
      * @since 2.0.0
@@ -642,43 +642,43 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Sets available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:
-     * {@link LessOptions#DEFAULT_FILE_LOADERS}).
-     * @param fileLoaders the available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders}
+     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
      *            ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #fileLoaders(CharSequence...)
-     * @see FileLoadersOptionBuilder
+     * @see #fileSystems(CharSequence...)
+     * @see FileSystemsOptionBuilder
      */
-    public LessOptionsBuilder fileLoaders(final Collection&lt;? extends CharSequence&gt; fileLoaders) {
-<span class="fc bfc" id="L655" title="All 2 branches covered.">        if (fileLoaders != null) {</span>
-<span class="fc" id="L656">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(fileLoaders.size());</span>
-<span class="fc bfc" id="L657" title="All 2 branches covered.">            for (final CharSequence path : fileLoaders) {</span>
+    public LessOptionsBuilder fileSystems(final Collection&lt;? extends CharSequence&gt; fileSystems) {
+<span class="fc bfc" id="L655" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L656">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(fileSystems.size());</span>
+<span class="fc bfc" id="L657" title="All 2 branches covered.">            for (final CharSequence path : fileSystems) {</span>
 <span class="fc" id="L658">                paths.add(StringUtils.toStringIfNotNull(path));</span>
 <span class="fc" id="L659">            }</span>
-<span class="fc" id="L660">            getOptions().setFileLoaders(paths);</span>
+<span class="fc" id="L660">            getOptions().setFileSystems(paths);</span>
 <span class="fc" id="L661">        } else {</span>
-<span class="fc" id="L662">            getOptions().setFileLoaders(null);</span>
+<span class="fc" id="L662">            getOptions().setFileSystems(null);</span>
         }
 <span class="fc" id="L664">        return this;</span>
     }
 
     /**
-     * Sets available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders} (default:
-     * {@link LessOptions#DEFAULT_FILE_LOADERS}).
-     * @param fileLoaders the available {@link biz.gabrys.lesscss.compiler2.loader.FileLoader file loaders}
+     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
      *            ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #fileLoaders(Collection)
-     * @see FileLoadersOptionBuilder
+     * @see #fileSystems(Collection)
+     * @see FileSystemsOptionBuilder
      */
-    public LessOptionsBuilder fileLoaders(final CharSequence... fileLoaders) {
-<span class="fc bfc" id="L678" title="All 2 branches covered.">        if (fileLoaders != null) {</span>
-<span class="fc" id="L679">            return fileLoaders(Arrays.asList(fileLoaders));</span>
+    public LessOptionsBuilder fileSystems(final CharSequence... fileSystems) {
+<span class="fc bfc" id="L678" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L679">            return fileSystems(Arrays.asList(fileSystems));</span>
         } else {
-<span class="fc" id="L681">            return fileLoaders((Collection&lt;CharSequence&gt;) null);</span>
+<span class="fc" id="L681">            return fileSystems((Collection&lt;CharSequence&gt;) null);</span>
         }
     }
 

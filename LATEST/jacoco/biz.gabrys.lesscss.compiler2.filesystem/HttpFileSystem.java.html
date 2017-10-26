@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>HttpFileSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.filesystem</a> &gt; <span class="el_source">HttpFileSystem.java</span></div><h1>HttpFileSystem.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabryś
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.filesystem;
+
+import java.io.IOException;
+import java.net.HttpURLConnection;
+import java.net.MalformedURLException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.HashSet;
+import java.util.List;
+
+import biz.gabrys.lesscss.compiler2.io.IOUtils;
+
+/**
+ * &lt;p&gt;
+ * Represents a file system accessible via &lt;a href=&quot;https://www.w3.org/Protocols/&quot;&gt;HTTP&lt;/a&gt; and HTTPS protocols. The
+ * file system handles HTTP codes:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;200 OK&lt;/li&gt;
+ * &lt;li&gt;301 Moved Permanently&lt;/li&gt;
+ * &lt;li&gt;302 Temporary Redirect&lt;/li&gt;
+ * &lt;li&gt;303 See Other&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Example paths:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;http://example.org/style.less&lt;/li&gt;
+ * &lt;li&gt;https://example.org/styles/main.less&lt;/li&gt;
+ * &lt;/ul&gt;
+ * @since 2.0.0
+ */
+public class HttpFileSystem implements FileSystem {
+
+<span class="nc" id="L52">    private static final Collection&lt;Integer&gt; REDIRECT_CODES = new HashSet&lt;Integer&gt;(</span>
+<span class="nc" id="L53">            Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));</span>
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="nc" id="L59">    public HttpFileSystem() {</span>
+        // do nothing
+<span class="nc" id="L61">    }</span>
+
+    @Override
+    public boolean isSupported(final String path) {
+<span class="nc bnc" id="L65" title="All 4 branches missed.">        return path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;);</span>
+    }
+
+    @Override
+    public String normalize(final String path) throws URISyntaxException {
+<span class="nc" id="L70">        return new URI(path).normalize().toString();</span>
+    }
+
+    @Override
+    public String expandRedirection(final String path) throws IOException, URISyntaxException {
+<span class="nc" id="L75">        final HttpURLConnection connection = makeConnection(new URL(path), false);</span>
+<span class="nc" id="L76">        final String expandedUrl = connection.getURL().toURI().normalize().toString();</span>
+<span class="nc" id="L77">        connection.disconnect();</span>
+<span class="nc" id="L78">        return expandedUrl;</span>
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+<span class="nc" id="L83">        final HttpURLConnection connection = makeConnection(new URL(path), true);</span>
+<span class="nc" id="L84">        final String responseEncoding = getEncodingFromContentType(connection.getContentType());</span>
+        FileData fileData;
+        try {
+<span class="nc" id="L87">            fileData = new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);</span>
+<span class="nc" id="L88">        } catch (final IOException e) {</span>
+<span class="nc" id="L89">            throw new IOException(&quot;cannot read file's content&quot;, e);</span>
+        } finally {
+<span class="nc" id="L91">            connection.disconnect();</span>
+<span class="nc" id="L92">        }</span>
+<span class="nc" id="L93">        return fileData;</span>
+    }
+
+    private static HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody) throws IOException {
+        HttpURLConnection connection;
+        int responseCode;
+<span class="nc" id="L99">        URL resourceUrl = url;</span>
+        while (true) {
+<span class="nc" id="L101">            connection = (HttpURLConnection) resourceUrl.openConnection();</span>
+<span class="nc bnc" id="L102" title="All 2 branches missed.">            connection.setRequestMethod(fetchResponseBody ? &quot;GET&quot; : &quot;HEAD&quot;);</span>
+<span class="nc" id="L103">            responseCode = connection.getResponseCode();</span>
+<span class="nc bnc" id="L104" title="All 2 branches missed.">            if (!REDIRECT_CODES.contains(responseCode)) {</span>
+<span class="nc" id="L105">                break;</span>
+            }
+<span class="nc" id="L107">            final String location = connection.getHeaderField(&quot;Location&quot;);</span>
+            try {
+<span class="nc" id="L109">                resourceUrl = new URL(location);</span>
+<span class="nc" id="L110">            } catch (final MalformedURLException e) {</span>
+<span class="nc" id="L111">                throw new IOException(String.format(&quot;invalid \&quot;Location\&quot; header: %s&quot;, location), e);</span>
+<span class="nc" id="L112">            }</span>
+<span class="nc" id="L113">        }</span>
+<span class="nc bnc" id="L114" title="All 2 branches missed.">        if (responseCode != HttpURLConnection.HTTP_OK) {</span>
+<span class="nc" id="L115">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(REDIRECT_CODES);</span>
+<span class="nc" id="L116">            supportedCodes.add(0, HttpURLConnection.HTTP_OK);</span>
+<span class="nc" id="L117">            throw new IllegalArgumentException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;,</span>
+<span class="nc" id="L118">                    responseCode, supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
+        }
+<span class="nc" id="L120">        return connection;</span>
+    }
+
+    private static String getEncodingFromContentType(final String contentType) {
+<span class="nc bnc" id="L124" title="All 4 branches missed.">        if (contentType == null || !contentType.contains(&quot;charset=&quot;)) {</span>
+<span class="nc" id="L125">            return Charset.defaultCharset().toString();</span>
+        }
+<span class="nc" id="L127">        return contentType.substring(contentType.lastIndexOf('=') + 1);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
