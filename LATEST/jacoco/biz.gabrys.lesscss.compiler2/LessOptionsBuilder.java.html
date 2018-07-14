@@ -683,12 +683,34 @@ public class LessOptionsBuilder {
     }
 
     /**
+     * Sets a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @param banner the banner.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #bannerOff()
+     */
+    public LessOptionsBuilder banner(final CharSequence banner) {
+<span class="fc" id="L693">        getOptions().setBanner(StringUtils.toStringIfNotNull(banner));</span>
+<span class="fc" id="L694">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the banner option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #banner(CharSequence)
+     */
+    public LessOptionsBuilder bannerOff() {
+<span class="fc" id="L704">        return banner(null);</span>
+    }
+
+    /**
      * Builds a new instance of the {@link LessOptions}.
      * @return the new instance of the {@link LessOptions}.
      * @since 2.0.0
      */
     public LessOptions build() {
-<span class="nc" id="L691">        return new LessOptions(getOptions());</span>
+<span class="nc" id="L713">        return new LessOptions(getOptions());</span>
     }
 
     /**
@@ -697,7 +719,7 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      */
     protected LessOptions getOptions() {
-<span class="nc" id="L700">        return options;</span>
+<span class="nc" id="L722">        return options;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
