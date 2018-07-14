@@ -2,7 +2,7 @@
  * LessCSS Compiler
  * http://lesscss-compiler.projects.gabrys.biz/
  *
- * Copyright (c) 2015 Adam Gabryś
+ * Copyright (c) 2015 Adam Gabrys
  *
  * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
  * You may not use this file except in compliance with the License.
@@ -51,24 +51,34 @@ public class ClassPathFileSystem implements FileSystem {
 
     @Override
     public String normalize(final String path) throws URISyntaxException {
-<span class="nc" id="L54">        return new URI(path).normalize().toString();</span>
+<span class="fc" id="L54">        return new URI(path).normalize().toString();</span>
     }
 
     @Override
     public String expandRedirection(final String path) {
-<span class="nc" id="L59">        return path;</span>
+<span class="fc" id="L59">        return path;</span>
     }
 
     @Override
-    public FileData fetch(final String path) throws Exception {
+    public boolean exists(final String path) {
 <span class="fc" id="L64">        final String name = path.substring(PROTOCOL_PREFIX.length());</span>
-<span class="fc" id="L65">        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();</span>
-<span class="fc" id="L66">        final InputStream stream = classLoader.getResourceAsStream(name);</span>
-<span class="pc bpc" id="L67" title="1 of 2 branches missed.">        if (stream == null) {</span>
-<span class="nc" id="L68">            throw new IOException(String.format(&quot;cannot find resource \&quot;%s\&quot; in classpath&quot;, name));</span>
+<span class="fc" id="L65">        final ClassLoader classLoader = getClassLoader();</span>
+<span class="fc bfc" id="L66" title="All 2 branches covered.">        return classLoader.getResource(name) != null;</span>
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+<span class="fc" id="L71">        final String name = path.substring(PROTOCOL_PREFIX.length());</span>
+<span class="fc" id="L72">        final InputStream stream = getClassLoader().getResourceAsStream(name);</span>
+<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (stream == null) {</span>
+<span class="fc" id="L74">            throw new IOException(String.format(&quot;cannot find resource \&quot;%s\&quot; in classpath&quot;, name));</span>
         }
-<span class="fc" id="L70">        final byte[] content = IOUtils.toByteArray(stream);</span>
-<span class="fc" id="L71">        return new FileData(content);</span>
+<span class="fc" id="L76">        final byte[] content = IOUtils.toByteArray(stream);</span>
+<span class="fc" id="L77">        return new FileData(content);</span>
+    }
+
+    ClassLoader getClassLoader() {
+<span class="fc" id="L81">        return Thread.currentThread().getContextClassLoader();</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

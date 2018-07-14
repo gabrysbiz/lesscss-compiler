@@ -2,7 +2,7 @@
  * LessCSS Compiler
  * http://lesscss-compiler.projects.gabrys.biz/
  *
- * Copyright (c) 2015 Adam Gabryś
+ * Copyright (c) 2015 Adam Gabrys
  *
  * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
  * You may not use this file except in compliance with the License.
@@ -44,24 +44,35 @@ public class LocalFileSystem implements FileSystem {
         // do nothing
 <span class="fc" id="L45">    }</span>
 
+    /**
+     * Always returns {@code true}.
+     * @param path an ignored parameter.
+     * @return always {@code true}.
+     * @since 2.0.0
+     */
     @Override
     public boolean isSupported(final String path) {
-<span class="fc" id="L49">        return new File(path).exists();</span>
+<span class="fc" id="L55">        return true;</span>
     }
 
     @Override
     public String normalize(final String path) throws IOException {
-<span class="fc" id="L54">        return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L60">        return new File(path).getCanonicalPath();</span>
     }
 
     @Override
     public String expandRedirection(final String path) throws IOException {
-<span class="fc" id="L59">        return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L65">        return path;</span>
     }
 
     @Override
-    public FileData fetch(final String file) throws IOException {
-<span class="fc" id="L64">        return new FileData(IOUtils.toByteArray(new FileInputStream(file)));</span>
+    public boolean exists(final String path) {
+<span class="fc" id="L70">        return new File(path).exists();</span>
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+<span class="fc" id="L75">        return new FileData(IOUtils.toByteArray(new FileInputStream(path)));</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -2,7 +2,7 @@
  * LessCSS Compiler
  * http://lesscss-compiler.projects.gabrys.biz/
  *
- * Copyright (c) 2015 Adam Gabryś
+ * Copyright (c) 2015 Adam Gabrys
  *
  * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
  * You may not use this file except in compliance with the License.
@@ -121,7 +121,7 @@ public class NativeLessCompiler {
      * @since 2.0.0
      * @see NativeLessOptionsBuilder
      */
-    public String execute(final Collection&lt;? extends Object&gt; options) {
+    public String execute(final Collection&lt;?&gt; options) {
 <span class="fc" id="L125">        synchronized (mutex) {</span>
 <span class="fc bfc" id="L126" title="All 2 branches covered.">            if (compiler == null) {</span>
 <span class="fc" id="L127">                initialize();</span>
@@ -146,8 +146,8 @@ public class NativeLessCompiler {
             } finally {
 <span class="fc" id="L147">                console.reset();</span>
 <span class="fc" id="L148">                Context.exit();</span>
-<span class="fc" id="L149">            }</span>
-<span class="fc" id="L150">        }</span>
+            }
+        }
     }
 
     private void initialize() {
@@ -179,10 +179,10 @@ public class NativeLessCompiler {
 <span class="nc" id="L179">            throw new InitializationException(&quot;Failed to initialize native Less compiler&quot;, e);</span>
 
         } finally {
-<span class="pc" id="L182">            IOUtils.closeQuietly(streamReader);</span>
-<span class="pc" id="L183">            IOUtils.closeQuietly(inputStream);</span>
-<span class="pc" id="L184">            Context.exit();</span>
-<span class="pc" id="L185">        }</span>
+<span class="fc" id="L182">            IOUtils.closeQuietly(streamReader);</span>
+<span class="fc" id="L183">            IOUtils.closeQuietly(inputStream);</span>
+<span class="fc" id="L184">            Context.exit();</span>
+        }
 <span class="fc" id="L186">    }</span>
 
     private static CompilerException parseException(final JavaScriptException exception) {
@@ -212,7 +212,7 @@ public class NativeLessCompiler {
         CompilerException createException(Exception cause, Matcher matcher, String message);
     }
 
-<span class="fc" id="L215">    private static class ReadFileErrorExceptionConverter implements ExceptionConverter {</span>
+    private static class ReadFileErrorExceptionConverter implements ExceptionConverter {
 
         private static final String MARKUP = &quot;\\{gabrys-lesscss-compiler-filesystem-exception\\}&quot;;
 
@@ -227,13 +227,13 @@ public class NativeLessCompiler {
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="nc" id="L230">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
-<span class="nc" id="L231">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: %s.%nError in %s&quot;, importedFilename,</span>
-<span class="nc" id="L232">                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+<span class="fc" id="L230">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="fc" id="L231">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: %s.%nError in %s&quot;, importedFilename,</span>
+<span class="fc" id="L232">                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
         }
     }
 
-<span class="fc" id="L236">    private static class NotSupportedProtocolExceptionConverter implements ExceptionConverter {</span>
+    private static class NotSupportedProtocolExceptionConverter implements ExceptionConverter {
 
         private static final int IMPORTED_FILENAME_GROUP_INDEX = 1;
         private static final int SOURCE_FILEPATH_GROUP_INDEX = 2;
@@ -245,13 +245,13 @@ public class NativeLessCompiler {
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L248">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
-<span class="fc" id="L249">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: the protocol is not supported.%nError in %s&quot;,</span>
-<span class="fc" id="L250">                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+<span class="nc" id="L248">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="nc" id="L249">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: the protocol is not supported.%nError in %s&quot;,</span>
+<span class="nc" id="L250">                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
         }
     }
 
-<span class="fc" id="L254">    private static class ConfigurationExceptionConverter implements ExceptionConverter {</span>
+    private static class ConfigurationExceptionConverter implements ExceptionConverter {
 
         @Override
         public Pattern getPattern() {
@@ -264,7 +264,7 @@ public class NativeLessCompiler {
         }
     }
 
-<span class="fc" id="L267">    private static class SourceFileExceptionConverter implements ExceptionConverter {</span>
+    private static class SourceFileExceptionConverter implements ExceptionConverter {
 
         @Override
         public Pattern getPattern() {
@@ -277,4 +277,4 @@ public class NativeLessCompiler {
         }
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.7.9.201702052155</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
