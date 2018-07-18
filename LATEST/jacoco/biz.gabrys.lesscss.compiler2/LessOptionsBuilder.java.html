@@ -44,6 +44,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * 
  * @since 2.0.0
  * @see FileSystemsOptionBuilder
+ * @see LessVariablesOptionBuilder
  */
 public class LessOptionsBuilder {
 
@@ -53,9 +54,9 @@ public class LessOptionsBuilder {
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L56">    public LessOptionsBuilder() {</span>
-<span class="fc" id="L57">        options = new LessOptions();</span>
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L57">    public LessOptionsBuilder() {</span>
+<span class="fc" id="L58">        options = new LessOptions();</span>
+<span class="fc" id="L59">    }</span>
 
     /**
      * Constructs a new instance and copies options into {@code this} builder.
@@ -63,12 +64,12 @@ public class LessOptionsBuilder {
      * @throws IllegalArgumentException if the options object is {@code null}.
      * @since 2.0.0
      */
-<span class="nc" id="L66">    public LessOptionsBuilder(final LessOptions options) {</span>
-<span class="nc bnc" id="L67" title="All 2 branches missed.">        if (options == null) {</span>
-<span class="nc" id="L68">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="nc" id="L67">    public LessOptionsBuilder(final LessOptions options) {</span>
+<span class="nc bnc" id="L68" title="All 2 branches missed.">        if (options == null) {</span>
+<span class="nc" id="L69">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="nc" id="L70">        this.options = new LessOptions(options);</span>
-<span class="nc" id="L71">    }</span>
+<span class="nc" id="L71">        this.options = new LessOptions(options);</span>
+<span class="nc" id="L72">    }</span>
 
     /**
      * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
@@ -79,8 +80,8 @@ public class LessOptionsBuilder {
      * @see #silentOff()
      */
     public LessOptionsBuilder silent(final boolean silent) {
-<span class="fc" id="L82">        getOptions().setSilent(silent);</span>
-<span class="fc" id="L83">        return this;</span>
+<span class="fc" id="L83">        getOptions().setSilent(silent);</span>
+<span class="fc" id="L84">        return this;</span>
     }
 
     /**
@@ -91,7 +92,7 @@ public class LessOptionsBuilder {
      * @see #silentOff()
      */
     public LessOptionsBuilder silentOn() {
-<span class="fc" id="L94">        return silent(true);</span>
+<span class="fc" id="L95">        return silent(true);</span>
     }
 
     /**
@@ -102,7 +103,7 @@ public class LessOptionsBuilder {
      * @see #silentOn()
      */
     public LessOptionsBuilder silentOff() {
-<span class="fc" id="L105">        return silent(false);</span>
+<span class="fc" id="L106">        return silent(false);</span>
     }
 
     /**
@@ -116,8 +117,8 @@ public class LessOptionsBuilder {
      * @see #strictImportsOff()
      */
     public LessOptionsBuilder strictImports(final boolean strictImports) {
-<span class="fc" id="L119">        getOptions().setStrictImports(strictImports);</span>
-<span class="fc" id="L120">        return this;</span>
+<span class="fc" id="L120">        getOptions().setStrictImports(strictImports);</span>
+<span class="fc" id="L121">        return this;</span>
     }
 
     /**
@@ -129,7 +130,7 @@ public class LessOptionsBuilder {
      * @see #strictImportsOff()
      */
     public LessOptionsBuilder strictImportsOn() {
-<span class="fc" id="L132">        return strictImports(true);</span>
+<span class="fc" id="L133">        return strictImports(true);</span>
     }
 
     /**
@@ -141,7 +142,7 @@ public class LessOptionsBuilder {
      * @see #strictImportsOn()
      */
     public LessOptionsBuilder strictImportsOff() {
-<span class="fc" id="L144">        return strictImports(false);</span>
+<span class="fc" id="L145">        return strictImports(false);</span>
     }
 
     /**
@@ -153,8 +154,8 @@ public class LessOptionsBuilder {
      * @see #compressOff()
      */
     public LessOptionsBuilder compress(final boolean compress) {
-<span class="fc" id="L156">        getOptions().setCompress(compress);</span>
-<span class="fc" id="L157">        return this;</span>
+<span class="fc" id="L157">        getOptions().setCompress(compress);</span>
+<span class="fc" id="L158">        return this;</span>
     }
 
     /**
@@ -165,7 +166,7 @@ public class LessOptionsBuilder {
      * @see #compressOff()
      */
     public LessOptionsBuilder compressOn() {
-<span class="fc" id="L168">        return compress(true);</span>
+<span class="fc" id="L169">        return compress(true);</span>
     }
 
     /**
@@ -176,7 +177,7 @@ public class LessOptionsBuilder {
      * @see #compressOn()
      */
     public LessOptionsBuilder compressOff() {
-<span class="fc" id="L179">        return compress(false);</span>
+<span class="fc" id="L180">        return compress(false);</span>
     }
 
     /**
@@ -189,8 +190,8 @@ public class LessOptionsBuilder {
      * @see #ieCompatibilityOff()
      */
     public LessOptionsBuilder ieCompatibility(final boolean ieCompatibility) {
-<span class="fc" id="L192">        getOptions().setIeCompatibility(ieCompatibility);</span>
-<span class="fc" id="L193">        return this;</span>
+<span class="fc" id="L193">        getOptions().setIeCompatibility(ieCompatibility);</span>
+<span class="fc" id="L194">        return this;</span>
     }
 
     /**
@@ -201,7 +202,7 @@ public class LessOptionsBuilder {
      * @see #ieCompatibilityOff()
      */
     public LessOptionsBuilder ieCompatibilityOn() {
-<span class="fc" id="L204">        return ieCompatibility(true);</span>
+<span class="fc" id="L205">        return ieCompatibility(true);</span>
     }
 
     /**
@@ -212,7 +213,7 @@ public class LessOptionsBuilder {
      * @see #ieCompatibilityOn()
      */
     public LessOptionsBuilder ieCompatibilityOff() {
-<span class="fc" id="L215">        return ieCompatibility(false);</span>
+<span class="fc" id="L216">        return ieCompatibility(false);</span>
     }
 
     /**
@@ -225,8 +226,8 @@ public class LessOptionsBuilder {
      * @see #javaScriptOff()
      */
     public LessOptionsBuilder javaScript(final boolean javaScript) {
-<span class="fc" id="L228">        getOptions().setJavaScript(javaScript);</span>
-<span class="fc" id="L229">        return this;</span>
+<span class="fc" id="L229">        getOptions().setJavaScript(javaScript);</span>
+<span class="fc" id="L230">        return this;</span>
     }
 
     /**
@@ -237,7 +238,7 @@ public class LessOptionsBuilder {
      * @see #javaScriptOff()
      */
     public LessOptionsBuilder javaScriptOn() {
-<span class="fc" id="L240">        return javaScript(true);</span>
+<span class="fc" id="L241">        return javaScript(true);</span>
     }
 
     /**
@@ -248,7 +249,7 @@ public class LessOptionsBuilder {
      * @see #javaScriptOn()
      */
     public LessOptionsBuilder javaScriptOff() {
-<span class="fc" id="L251">        return javaScript(false);</span>
+<span class="fc" id="L252">        return javaScript(false);</span>
     }
 
     /**
@@ -260,16 +261,16 @@ public class LessOptionsBuilder {
      * @see #includePathsOff()
      */
     public LessOptionsBuilder includePaths(final Collection&lt;? extends CharSequence&gt; includePaths) {
-<span class="fc bfc" id="L263" title="All 2 branches covered.">        if (includePaths != null) {</span>
-<span class="fc" id="L264">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(includePaths.size());</span>
-<span class="fc bfc" id="L265" title="All 2 branches covered.">            for (final CharSequence path : includePaths) {</span>
-<span class="fc" id="L266">                paths.add(StringUtils.toStringIfNotNull(path));</span>
-<span class="fc" id="L267">            }</span>
-<span class="fc" id="L268">            getOptions().setIncludePaths(paths);</span>
-<span class="fc" id="L269">        } else {</span>
-<span class="fc" id="L270">            getOptions().setIncludePaths(null);</span>
+<span class="fc bfc" id="L264" title="All 2 branches covered.">        if (includePaths != null) {</span>
+<span class="fc" id="L265">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(includePaths.size());</span>
+<span class="fc bfc" id="L266" title="All 2 branches covered.">            for (final CharSequence path : includePaths) {</span>
+<span class="fc" id="L267">                paths.add(StringUtils.toStringIfNotNull(path));</span>
+<span class="fc" id="L268">            }</span>
+<span class="fc" id="L269">            getOptions().setIncludePaths(paths);</span>
+<span class="fc" id="L270">        } else {</span>
+<span class="fc" id="L271">            getOptions().setIncludePaths(null);</span>
         }
-<span class="fc" id="L272">        return this;</span>
+<span class="fc" id="L273">        return this;</span>
     }
 
     /**
@@ -281,10 +282,10 @@ public class LessOptionsBuilder {
      * @see #includePathsOff()
      */
     public LessOptionsBuilder includePaths(final CharSequence... includePaths) {
-<span class="fc bfc" id="L284" title="All 2 branches covered.">        if (includePaths != null) {</span>
-<span class="fc" id="L285">            return includePaths(Arrays.asList(includePaths));</span>
+<span class="fc bfc" id="L285" title="All 2 branches covered.">        if (includePaths != null) {</span>
+<span class="fc" id="L286">            return includePaths(Arrays.asList(includePaths));</span>
         } else {
-<span class="fc" id="L287">            return includePaths((Collection&lt;CharSequence&gt;) null);</span>
+<span class="fc" id="L288">            return includePaths((Collection&lt;CharSequence&gt;) null);</span>
         }
     }
 
@@ -296,7 +297,7 @@ public class LessOptionsBuilder {
      * @see #includePaths(CharSequence...)
      */
     public LessOptionsBuilder includePathsOff() {
-<span class="fc" id="L299">        return includePaths((Collection&lt;CharSequence&gt;) null);</span>
+<span class="fc" id="L300">        return includePaths((Collection&lt;CharSequence&gt;) null);</span>
     }
 
     /**
@@ -310,8 +311,8 @@ public class LessOptionsBuilder {
      * @see #lineNumbersAll()
      */
     public LessOptionsBuilder lineNumbers(final LineNumbersValue lineNumbers) {
-<span class="fc" id="L313">        getOptions().setLineNumbers(lineNumbers);</span>
-<span class="fc" id="L314">        return this;</span>
+<span class="fc" id="L314">        getOptions().setLineNumbers(lineNumbers);</span>
+<span class="fc" id="L315">        return this;</span>
     }
 
     /**
@@ -324,7 +325,7 @@ public class LessOptionsBuilder {
      * @see #lineNumbersAll()
      */
     public LessOptionsBuilder lineNumbersOff() {
-<span class="fc" id="L327">        return lineNumbers(LineNumbersValue.OFF);</span>
+<span class="fc" id="L328">        return lineNumbers(LineNumbersValue.OFF);</span>
     }
 
     /**
@@ -337,7 +338,7 @@ public class LessOptionsBuilder {
      * @see #lineNumbersAll()
      */
     public LessOptionsBuilder lineNumbersComments() {
-<span class="fc" id="L340">        return lineNumbers(LineNumbersValue.COMMENTS);</span>
+<span class="fc" id="L341">        return lineNumbers(LineNumbersValue.COMMENTS);</span>
     }
 
     /**
@@ -350,7 +351,7 @@ public class LessOptionsBuilder {
      * @see #lineNumbersAll()
      */
     public LessOptionsBuilder lineNumbersMediaQuery() {
-<span class="fc" id="L353">        return lineNumbers(LineNumbersValue.MEDIA_QUERY);</span>
+<span class="fc" id="L354">        return lineNumbers(LineNumbersValue.MEDIA_QUERY);</span>
     }
 
     /**
@@ -364,7 +365,7 @@ public class LessOptionsBuilder {
      * @see #lineNumbersMediaQuery()
      */
     public LessOptionsBuilder lineNumbersAll() {
-<span class="fc" id="L367">        return lineNumbers(LineNumbersValue.ALL);</span>
+<span class="fc" id="L368">        return lineNumbers(LineNumbersValue.ALL);</span>
     }
 
     /**
@@ -375,8 +376,8 @@ public class LessOptionsBuilder {
      * @see #rootPathOff()
      */
     public LessOptionsBuilder rootPath(final CharSequence rootPath) {
-<span class="fc" id="L378">        getOptions().setRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
-<span class="fc" id="L379">        return this;</span>
+<span class="fc" id="L379">        getOptions().setRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
+<span class="fc" id="L380">        return this;</span>
     }
 
     /**
@@ -386,7 +387,7 @@ public class LessOptionsBuilder {
      * @see #rootPath(CharSequence)
      */
     public LessOptionsBuilder rootPathOff() {
-<span class="fc" id="L389">        return rootPath(null);</span>
+<span class="fc" id="L390">        return rootPath(null);</span>
     }
 
     /**
@@ -398,8 +399,8 @@ public class LessOptionsBuilder {
      * @see #relativeUrlsOff()
      */
     public LessOptionsBuilder relativeUrls(final boolean relativeUrls) {
-<span class="fc" id="L401">        getOptions().setRelativeUrls(relativeUrls);</span>
-<span class="fc" id="L402">        return this;</span>
+<span class="fc" id="L402">        getOptions().setRelativeUrls(relativeUrls);</span>
+<span class="fc" id="L403">        return this;</span>
     }
 
     /**
@@ -410,7 +411,7 @@ public class LessOptionsBuilder {
      * @see #relativeUrlsOff()
      */
     public LessOptionsBuilder relativeUrlsOn() {
-<span class="fc" id="L413">        return relativeUrls(true);</span>
+<span class="fc" id="L414">        return relativeUrls(true);</span>
     }
 
     /**
@@ -421,7 +422,7 @@ public class LessOptionsBuilder {
      * @see #relativeUrlsOn()
      */
     public LessOptionsBuilder relativeUrlsOff() {
-<span class="fc" id="L424">        return relativeUrls(false);</span>
+<span class="fc" id="L425">        return relativeUrls(false);</span>
     }
 
     /**
@@ -434,8 +435,8 @@ public class LessOptionsBuilder {
      * @see #strictMathOff()
      */
     public LessOptionsBuilder strictMath(final boolean strictMath) {
-<span class="fc" id="L437">        getOptions().setStrictMath(strictMath);</span>
-<span class="fc" id="L438">        return this;</span>
+<span class="fc" id="L438">        getOptions().setStrictMath(strictMath);</span>
+<span class="fc" id="L439">        return this;</span>
     }
 
     /**
@@ -446,7 +447,7 @@ public class LessOptionsBuilder {
      * @see #strictMathOff()
      */
     public LessOptionsBuilder strictMathOn() {
-<span class="fc" id="L449">        return strictMath(true);</span>
+<span class="fc" id="L450">        return strictMath(true);</span>
     }
 
     /**
@@ -457,7 +458,7 @@ public class LessOptionsBuilder {
      * @see #strictMathOn()
      */
     public LessOptionsBuilder strictMathOff() {
-<span class="fc" id="L460">        return strictMath(false);</span>
+<span class="fc" id="L461">        return strictMath(false);</span>
     }
 
     /**
@@ -470,8 +471,8 @@ public class LessOptionsBuilder {
      * @see #strictUnitsOff()
      */
     public LessOptionsBuilder strictUnits(final boolean strictUnits) {
-<span class="fc" id="L473">        getOptions().setStrictUnits(strictUnits);</span>
-<span class="fc" id="L474">        return this;</span>
+<span class="fc" id="L474">        getOptions().setStrictUnits(strictUnits);</span>
+<span class="fc" id="L475">        return this;</span>
     }
 
     /**
@@ -482,7 +483,7 @@ public class LessOptionsBuilder {
      * @see #strictUnitsOff()
      */
     public LessOptionsBuilder strictUnitsOn() {
-<span class="fc" id="L485">        return strictUnits(true);</span>
+<span class="fc" id="L486">        return strictUnits(true);</span>
     }
 
     /**
@@ -493,7 +494,7 @@ public class LessOptionsBuilder {
      * @see #strictUnitsOn()
      */
     public LessOptionsBuilder strictUnitsOff() {
-<span class="fc" id="L496">        return strictUnits(false);</span>
+<span class="fc" id="L497">        return strictUnits(false);</span>
     }
 
     /**
@@ -505,8 +506,8 @@ public class LessOptionsBuilder {
      * @see #sourceMapRootPathOff()
      */
     public LessOptionsBuilder sourceMapRootPath(final CharSequence rootPath) {
-<span class="fc" id="L508">        getOptions().setSourceMapRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
-<span class="fc" id="L509">        return this;</span>
+<span class="fc" id="L509">        getOptions().setSourceMapRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
+<span class="fc" id="L510">        return this;</span>
     }
 
     /**
@@ -516,7 +517,7 @@ public class LessOptionsBuilder {
      * @see #sourceMapRootPath(CharSequence)
      */
     public LessOptionsBuilder sourceMapRootPathOff() {
-<span class="fc" id="L519">        return sourceMapRootPath(null);</span>
+<span class="fc" id="L520">        return sourceMapRootPath(null);</span>
     }
 
     /**
@@ -528,8 +529,8 @@ public class LessOptionsBuilder {
      * @see #sourceMapBasePathOff()
      */
     public LessOptionsBuilder sourceMapBasePath(final CharSequence basePath) {
-<span class="fc" id="L531">        getOptions().setSourceMapBasePath(StringUtils.toStringIfNotNull(basePath));</span>
-<span class="fc" id="L532">        return this;</span>
+<span class="fc" id="L532">        getOptions().setSourceMapBasePath(StringUtils.toStringIfNotNull(basePath));</span>
+<span class="fc" id="L533">        return this;</span>
     }
 
     /**
@@ -539,7 +540,7 @@ public class LessOptionsBuilder {
      * @see #sourceMapBasePath(CharSequence)
      */
     public LessOptionsBuilder sourceMapBasePathOff() {
-<span class="fc" id="L542">        return sourceMapBasePath(null);</span>
+<span class="fc" id="L543">        return sourceMapBasePath(null);</span>
     }
 
     /**
@@ -552,8 +553,8 @@ public class LessOptionsBuilder {
      * @see #sourceMapLessInlineOff()
      */
     public LessOptionsBuilder sourceMapLessInline(final boolean inline) {
-<span class="fc" id="L555">        getOptions().setSourceMapLessInline(inline);</span>
-<span class="fc" id="L556">        return this;</span>
+<span class="fc" id="L556">        getOptions().setSourceMapLessInline(inline);</span>
+<span class="fc" id="L557">        return this;</span>
     }
 
     /**
@@ -564,7 +565,7 @@ public class LessOptionsBuilder {
      * @see #sourceMapLessInlineOff()
      */
     public LessOptionsBuilder sourceMapLessInlineOn() {
-<span class="fc" id="L567">        return sourceMapLessInline(true);</span>
+<span class="fc" id="L568">        return sourceMapLessInline(true);</span>
     }
 
     /**
@@ -575,7 +576,7 @@ public class LessOptionsBuilder {
      * @see #sourceMapLessInlineOn()
      */
     public LessOptionsBuilder sourceMapLessInlineOff() {
-<span class="fc" id="L578">        return sourceMapLessInline(false);</span>
+<span class="fc" id="L579">        return sourceMapLessInline(false);</span>
     }
 
     /**
@@ -587,8 +588,8 @@ public class LessOptionsBuilder {
      * @see #sourceMapUrlOff()
      */
     public LessOptionsBuilder sourceMapUrl(final CharSequence url) {
-<span class="fc" id="L590">        getOptions().setSourceMapUrl(StringUtils.toStringIfNotNull(url));</span>
-<span class="fc" id="L591">        return this;</span>
+<span class="fc" id="L591">        getOptions().setSourceMapUrl(StringUtils.toStringIfNotNull(url));</span>
+<span class="fc" id="L592">        return this;</span>
     }
 
     /**
@@ -598,7 +599,7 @@ public class LessOptionsBuilder {
      * @see #sourceMapUrl(CharSequence)
      */
     public LessOptionsBuilder sourceMapUrlOff() {
-<span class="fc" id="L601">        return sourceMapUrl(null);</span>
+<span class="fc" id="L602">        return sourceMapUrl(null);</span>
     }
 
     /**
@@ -611,8 +612,8 @@ public class LessOptionsBuilder {
      * @see #encodingPlatformDefault()
      */
     public LessOptionsBuilder encoding(final CharSequence encoding) {
-<span class="fc" id="L614">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
-<span class="fc" id="L615">        return this;</span>
+<span class="fc" id="L615">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
+<span class="fc" id="L616">        return this;</span>
     }
 
     /**
@@ -625,8 +626,8 @@ public class LessOptionsBuilder {
      * @see #encodingPlatformDefault()
      */
     public LessOptionsBuilder encoding(final Charset encoding) {
-<span class="fc" id="L628">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
-<span class="fc" id="L629">        return this;</span>
+<span class="fc" id="L629">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
+<span class="fc" id="L630">        return this;</span>
     }
 
     /**
@@ -638,7 +639,7 @@ public class LessOptionsBuilder {
      * @see #encoding(Charset)
      */
     public LessOptionsBuilder encodingPlatformDefault() {
-<span class="fc" id="L641">        return encoding((CharSequence) null);</span>
+<span class="fc" id="L642">        return encoding((CharSequence) null);</span>
     }
 
     /**
@@ -652,16 +653,16 @@ public class LessOptionsBuilder {
      * @see FileSystemsOptionBuilder
      */
     public LessOptionsBuilder fileSystems(final Collection&lt;? extends CharSequence&gt; fileSystems) {
-<span class="fc bfc" id="L655" title="All 2 branches covered.">        if (fileSystems != null) {</span>
-<span class="fc" id="L656">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(fileSystems.size());</span>
-<span class="fc bfc" id="L657" title="All 2 branches covered.">            for (final CharSequence path : fileSystems) {</span>
-<span class="fc" id="L658">                paths.add(StringUtils.toStringIfNotNull(path));</span>
-<span class="fc" id="L659">            }</span>
-<span class="fc" id="L660">            getOptions().setFileSystems(paths);</span>
-<span class="fc" id="L661">        } else {</span>
-<span class="fc" id="L662">            getOptions().setFileSystems(null);</span>
+<span class="fc bfc" id="L656" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L657">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(fileSystems.size());</span>
+<span class="fc bfc" id="L658" title="All 2 branches covered.">            for (final CharSequence path : fileSystems) {</span>
+<span class="fc" id="L659">                paths.add(StringUtils.toStringIfNotNull(path));</span>
+<span class="fc" id="L660">            }</span>
+<span class="fc" id="L661">            getOptions().setFileSystems(paths);</span>
+<span class="fc" id="L662">        } else {</span>
+<span class="fc" id="L663">            getOptions().setFileSystems(null);</span>
         }
-<span class="fc" id="L664">        return this;</span>
+<span class="fc" id="L665">        return this;</span>
     }
 
     /**
@@ -675,10 +676,10 @@ public class LessOptionsBuilder {
      * @see FileSystemsOptionBuilder
      */
     public LessOptionsBuilder fileSystems(final CharSequence... fileSystems) {
-<span class="fc bfc" id="L678" title="All 2 branches covered.">        if (fileSystems != null) {</span>
-<span class="fc" id="L679">            return fileSystems(Arrays.asList(fileSystems));</span>
+<span class="fc bfc" id="L679" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L680">            return fileSystems(Arrays.asList(fileSystems));</span>
         } else {
-<span class="fc" id="L681">            return fileSystems((Collection&lt;CharSequence&gt;) null);</span>
+<span class="fc" id="L682">            return fileSystems((Collection&lt;CharSequence&gt;) null);</span>
         }
     }
 
@@ -690,8 +691,8 @@ public class LessOptionsBuilder {
      * @see #bannerOff()
      */
     public LessOptionsBuilder banner(final CharSequence banner) {
-<span class="fc" id="L693">        getOptions().setBanner(StringUtils.toStringIfNotNull(banner));</span>
-<span class="fc" id="L694">        return this;</span>
+<span class="fc" id="L694">        getOptions().setBanner(StringUtils.toStringIfNotNull(banner));</span>
+<span class="fc" id="L695">        return this;</span>
     }
 
     /**
@@ -701,7 +702,99 @@ public class LessOptionsBuilder {
      * @see #banner(CharSequence)
      */
     public LessOptionsBuilder bannerOff() {
-<span class="fc" id="L704">        return banner(null);</span>
+<span class="fc" id="L705">        return banner(null);</span>
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(LessVariable...)
+     * @see #globalVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder globalVariables(final Collection&lt;? extends LessVariable&gt; globalVariables) {
+<span class="fc bfc" id="L718" title="All 2 branches covered.">        if (globalVariables != null) {</span>
+<span class="fc" id="L719">            getOptions().setGlobalVariables(new ArrayList&lt;LessVariable&gt;(globalVariables));</span>
+        } else {
+<span class="fc" id="L721">            getOptions().setGlobalVariables(null);</span>
+        }
+<span class="fc" id="L723">        return this;</span>
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder globalVariables(final LessVariable... globalVariables) {
+<span class="fc bfc" id="L736" title="All 2 branches covered.">        if (globalVariables != null) {</span>
+<span class="fc" id="L737">            return globalVariables(Arrays.asList(globalVariables));</span>
+        } else {
+<span class="fc" id="L739">            return globalVariables((Collection&lt;LessVariable&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Clears global variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariables(LessVariable...)
+     */
+    public LessOptionsBuilder globalVariablesOff() {
+<span class="fc" id="L751">        return globalVariables((Collection&lt;LessVariable&gt;) null);</span>
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(LessVariable...)
+     * @see #modifyVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder modifyVariables(final Collection&lt;? extends LessVariable&gt; modifyVariables) {
+<span class="fc bfc" id="L764" title="All 2 branches covered.">        if (modifyVariables != null) {</span>
+<span class="fc" id="L765">            getOptions().setModifyVariables(new ArrayList&lt;LessVariable&gt;(modifyVariables));</span>
+        } else {
+<span class="fc" id="L767">            getOptions().setModifyVariables(null);</span>
+        }
+<span class="fc" id="L769">        return this;</span>
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder modifyVariables(final LessVariable... modifyVariables) {
+<span class="fc bfc" id="L782" title="All 2 branches covered.">        if (modifyVariables != null) {</span>
+<span class="fc" id="L783">            return modifyVariables(Arrays.asList(modifyVariables));</span>
+        } else {
+<span class="fc" id="L785">            return modifyVariables((Collection&lt;LessVariable&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Clears modify variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariables(LessVariable...)
+     */
+    public LessOptionsBuilder modifyVariablesOff() {
+<span class="fc" id="L797">        return modifyVariables((Collection&lt;LessVariable&gt;) null);</span>
     }
 
     /**
@@ -710,7 +803,7 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      */
     public LessOptions build() {
-<span class="nc" id="L713">        return new LessOptions(getOptions());</span>
+<span class="nc" id="L806">        return new LessOptions(getOptions());</span>
     }
 
     /**
@@ -719,7 +812,7 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      */
     protected LessOptions getOptions() {
-<span class="nc" id="L722">        return options;</span>
+<span class="nc" id="L815">        return options;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

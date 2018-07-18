@@ -73,12 +73,11 @@ public class ClassPathFileSystem implements FileSystem {
 <span class="fc bfc" id="L73" title="All 2 branches covered.">        if (stream == null) {</span>
 <span class="fc" id="L74">            throw new IOException(String.format(&quot;cannot find resource \&quot;%s\&quot; in classpath&quot;, name));</span>
         }
-<span class="fc" id="L76">        final byte[] content = IOUtils.toByteArray(stream);</span>
-<span class="fc" id="L77">        return new FileData(content);</span>
+<span class="fc" id="L76">        return new FileData(IOUtils.toByteArray(stream));</span>
     }
 
     ClassLoader getClassLoader() {
-<span class="fc" id="L81">        return Thread.currentThread().getContextClassLoader();</span>
+<span class="fc" id="L80">        return Thread.currentThread().getContextClassLoader();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
