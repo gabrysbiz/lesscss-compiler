@@ -1,0 +1,269 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileSystemOptionsBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">FileSystemOptionsBuilder.java</span></div><h1>FileSystemOptionsBuilder.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.util.ArrayList;
+import java.util.LinkedHashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+import biz.gabrys.lesscss.compiler2.filesystem.ClassPathFileSystem;
+import biz.gabrys.lesscss.compiler2.filesystem.FileSystem;
+import biz.gabrys.lesscss.compiler2.filesystem.FtpFileSystem;
+import biz.gabrys.lesscss.compiler2.filesystem.HttpFileSystem;
+import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
+
+/**
+ * &lt;p&gt;
+ * Responsible for creating value of the {@link LessOptions#getFileSystems() file system} options.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example code:
+ * &lt;/p&gt;
+ * 
+ * &lt;pre&gt;
+ * List&amp;lt;{@link FileSystemOption}&amp;gt; fileSystems;
+ * // create a list with standard file systems
+ * fileSystems = new {@link #FileSystemOptionsBuilder() FileSystemOptionsBuilder}().{@link #appendHttp() appendHttp}().{@link #appendLocal() appendLocal}().{@link #build() build}();
+ * 
+ * // create a list with standard file systems (short version)
+ * fileSystems = new {@link #FileSystemOptionsBuilder() FileSystemOptionsBuilder}().{@link #appendStandard() appendStandard}().{@link #build() build}();
+ * 
+ * // create a list with  file system
+ * class CustomFileSystem implements {@link FileSystem} {
+ *      // omitted implementation
+ * }
+ * 
+ * fileSystems = new {@link #FileSystemOptionsBuilder() FileSystemOptionsBuilder}().{@link #appendCustom(Class) appendCustom}(CustomFileSystem.class).{@link #build() build}();
+ * &lt;/pre&gt;
+ * &lt;p&gt;
+ * &lt;strong&gt;Warning&lt;/strong&gt;: the {@link #appendLocal() local file system} should be appended as last or not at all.
+ * &lt;/p&gt;
+ * @since 2.0.0
+ * @see FileSystemOptionBuilder
+ * @see LessOptions
+ */
+public class FileSystemOptionsBuilder {
+
+<span class="fc" id="L59">    private final Set&lt;FileSystemOption&gt; options = new LinkedHashSet&lt;FileSystemOption&gt;();</span>
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L65">    public FileSystemOptionsBuilder() {</span>
+        // do nothing
+<span class="fc" id="L67">    }</span>
+
+    /**
+     * Appends standard file systems with no parameters at the end. If any file system (with no parameters) was appended
+     * before, then it will be removed and appended again. Appended file systems:
+     * &lt;ol&gt;
+     * &lt;li&gt;{@link HttpFileSystem}&lt;/li&gt;
+     * &lt;li&gt;{@link FtpFileSystem} (only if &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons
+     * Net&lt;/a&gt; library in the class path)&lt;/li&gt;
+     * &lt;li&gt;{@link LocalFileSystem}&lt;/li&gt;
+     * &lt;/ol&gt;
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendStandard() {
+<span class="pc bpc" id="L82" title="1 of 2 branches missed.">        if (FtpFileSystem.isAvailable()) {</span>
+<span class="fc" id="L83">            return appendHttp().appendFtp().appendLocal();</span>
+        }
+<span class="nc" id="L85">        return appendHttp().appendLocal();</span>
+    }
+
+    /**
+     * Appends the {@link LocalFileSystem} with no parameters at the end. If the file system (with no parameters) was
+     * appended before, then it will be removed and appended again.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendLocal() {
+<span class="fc" id="L95">        appendFileSystem(new FileSystemOption(LocalFileSystem.class));</span>
+<span class="fc" id="L96">        return this;</span>
+    }
+
+    /**
+     * Appends the {@link HttpFileSystem} with no parameters at the end. If the file system (with no parameters) was
+     * appended before, then it will be removed and appended again.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendHttp() {
+<span class="fc" id="L106">        appendFileSystem(new FileSystemOption(HttpFileSystem.class));</span>
+<span class="fc" id="L107">        return this;</span>
+    }
+
+    /**
+     * &lt;p&gt;
+     * Appends the {@link FtpFileSystem} with no parameters at the end. If the file system (with no parameters) was
+     * appended before, then it will be removed and appended again.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * &lt;strong&gt;Warning&lt;/strong&gt;: requires &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons
+     * Net&lt;/a&gt; library in the class path.
+     * &lt;/p&gt;
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendFtp() {
+<span class="fc" id="L123">        appendFileSystem(new FileSystemOption(FtpFileSystem.class));</span>
+<span class="fc" id="L124">        return this;</span>
+    }
+
+    /**
+     * Appends the {@link ClassPathFileSystem} with no parameters at the end. If the file system (with no parameters)
+     * was appended before, then it will be removed and appended again.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendClassPath() {
+<span class="fc" id="L134">        appendFileSystem(new FileSystemOption(ClassPathFileSystem.class));</span>
+<span class="fc" id="L135">        return this;</span>
+    }
+
+    /**
+     * Appends file systems specified by classes with no parameters at the end. If any file system (with no parameters)
+     * was appended before, then it will be removed and appended again.
+     * @param classes the file system classes.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the file system classes are equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final Class&lt;? extends FileSystem&gt;... classes) {
+<span class="fc bfc" id="L147" title="All 2 branches covered.">        if (classes == null) {</span>
+<span class="fc" id="L148">            throw new IllegalArgumentException(&quot;File system classes cannot be null&quot;);</span>
+        }
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        for (final Class&lt;? extends FileSystem&gt; clazz : classes) {</span>
+<span class="fc bfc" id="L151" title="All 2 branches covered.">            if (clazz != null) {</span>
+<span class="fc" id="L152">                appendFileSystem(new FileSystemOption(clazz));</span>
+            }
+        }
+<span class="fc" id="L155">        return this;</span>
+    }
+
+    /**
+     * Appends a file system specified by class with no parameters at the end. If the file system (with no parameters)
+     * was appended before, then it will be removed and appended again.
+     * @param clazz the file system class.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the file system class is equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final Class&lt;? extends FileSystem&gt; clazz) {
+<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (clazz == null) {</span>
+<span class="fc" id="L168">            throw new IllegalArgumentException(&quot;File system class cannot be null&quot;);</span>
+        }
+<span class="fc" id="L170">        appendFileSystem(new FileSystemOption(clazz));</span>
+<span class="fc" id="L171">        return this;</span>
+    }
+
+    /**
+     * Appends a file system specified by class with parameters at the end. If the file system with the same parameters
+     * was appended before, then it will be removed and appended again.
+     * @param clazz the file system class.
+     * @param parameters the configuration parameters.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the file system class or parameters are equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final Class&lt;? extends FileSystem&gt; clazz, final Map&lt;String, String&gt; parameters) {
+<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (clazz == null) {</span>
+<span class="fc" id="L185">            throw new IllegalArgumentException(&quot;File system class cannot be null&quot;);</span>
+        }
+<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (parameters == null) {</span>
+<span class="fc" id="L188">            throw new IllegalArgumentException(&quot;Parameters cannot be null&quot;);</span>
+        }
+<span class="fc" id="L190">        appendFileSystem(new FileSystemOption(clazz, parameters));</span>
+<span class="fc" id="L191">        return this;</span>
+    }
+
+    /**
+     * Appends file system options at the end. If any file system option was appended before, then it will be removed
+     * and appended again.
+     * @param options the file system options.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the options is equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final FileSystemOption... options) {
+<span class="fc bfc" id="L203" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L204">            throw new IllegalArgumentException(&quot;File system options cannot be null&quot;);</span>
+        }
+<span class="fc bfc" id="L206" title="All 2 branches covered.">        for (final FileSystemOption option : options) {</span>
+<span class="fc bfc" id="L207" title="All 2 branches covered.">            if (option != null) {</span>
+<span class="fc" id="L208">                appendFileSystem(option);</span>
+            }
+        }
+<span class="fc" id="L211">        return this;</span>
+    }
+
+    /**
+     * Appends file system options at the end. If any file system option was appended before, then it will be removed
+     * and appended again.
+     * @param options the file system options.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the options is equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final Iterable&lt;? extends FileSystemOption&gt; options) {
+<span class="fc bfc" id="L223" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L224">            throw new IllegalArgumentException(&quot;File system options cannot be null&quot;);</span>
+        }
+<span class="fc bfc" id="L226" title="All 2 branches covered.">        for (final FileSystemOption option : options) {</span>
+<span class="fc bfc" id="L227" title="All 2 branches covered.">            if (option != null) {</span>
+<span class="fc" id="L228">                appendFileSystem(option);</span>
+            }
+<span class="fc" id="L230">        }</span>
+<span class="fc" id="L231">        return this;</span>
+    }
+
+    /**
+     * Appends a file system option at the end. If the file system option was appended before, then it will be removed
+     * and appended again.
+     * @param option the file system option.
+     * @return {@code this} builder.
+     * @throws IllegalArgumentException is the fileSystemOption is equal to {@code null}.
+     * @since 2.0.0
+     */
+    public FileSystemOptionsBuilder appendCustom(final FileSystemOption option) {
+<span class="fc bfc" id="L243" title="All 2 branches covered.">        if (option == null) {</span>
+<span class="fc" id="L244">            throw new IllegalArgumentException(&quot;File system option cannot be null&quot;);</span>
+        }
+<span class="fc" id="L246">        appendFileSystem(option);</span>
+<span class="fc" id="L247">        return this;</span>
+    }
+
+    private void appendFileSystem(final FileSystemOption option) {
+<span class="fc" id="L251">        options.remove(option);</span>
+<span class="fc" id="L252">        options.add(option);</span>
+<span class="fc" id="L253">    }</span>
+
+    /**
+     * &lt;p&gt;
+     * Builds a list with file system options.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * &lt;strong&gt;Warning&lt;/strong&gt;: the {@link #appendLocal() local file system} should be appended as last or not at all.
+     * &lt;/p&gt;
+     * @return the list with class names.
+     * @since 2.0.0
+     */
+    public List&lt;FileSystemOption&gt; build() {
+<span class="fc" id="L266">        return new ArrayList&lt;FileSystemOption&gt;(options);</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

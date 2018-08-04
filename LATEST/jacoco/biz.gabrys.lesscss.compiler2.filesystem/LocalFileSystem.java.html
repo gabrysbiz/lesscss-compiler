@@ -15,6 +15,7 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
@@ -30,7 +31,7 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * &lt;li&gt;/home/user/less/style.less&lt;/li&gt;
  * &lt;/ul&gt;
  * &lt;p&gt;
- * &lt;strong&gt;Warning&lt;/strong&gt;: the local file system in file systems option should be put as last or not at all.
+ * &lt;strong&gt;Warning&lt;/strong&gt;: the local file system option should be put as last or not at all.
  * &lt;/p&gt;
  * @since 2.0.0
  */
@@ -40,9 +41,14 @@ public class LocalFileSystem implements FileSystem {
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L43">    public LocalFileSystem() {</span>
+<span class="fc" id="L44">    public LocalFileSystem() {</span>
         // do nothing
-<span class="fc" id="L45">    }</span>
+<span class="fc" id="L46">    }</span>
+
+    @Override
+    public void configure(final Map&lt;String, String&gt; parameters) {
+        // do nothing
+<span class="fc" id="L51">    }</span>
 
     /**
      * Always returns {@code true}.
@@ -52,27 +58,27 @@ public class LocalFileSystem implements FileSystem {
      */
     @Override
     public boolean isSupported(final String path) {
-<span class="fc" id="L55">        return true;</span>
+<span class="fc" id="L61">        return true;</span>
     }
 
     @Override
     public String normalize(final String path) throws IOException {
-<span class="fc" id="L60">        return new File(path).getCanonicalPath();</span>
+<span class="fc" id="L66">        return new File(path).getCanonicalPath();</span>
     }
 
     @Override
     public String expandRedirection(final String path) throws IOException {
-<span class="fc" id="L65">        return path;</span>
+<span class="fc" id="L71">        return path;</span>
     }
 
     @Override
     public boolean exists(final String path) {
-<span class="fc" id="L70">        return new File(path).exists();</span>
+<span class="fc" id="L76">        return new File(path).exists();</span>
     }
 
     @Override
     public FileData fetch(final String path) throws IOException {
-<span class="fc" id="L75">        return new FileData(IOUtils.toByteArray(new FileInputStream(path)));</span>
+<span class="fc" id="L81">        return new FileData(IOUtils.toByteArray(new FileInputStream(path)));</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
