@@ -43,17 +43,22 @@ public final class FileUtils {
 <span class="fc bfc" id="L43" title="All 2 branches covered.">        if (content == null) {</span>
 <span class="fc" id="L44">            throw new IllegalArgumentException(&quot;Content cannot be null&quot;);</span>
         }
-<span class="pc bpc" id="L46" title="1 of 2 branches missed.">        if (encoding == null) {</span>
+<span class="fc bfc" id="L46" title="All 2 branches covered.">        if (encoding == null) {</span>
 <span class="fc" id="L47">            throw new IllegalArgumentException(&quot;Encoding cannot be null&quot;);</span>
         }
 
-<span class="nc" id="L50">        Writer writer = null;</span>
-        try {
-<span class="nc" id="L52">            writer = new PrintWriter(file, encoding);</span>
-<span class="nc" id="L53">            writer.write(content.toString());</span>
-        } finally {
-<span class="nc" id="L55">            IOUtils.closeQuietly(writer);</span>
+<span class="fc" id="L50">        final File parent = file.getParentFile();</span>
+<span class="pc bpc" id="L51" title="3 of 6 branches missed.">        if (parent != null &amp;&amp; !parent.exists() &amp;&amp; !parent.mkdirs()) {</span>
+<span class="fc" id="L52">            throw new IOException(&quot;Cannot create parent directories for the file: &quot; + file);</span>
         }
-<span class="nc" id="L57">    }</span>
+
+<span class="nc" id="L55">        Writer writer = null;</span>
+        try {
+<span class="nc" id="L57">            writer = new PrintWriter(file, encoding);</span>
+<span class="nc" id="L58">            writer.write(content.toString());</span>
+        } finally {
+<span class="nc" id="L60">            IOUtils.closeQuietly(writer);</span>
+        }
+<span class="nc" id="L62">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
