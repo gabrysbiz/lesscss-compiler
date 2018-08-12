@@ -17,7 +17,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,125 +52,195 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  */
 public class HttpFileSystem implements FileSystem {
 
-<span class="fc" id="L56">    private static final Collection&lt;Integer&gt; OK_NOTFOUND_CODES = Collections</span>
-<span class="fc" id="L57">            .unmodifiableCollection(Arrays.asList(HttpURLConnection.HTTP_OK, HttpURLConnection.HTTP_NOT_FOUND));</span>
-<span class="fc" id="L58">    private static final Collection&lt;Integer&gt; REDIRECT_CODES = Collections.unmodifiableCollection(</span>
-<span class="fc" id="L59">            Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));</span>
-    private static final Collection&lt;Integer&gt; OK_NOTFOUND_REDIRECT_CODES;
+    /**
+     * Stores HTTP {@code OK} (200) and {@code NOT FOUND} (404) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_OK
+     * @see HttpURLConnection#HTTP_NOT_FOUND
+     */
+<span class="fc" id="L61">    protected static final Collection&lt;Integer&gt; OK_NOTFOUND_CODES = Collections</span>
+<span class="fc" id="L62">            .unmodifiableCollection(Arrays.asList(HttpURLConnection.HTTP_OK, HttpURLConnection.HTTP_NOT_FOUND));</span>
+
+    /**
+     * Stores HTTP {@code MOVED PERMANENTLY} (301), {@code MOVED TEMPORARILY} (302), and {@code SEE OTHER} (303) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_MOVED_PERM
+     * @see HttpURLConnection#HTTP_MOVED_TEMP
+     * @see HttpURLConnection#HTTP_SEE_OTHER
+     */
+<span class="fc" id="L71">    protected static final Collection&lt;Integer&gt; REDIRECT_CODES = Collections.unmodifiableCollection(</span>
+<span class="fc" id="L72">            Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));</span>
+
+    /**
+     * Stores HTTP {@code OK} (200), {@code NOT FOUND} (404), {@code MOVED PERMANENTLY} (301), {@code MOVED TEMPORARILY}
+     * (302), and {@code SEE OTHER} (303) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_OK
+     * @see HttpURLConnection#HTTP_NOT_FOUND
+     * @see HttpURLConnection#HTTP_MOVED_PERM
+     * @see HttpURLConnection#HTTP_MOVED_TEMP
+     * @see HttpURLConnection#HTTP_SEE_OTHER
+     */
+    protected static final Collection&lt;Integer&gt; OK_NOTFOUND_REDIRECT_CODES;
 
     static {
-<span class="fc" id="L63">        final Collection&lt;Integer&gt; codes = new ArrayList&lt;Integer&gt;(5);</span>
-<span class="fc" id="L64">        codes.addAll(OK_NOTFOUND_CODES);</span>
-<span class="fc" id="L65">        codes.addAll(REDIRECT_CODES);</span>
-<span class="fc" id="L66">        OK_NOTFOUND_REDIRECT_CODES = Collections.unmodifiableCollection(codes);</span>
+<span class="fc" id="L87">        final Collection&lt;Integer&gt; codes = new ArrayList&lt;Integer&gt;(5);</span>
+<span class="fc" id="L88">        codes.addAll(OK_NOTFOUND_CODES);</span>
+<span class="fc" id="L89">        codes.addAll(REDIRECT_CODES);</span>
+<span class="fc" id="L90">        OK_NOTFOUND_REDIRECT_CODES = Collections.unmodifiableCollection(codes);</span>
     }
 
-<span class="fc" id="L69">    private static final Pattern CHARSET_PATTERN = Pattern.compile(&quot;(?i)\\bcharset=\\s*\&quot;?([^\\s;\&quot;]*)&quot;);</span>
+<span class="fc" id="L93">    private static final Pattern CHARSET_PATTERN = Pattern.compile(&quot;(?i)\\bcharset=\\s*\&quot;?([^\\s;\&quot;]*)&quot;);</span>
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L75">    public HttpFileSystem() {</span>
+<span class="fc" id="L99">    public HttpFileSystem() {</span>
         // do nothing
-<span class="fc" id="L77">    }</span>
+<span class="fc" id="L101">    }</span>
 
     @Override
     public void configure(final Map&lt;String, String&gt; parameters) {
         // do nothing
-<span class="nc" id="L82">    }</span>
+<span class="nc" id="L106">    }</span>
 
     @Override
     public boolean isSupported(final String path) {
-<span class="fc bfc" id="L86" title="All 4 branches covered.">        return path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;);</span>
+<span class="fc bfc" id="L110" title="All 4 branches covered.">        return path.startsWith(&quot;http://&quot;) || path.startsWith(&quot;https://&quot;);</span>
     }
 
     @Override
     public String normalize(final String path) throws URISyntaxException {
-<span class="fc" id="L91">        return new URI(path).normalize().toString();</span>
+<span class="fc" id="L115">        return new URI(path).normalize().toString();</span>
     }
 
     @Override
     public String expandRedirection(final String path) throws IOException, URISyntaxException {
-<span class="fc" id="L96">        HttpURLConnection connection = null;</span>
+<span class="fc" id="L120">        HttpURLConnection connection = null;</span>
         String redirectedPath;
         try {
-<span class="fc" id="L99">            connection = makeConnection(new URL(path), false, OK_NOTFOUND_REDIRECT_CODES);</span>
-<span class="fc bfc" id="L100" title="All 2 branches covered.">            if (OK_NOTFOUND_CODES.contains(connection.getResponseCode())) {</span>
-<span class="fc" id="L101">                return path;</span>
+<span class="fc" id="L123">            connection = makeConnection(new URL(path), false);</span>
+<span class="fc" id="L124">            final int responseCode = connection.getResponseCode();</span>
+<span class="fc" id="L125">            validateResponseCode(responseCode, OK_NOTFOUND_REDIRECT_CODES);</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            if (OK_NOTFOUND_CODES.contains(responseCode)) {</span>
+<span class="fc" id="L127">                return path;</span>
             }
-<span class="fc" id="L103">            final String location = connection.getHeaderField(&quot;Location&quot;);</span>
-<span class="fc" id="L104">            redirectedPath = connection.getURL().toURI().resolve(location).toString();</span>
+<span class="fc" id="L129">            final String location = connection.getHeaderField(&quot;Location&quot;);</span>
+<span class="fc" id="L130">            redirectedPath = connection.getURL().toURI().resolve(location).toString();</span>
         } finally {
-<span class="fc" id="L106">            disconnect(connection);</span>
+<span class="fc" id="L132">            disconnect(connection);</span>
         }
-<span class="fc" id="L108">        return expandRedirection(redirectedPath);</span>
+<span class="fc" id="L134">        return expandRedirection(redirectedPath);</span>
     }
 
     @Override
     public boolean exists(final String path) throws IOException {
-<span class="fc" id="L113">        HttpURLConnection connection = null;</span>
+<span class="fc" id="L139">        HttpURLConnection connection = null;</span>
         try {
-<span class="fc" id="L115">            connection = makeConnection(new URL(path), false, OK_NOTFOUND_CODES);</span>
-<span class="fc bfc" id="L116" title="All 2 branches covered.">            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;</span>
+<span class="fc" id="L141">            connection = makeConnection(new URL(path), false);</span>
+<span class="fc" id="L142">            final int responseCode = connection.getResponseCode();</span>
+<span class="fc" id="L143">            validateResponseCode(responseCode, OK_NOTFOUND_CODES);</span>
+<span class="fc bfc" id="L144" title="All 2 branches covered.">            return responseCode == HttpURLConnection.HTTP_OK;</span>
         } finally {
-<span class="fc" id="L118">            disconnect(connection);</span>
+<span class="fc" id="L146">            disconnect(connection);</span>
         }
     }
 
     @Override
     public FileData fetch(final String path) throws IOException {
-<span class="fc" id="L124">        HttpURLConnection connection = null;</span>
+<span class="fc" id="L152">        HttpURLConnection connection = null;</span>
         try {
-<span class="fc" id="L126">            connection = makeConnection(new URL(path), true, Arrays.asList(HttpURLConnection.HTTP_OK));</span>
-<span class="fc" id="L127">            final String responseEncoding = getEncodingFromContentType(connection.getContentType());</span>
+<span class="fc" id="L154">            connection = makeConnection(new URL(path), true);</span>
+<span class="fc" id="L155">            validateResponseCode(connection.getResponseCode(), Arrays.asList(HttpURLConnection.HTTP_OK));</span>
+<span class="fc" id="L156">            final String responseEncoding = readEncoding(connection);</span>
             try {
-<span class="fc" id="L129">                return new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);</span>
-<span class="fc" id="L130">            } catch (final IOException e) {</span>
-<span class="fc" id="L131">                throw new IOException(&quot;cannot download file&quot;, e);</span>
+<span class="fc" id="L158">                return new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);</span>
+<span class="fc" id="L159">            } catch (final IOException e) {</span>
+<span class="fc" id="L160">                throw new IOException(&quot;cannot download file&quot;, e);</span>
             }
         } finally {
-<span class="fc" id="L134">            disconnect(connection);</span>
+<span class="fc" id="L163">            disconnect(connection);</span>
         }
     }
 
-    HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody, final Collection&lt;Integer&gt; validCodes)
-            throws IOException {
-<span class="fc" id="L140">        final HttpURLConnection connection = openConnection(url);</span>
-<span class="fc" id="L141">        connection.setInstanceFollowRedirects(false);</span>
-<span class="fc bfc" id="L142" title="All 2 branches covered.">        connection.setRequestMethod(fetchResponseBody ? &quot;GET&quot; : &quot;HEAD&quot;);</span>
-<span class="fc bfc" id="L143" title="All 2 branches covered.">        if (!validCodes.contains(connection.getResponseCode())) {</span>
-<span class="fc" id="L144">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
-<span class="fc" id="L145">            Collections.sort(supportedCodes);</span>
-<span class="fc" id="L146">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;,</span>
-<span class="fc" id="L147">                    connection.getResponseCode(), supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
+    /**
+     * Opens and configures a new {@link HttpURLConnection} instance that represents a connection to the remote object
+     * referred to by the URL.
+     * @param url the URL (cannot be {@code null}).
+     * @param fetchResponseBody whether the connection should fetch response body ({@code GET} request) or not
+     *            ({@code HEAD} request).
+     * @return the new configured {@link HttpURLConnection} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody) throws IOException {
+<span class="fc" id="L178">        final HttpURLConnection connection = openConnection(url);</span>
+<span class="fc" id="L179">        connection.setInstanceFollowRedirects(false);</span>
+<span class="fc bfc" id="L180" title="All 2 branches covered.">        connection.setRequestMethod(fetchResponseBody ? &quot;GET&quot; : &quot;HEAD&quot;);</span>
+<span class="fc" id="L181">        return connection;</span>
+    }
+
+    /**
+     * Creates a new {@link HttpURLConnection} instance that represents a connection to the remote object referred to by
+     * the URL. The reason why this method has been extracted is allow stubbing and mocking class loader objects in
+     * tests.
+     * @param url the URL (cannot be {@code null}).
+     * @return the new {@link HttpURLConnection} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected HttpURLConnection openConnection(final URL url) throws IOException {
+<span class="nc" id="L194">        return (HttpURLConnection) url.openConnection();</span>
+    }
+
+    /**
+     * Validates if a response code is in an allowed set.
+     * @param responseCode the tested response code.
+     * @param validCodes the collection with allowed response codes (cannot be {@code null}).
+     * @throws IOException if the response code is not in the allowed set.
+     * @since 2.0.0
+     */
+    protected void validateResponseCode(final int responseCode, final Collection&lt;Integer&gt; validCodes) throws IOException {
+<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (!validCodes.contains(responseCode)) {</span>
+<span class="fc" id="L206">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
+<span class="fc" id="L207">            Collections.sort(supportedCodes);</span>
+<span class="fc" id="L208">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;, responseCode,</span>
+<span class="fc" id="L209">                    supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
         }
-<span class="fc" id="L149">        return connection;</span>
-    }
+<span class="fc" id="L211">    }</span>
 
-    HttpURLConnection openConnection(final URL url) throws IOException {
-<span class="nc" id="L153">        return (HttpURLConnection) url.openConnection();</span>
-    }
-
-    String getEncodingFromContentType(final String contentType) {
-<span class="fc bfc" id="L157" title="All 2 branches covered.">        if (contentType != null) {</span>
-<span class="fc" id="L158">            final Matcher matcher = CHARSET_PATTERN.matcher(contentType);</span>
-<span class="fc bfc" id="L159" title="All 2 branches covered.">            if (matcher.find()) {</span>
-<span class="fc" id="L160">                return matcher.group(1).trim().toUpperCase(Locale.ENGLISH);</span>
+    /**
+     * Returns a connection encoding or {@code null} if the {@code content-type} header has incorrect format.
+     * @param connection the connection (cannot be {@code null}).
+     * @return the connection encoding or {@code null} if the {@code content-type} header has incorrect format.
+     * @since 2.0.0
+     */
+    protected String readEncoding(final HttpURLConnection connection) {
+<span class="fc" id="L220">        final String contentType = connection.getContentType();</span>
+<span class="fc bfc" id="L221" title="All 2 branches covered.">        if (contentType != null) {</span>
+<span class="fc" id="L222">            final Matcher matcher = CHARSET_PATTERN.matcher(contentType);</span>
+<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (matcher.find()) {</span>
+<span class="fc" id="L224">                return matcher.group(1).trim().toUpperCase(Locale.ROOT);</span>
             }
         }
-<span class="fc" id="L163">        return Charset.defaultCharset().toString();</span>
+<span class="fc" id="L227">        return null;</span>
     }
 
-    void disconnect(final HttpURLConnection connection) {
-<span class="fc bfc" id="L167" title="All 2 branches covered.">        if (connection == null) {</span>
-<span class="fc" id="L168">            return;</span>
+    /**
+     * Disconnects a connection unconditionally.
+     * @param connection the connection to close (can be {@code null} or already closed).
+     * @since 2.0.0
+     */
+    protected void disconnect(final HttpURLConnection connection) {
+<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (connection == null) {</span>
+<span class="fc" id="L237">            return;</span>
         }
         try {
-<span class="fc" id="L171">            connection.disconnect();</span>
-<span class="fc" id="L172">        } catch (final Exception e) {</span>
+<span class="fc" id="L240">            connection.disconnect();</span>
+<span class="fc" id="L241">        } catch (final Exception e) {</span>
             // do nothing
-<span class="fc" id="L174">        }</span>
-<span class="fc" id="L175">    }</span>
+<span class="fc" id="L243">        }</span>
+<span class="fc" id="L244">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>

@@ -82,8 +82,14 @@ public class ClassPathFileSystem implements FileSystem {
 <span class="fc" id="L82">        return new FileData(IOUtils.toByteArray(stream));</span>
     }
 
-    ClassLoader getClassLoader() {
-<span class="fc" id="L86">        return Thread.currentThread().getContextClassLoader();</span>
+    /**
+     * Returns the context {@link ClassLoader} for the currently executing thread object. The reason why this method has
+     * been extracted is allow stubbing and mocking class loader objects in tests.
+     * @return the context {@link ClassLoader}.
+     * @since 2.0.0
+     */
+    protected ClassLoader getClassLoader() {
+<span class="fc" id="L92">        return Thread.currentThread().getContextClassLoader();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
