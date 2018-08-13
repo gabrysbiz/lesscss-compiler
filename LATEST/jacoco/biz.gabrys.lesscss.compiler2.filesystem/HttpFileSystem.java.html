@@ -203,7 +203,7 @@ public class HttpFileSystem implements FileSystem {
     protected void validateResponseCode(final int responseCode, final Collection&lt;Integer&gt; validCodes) throws IOException {
 <span class="fc bfc" id="L204" title="All 2 branches covered.">        if (!validCodes.contains(responseCode)) {</span>
 <span class="fc" id="L205">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
-<span class="fc" id="L206">            supportedCodes.sort(null);</span>
+<span class="fc" id="L206">            Collections.sort(supportedCodes);</span>
 <span class="fc" id="L207">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;, responseCode,</span>
 <span class="fc" id="L208">                    supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
         }
