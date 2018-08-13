@@ -183,15 +183,14 @@ public class HttpFileSystem implements FileSystem {
 
     /**
      * Creates a new {@link HttpURLConnection} instance that represents a connection to the remote object referred to by
-     * the URL. The reason why this method has been extracted is allow stubbing and mocking class loader objects in
-     * tests.
+     * the URL. The reason why this method has been extracted is allow stubbing and mocking connection objects in tests.
      * @param url the URL (cannot be {@code null}).
      * @return the new {@link HttpURLConnection} instance.
      * @throws IOException if an I/O exception occurs.
      * @since 2.0.0
      */
     protected HttpURLConnection openConnection(final URL url) throws IOException {
-<span class="nc" id="L194">        return (HttpURLConnection) url.openConnection();</span>
+<span class="nc" id="L193">        return (HttpURLConnection) url.openConnection();</span>
     }
 
     /**
@@ -202,13 +201,13 @@ public class HttpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected void validateResponseCode(final int responseCode, final Collection&lt;Integer&gt; validCodes) throws IOException {
-<span class="fc bfc" id="L205" title="All 2 branches covered.">        if (!validCodes.contains(responseCode)) {</span>
-<span class="fc" id="L206">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
-<span class="fc" id="L207">            Collections.sort(supportedCodes);</span>
-<span class="fc" id="L208">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;, responseCode,</span>
-<span class="fc" id="L209">                    supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
+<span class="fc bfc" id="L204" title="All 2 branches covered.">        if (!validCodes.contains(responseCode)) {</span>
+<span class="fc" id="L205">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
+<span class="fc" id="L206">            supportedCodes.sort(null);</span>
+<span class="fc" id="L207">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;, responseCode,</span>
+<span class="fc" id="L208">                    supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
         }
-<span class="fc" id="L211">    }</span>
+<span class="fc" id="L210">    }</span>
 
     /**
      * Returns a connection encoding or {@code null} if the {@code content-type} header has incorrect format.
@@ -217,14 +216,14 @@ public class HttpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected String readEncoding(final HttpURLConnection connection) {
-<span class="fc" id="L220">        final String contentType = connection.getContentType();</span>
-<span class="fc bfc" id="L221" title="All 2 branches covered.">        if (contentType != null) {</span>
-<span class="fc" id="L222">            final Matcher matcher = CHARSET_PATTERN.matcher(contentType);</span>
-<span class="fc bfc" id="L223" title="All 2 branches covered.">            if (matcher.find()) {</span>
-<span class="fc" id="L224">                return matcher.group(1).trim().toUpperCase(Locale.ROOT);</span>
+<span class="fc" id="L219">        final String contentType = connection.getContentType();</span>
+<span class="fc bfc" id="L220" title="All 2 branches covered.">        if (contentType != null) {</span>
+<span class="fc" id="L221">            final Matcher matcher = CHARSET_PATTERN.matcher(contentType);</span>
+<span class="fc bfc" id="L222" title="All 2 branches covered.">            if (matcher.find()) {</span>
+<span class="fc" id="L223">                return matcher.group(1).trim().toUpperCase(Locale.ROOT);</span>
             }
         }
-<span class="fc" id="L227">        return null;</span>
+<span class="fc" id="L226">        return null;</span>
     }
 
     /**
@@ -233,14 +232,14 @@ public class HttpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected void disconnect(final HttpURLConnection connection) {
-<span class="fc bfc" id="L236" title="All 2 branches covered.">        if (connection == null) {</span>
-<span class="fc" id="L237">            return;</span>
+<span class="fc bfc" id="L235" title="All 2 branches covered.">        if (connection == null) {</span>
+<span class="fc" id="L236">            return;</span>
         }
         try {
-<span class="fc" id="L240">            connection.disconnect();</span>
-<span class="fc" id="L241">        } catch (final Exception e) {</span>
+<span class="fc" id="L239">            connection.disconnect();</span>
+<span class="fc" id="L240">        } catch (final Exception e) {</span>
             // do nothing
-<span class="fc" id="L243">        }</span>
-<span class="fc" id="L244">    }</span>
+<span class="fc" id="L242">        }</span>
+<span class="fc" id="L243">    }</span>
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
