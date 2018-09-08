@@ -12,7 +12,6 @@
  */
 package biz.gabrys.lesscss.compiler2;
 
-import java.io.Serializable;
 import java.util.Collections;
 import java.util.LinkedHashMap;
 import java.util.Map;
@@ -44,20 +43,18 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * @see FileSystem
  * @see FileSystemOptionBuilder
  */
-public class FileSystemOption implements Serializable {
-
-    private static final long serialVersionUID = 7141088330799498312L;
+public class FileSystemOption {
 
     private static final String UNDERSCORE_SIGN = &quot;_&quot;;
     private static final char COMMA_SIGN = ',';
     private static final char EQUAL_SIGN = '=';
 
-<span class="fc" id="L55">    private static final Pattern UNDERSCORE_PATTERN = Pattern.compile(UNDERSCORE_SIGN);</span>
-<span class="fc" id="L56">    private static final Pattern COMMA_PATTERN = Pattern.compile(&quot;&quot; + COMMA_SIGN);</span>
-<span class="fc" id="L57">    private static final Pattern EQUAL_PATTERN = Pattern.compile(&quot;&quot; + EQUAL_SIGN);</span>
+<span class="fc" id="L52">    private static final Pattern UNDERSCORE_PATTERN = Pattern.compile(UNDERSCORE_SIGN);</span>
+<span class="fc" id="L53">    private static final Pattern COMMA_PATTERN = Pattern.compile(&quot;&quot; + COMMA_SIGN);</span>
+<span class="fc" id="L54">    private static final Pattern EQUAL_PATTERN = Pattern.compile(&quot;&quot; + EQUAL_SIGN);</span>
 
     private final String className;
-<span class="fc" id="L60">    private final Map&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();</span>
+<span class="fc" id="L57">    private final Map&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();</span>
 
     /**
      * Constructs a new instance with a file system class and no parameters.
@@ -66,8 +63,8 @@ public class FileSystemOption implements Serializable {
      * @since 2.0.0
      */
     public FileSystemOption(final Class&lt;? extends FileSystem&gt; clazz) {
-<span class="fc" id="L69">        this(clazz, Collections.&lt;String, String&gt;emptyMap());</span>
-<span class="fc" id="L70">    }</span>
+<span class="fc" id="L66">        this(clazz, Collections.&lt;String, String&gt;emptyMap());</span>
+<span class="fc" id="L67">    }</span>
 
     /**
      * Constructs a new instance with a file system class and parameters.
@@ -76,16 +73,16 @@ public class FileSystemOption implements Serializable {
      * @throws IllegalArgumentException if the file system class or parameters is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L79">    public FileSystemOption(final Class&lt;? extends FileSystem&gt; clazz, final Map&lt;String, String&gt; parameters) {</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (clazz == null) {</span>
-<span class="fc" id="L81">            throw new IllegalArgumentException(&quot;File system class cannot be null&quot;);</span>
+<span class="fc" id="L76">    public FileSystemOption(final Class&lt;? extends FileSystem&gt; clazz, final Map&lt;String, String&gt; parameters) {</span>
+<span class="fc bfc" id="L77" title="All 2 branches covered.">        if (clazz == null) {</span>
+<span class="fc" id="L78">            throw new IllegalArgumentException(&quot;File system class cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L83" title="All 2 branches covered.">        if (parameters == null) {</span>
-<span class="fc" id="L84">            throw new IllegalArgumentException(&quot;Parameters cannot be null&quot;);</span>
+<span class="fc bfc" id="L80" title="All 2 branches covered.">        if (parameters == null) {</span>
+<span class="fc" id="L81">            throw new IllegalArgumentException(&quot;Parameters cannot be null&quot;);</span>
         }
-<span class="fc" id="L86">        className = clazz.getName();</span>
-<span class="fc" id="L87">        this.parameters.putAll(parameters);</span>
-<span class="fc" id="L88">    }</span>
+<span class="fc" id="L83">        className = clazz.getName();</span>
+<span class="fc" id="L84">        this.parameters.putAll(parameters);</span>
+<span class="fc" id="L85">    }</span>
 
     /**
      * Constructs a new instance with a file system class and no parameters.
@@ -94,8 +91,8 @@ public class FileSystemOption implements Serializable {
      * @since 2.0.0
      */
     public FileSystemOption(final String className) {
-<span class="fc" id="L97">        this(className, Collections.&lt;String, String&gt;emptyMap());</span>
-<span class="fc" id="L98">    }</span>
+<span class="fc" id="L94">        this(className, Collections.&lt;String, String&gt;emptyMap());</span>
+<span class="fc" id="L95">    }</span>
 
     /**
      * Constructs a new instance with a file system class and parameters.
@@ -104,16 +101,16 @@ public class FileSystemOption implements Serializable {
      * @throws IllegalArgumentException if the file system class name or parameters is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L107">    public FileSystemOption(final String className, final Map&lt;String, String&gt; parameters) {</span>
-<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (StringUtils.isBlank(className)) {</span>
-<span class="fc" id="L109">            throw new IllegalArgumentException(&quot;Class name cannot be blank&quot;);</span>
+<span class="fc" id="L104">    public FileSystemOption(final String className, final Map&lt;String, String&gt; parameters) {</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        if (StringUtils.isBlank(className)) {</span>
+<span class="fc" id="L106">            throw new IllegalArgumentException(&quot;Class name cannot be blank&quot;);</span>
         }
-<span class="fc bfc" id="L111" title="All 2 branches covered.">        if (parameters == null) {</span>
-<span class="fc" id="L112">            throw new IllegalArgumentException(&quot;Parameters cannot be null&quot;);</span>
+<span class="fc bfc" id="L108" title="All 2 branches covered.">        if (parameters == null) {</span>
+<span class="fc" id="L109">            throw new IllegalArgumentException(&quot;Parameters cannot be null&quot;);</span>
         }
-<span class="fc" id="L114">        this.className = className;</span>
-<span class="fc" id="L115">        this.parameters.putAll(parameters);</span>
-<span class="fc" id="L116">    }</span>
+<span class="fc" id="L111">        this.className = className;</span>
+<span class="fc" id="L112">        this.parameters.putAll(parameters);</span>
+<span class="fc" id="L113">    }</span>
 
     /**
      * Returns a file system class name.
@@ -121,7 +118,7 @@ public class FileSystemOption implements Serializable {
      * @since 2.0.0
      */
     public String getClassName() {
-<span class="fc" id="L124">        return className;</span>
+<span class="fc" id="L121">        return className;</span>
     }
 
     /**
@@ -130,7 +127,7 @@ public class FileSystemOption implements Serializable {
      * @since 2.0.0
      */
     public Map&lt;String, String&gt; getParameters() {
-<span class="fc" id="L133">        return new LinkedHashMap&lt;String, String&gt;(parameters);</span>
+<span class="fc" id="L130">        return new LinkedHashMap&lt;String, String&gt;(parameters);</span>
     }
 
     /**
@@ -139,9 +136,9 @@ public class FileSystemOption implements Serializable {
      */
     @Override
     public int hashCode() {
-<span class="fc" id="L142">        final int prime = 31;</span>
-<span class="fc" id="L143">        final int result = prime + className.hashCode();</span>
-<span class="fc" id="L144">        return prime * result + parameters.hashCode();</span>
+<span class="fc" id="L139">        final int prime = 31;</span>
+<span class="fc" id="L140">        final int result = prime + className.hashCode();</span>
+<span class="fc" id="L141">        return prime * result + parameters.hashCode();</span>
     }
 
     /**
@@ -150,14 +147,14 @@ public class FileSystemOption implements Serializable {
      */
     @Override
     public boolean equals(final Object obj) {
-<span class="fc bfc" id="L153" title="All 2 branches covered.">        if (this == obj) {</span>
-<span class="fc" id="L154">            return true;</span>
+<span class="fc bfc" id="L150" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L151">            return true;</span>
         }
-<span class="fc bfc" id="L156" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
-<span class="fc" id="L157">            return false;</span>
+<span class="fc bfc" id="L153" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
+<span class="fc" id="L154">            return false;</span>
         }
-<span class="fc" id="L159">        final FileSystemOption other = (FileSystemOption) obj;</span>
-<span class="fc bfc" id="L160" title="All 4 branches covered.">        return className.equals(other.className) &amp;&amp; parameters.equals(other.parameters);</span>
+<span class="fc" id="L156">        final FileSystemOption other = (FileSystemOption) obj;</span>
+<span class="fc bfc" id="L157" title="All 4 branches covered.">        return className.equals(other.className) &amp;&amp; parameters.equals(other.parameters);</span>
     }
 
     /**
@@ -173,23 +170,23 @@ public class FileSystemOption implements Serializable {
      */
     @Override
     public String toString() {
-<span class="fc" id="L176">        final StringBuilder text = new StringBuilder();</span>
-<span class="fc" id="L177">        text.append(className);</span>
-<span class="fc bfc" id="L178" title="All 2 branches covered.">        for (final Entry&lt;String, String&gt; entry : parameters.entrySet()) {</span>
-<span class="fc" id="L179">            text.append(COMMA_SIGN);</span>
-<span class="fc" id="L180">            text.append(escapeSpecialCharacters(entry.getKey()));</span>
-<span class="fc" id="L181">            text.append(EQUAL_SIGN);</span>
-<span class="fc bfc" id="L182" title="All 2 branches covered.">            if (entry.getValue() != null) {</span>
-<span class="fc" id="L183">                text.append(escapeSpecialCharacters(entry.getValue()));</span>
+<span class="fc" id="L173">        final StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L174">        text.append(className);</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">        for (final Entry&lt;String, String&gt; entry : parameters.entrySet()) {</span>
+<span class="fc" id="L176">            text.append(COMMA_SIGN);</span>
+<span class="fc" id="L177">            text.append(escapeSpecialCharacters(entry.getKey()));</span>
+<span class="fc" id="L178">            text.append(EQUAL_SIGN);</span>
+<span class="fc bfc" id="L179" title="All 2 branches covered.">            if (entry.getValue() != null) {</span>
+<span class="fc" id="L180">                text.append(escapeSpecialCharacters(entry.getValue()));</span>
             }
-<span class="fc" id="L185">        }</span>
-<span class="fc" id="L186">        return text.toString();</span>
+<span class="fc" id="L182">        }</span>
+<span class="fc" id="L183">        return text.toString();</span>
     }
 
     private static String escapeSpecialCharacters(final String text) {
-<span class="fc" id="L190">        String escaped = UNDERSCORE_PATTERN.matcher(text).replaceAll(UNDERSCORE_SIGN + UNDERSCORE_SIGN);</span>
-<span class="fc" id="L191">        escaped = COMMA_PATTERN.matcher(escaped).replaceAll(UNDERSCORE_SIGN + COMMA_SIGN);</span>
-<span class="fc" id="L192">        return EQUAL_PATTERN.matcher(escaped).replaceAll(UNDERSCORE_SIGN + EQUAL_SIGN);</span>
+<span class="fc" id="L187">        String escaped = UNDERSCORE_PATTERN.matcher(text).replaceAll(UNDERSCORE_SIGN + UNDERSCORE_SIGN);</span>
+<span class="fc" id="L188">        escaped = COMMA_PATTERN.matcher(escaped).replaceAll(UNDERSCORE_SIGN + COMMA_SIGN);</span>
+<span class="fc" id="L189">        return EQUAL_PATTERN.matcher(escaped).replaceAll(UNDERSCORE_SIGN + EQUAL_SIGN);</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
