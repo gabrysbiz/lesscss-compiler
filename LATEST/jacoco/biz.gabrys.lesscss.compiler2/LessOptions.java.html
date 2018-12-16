@@ -148,7 +148,7 @@ public class LessOptions {
 <span class="nc" id="L148">        compress = options.compress;</span>
 <span class="nc" id="L149">        ieCompatibility = options.ieCompatibility;</span>
 <span class="nc" id="L150">        javaScript = options.javaScript;</span>
-<span class="nc" id="L151">        includePaths = new ArrayList&lt;String&gt;(options.includePaths);</span>
+<span class="nc" id="L151">        includePaths = new ArrayList&lt;&gt;(options.includePaths);</span>
 <span class="nc" id="L152">        lineNumbers = options.lineNumbers;</span>
 <span class="nc" id="L153">        rootPath = options.rootPath;</span>
 <span class="nc" id="L154">        relativeUrls = options.relativeUrls;</span>
@@ -161,11 +161,11 @@ public class LessOptions {
 <span class="nc" id="L161">        sourceMapUrl = options.sourceMapUrl;</span>
 
 <span class="nc" id="L163">        banner = options.banner;</span>
-<span class="nc" id="L164">        globalVariables = new ArrayList&lt;LessVariableOption&gt;(options.globalVariables);</span>
-<span class="nc" id="L165">        modifyVariables = new ArrayList&lt;LessVariableOption&gt;(options.modifyVariables);</span>
+<span class="nc" id="L164">        globalVariables = new ArrayList&lt;&gt;(options.globalVariables);</span>
+<span class="nc" id="L165">        modifyVariables = new ArrayList&lt;&gt;(options.modifyVariables);</span>
 
 <span class="nc" id="L167">        encoding = options.encoding;</span>
-<span class="nc" id="L168">        fileSystems = new ArrayList&lt;FileSystemOption&gt;(options.fileSystems);</span>
+<span class="nc" id="L168">        fileSystems = new ArrayList&lt;&gt;(options.fileSystems);</span>
 <span class="nc" id="L169">    }</span>
 
     /**
@@ -275,7 +275,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List&lt;String&gt; getIncludePaths() {
-<span class="fc" id="L278">        return new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L278">        return new ArrayList&lt;&gt;(includePaths);</span>
     }
 
     /**
@@ -289,7 +289,7 @@ public class LessOptions {
 <span class="fc bfc" id="L289" title="All 2 branches covered.">        if (includePaths == null) {</span>
 <span class="fc" id="L290">            this.includePaths = Collections.emptyList();</span>
         } else {
-<span class="fc" id="L292">            this.includePaths = new ArrayList&lt;String&gt;(includePaths);</span>
+<span class="fc" id="L292">            this.includePaths = new ArrayList&lt;&gt;(includePaths);</span>
         }
 <span class="fc" id="L294">    }</span>
 
@@ -745,7 +745,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List&lt;FileSystemOption&gt; getFileSystems() {
-<span class="fc" id="L748">        return new ArrayList&lt;FileSystemOption&gt;(fileSystems);</span>
+<span class="fc" id="L748">        return new ArrayList&lt;&gt;(fileSystems);</span>
     }
 
     /**
@@ -758,7 +758,7 @@ public class LessOptions {
 <span class="fc bfc" id="L758" title="All 2 branches covered.">        if (fileSystems == null) {</span>
 <span class="fc" id="L759">            this.fileSystems = DEFAULT_FILE_SYSTEMS;</span>
         } else {
-<span class="fc" id="L761">            this.fileSystems = new ArrayList&lt;FileSystemOption&gt;(fileSystems);</span>
+<span class="fc" id="L761">            this.fileSystems = new ArrayList&lt;&gt;(fileSystems);</span>
         }
 <span class="fc" id="L763">    }</span>
 
@@ -787,7 +787,7 @@ public class LessOptions {
      * @return the global variables (never {@code null}).
      */
     public List&lt;LessVariableOption&gt; getGlobalVariables() {
-<span class="fc" id="L790">        return new ArrayList&lt;LessVariableOption&gt;(globalVariables);</span>
+<span class="fc" id="L790">        return new ArrayList&lt;&gt;(globalVariables);</span>
     }
 
     /**
@@ -802,7 +802,7 @@ public class LessOptions {
 <span class="fc bfc" id="L802" title="All 2 branches covered.">        if (globalVariables == null) {</span>
 <span class="fc" id="L803">            this.globalVariables = Collections.emptyList();</span>
         } else {
-<span class="fc" id="L805">            this.globalVariables = new ArrayList&lt;LessVariableOption&gt;(globalVariables);</span>
+<span class="fc" id="L805">            this.globalVariables = new ArrayList&lt;&gt;(globalVariables);</span>
         }
 <span class="fc" id="L807">    }</span>
 
@@ -814,7 +814,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List&lt;LessVariableOption&gt; getModifyVariables() {
-<span class="fc" id="L817">        return new ArrayList&lt;LessVariableOption&gt;(modifyVariables);</span>
+<span class="fc" id="L817">        return new ArrayList&lt;&gt;(modifyVariables);</span>
     }
 
     /**
@@ -829,8 +829,8 @@ public class LessOptions {
 <span class="fc bfc" id="L829" title="All 2 branches covered.">        if (modifyVariables == null) {</span>
 <span class="fc" id="L830">            this.modifyVariables = Collections.emptyList();</span>
         } else {
-<span class="fc" id="L832">            this.modifyVariables = new ArrayList&lt;LessVariableOption&gt;(modifyVariables);</span>
+<span class="fc" id="L832">            this.modifyVariables = new ArrayList&lt;&gt;(modifyVariables);</span>
         }
 <span class="fc" id="L834">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

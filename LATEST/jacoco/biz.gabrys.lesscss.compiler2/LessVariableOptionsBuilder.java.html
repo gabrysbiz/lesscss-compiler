@@ -52,7 +52,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  */
 public class LessVariableOptionsBuilder {
 
-<span class="fc" id="L55">    private final List&lt;LessVariableOption&gt; variables = new LinkedList&lt;LessVariableOption&gt;();</span>
+<span class="fc" id="L55">    private final List&lt;LessVariableOption&gt; variables = new LinkedList&lt;&gt;();</span>
 
     /**
      * Constructs a new instance.
@@ -147,7 +147,7 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public List&lt;LessVariableOption&gt; build() {
-<span class="fc" id="L150">        return new ArrayList&lt;LessVariableOption&gt;(getVariables());</span>
+<span class="fc" id="L150">        return new ArrayList&lt;&gt;(getVariables());</span>
     }
 
     /**
@@ -159,4 +159,4 @@ public class LessVariableOptionsBuilder {
 <span class="fc" id="L159">        return variables;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

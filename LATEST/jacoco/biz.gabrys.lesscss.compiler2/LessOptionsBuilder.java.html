@@ -263,7 +263,7 @@ public class LessOptionsBuilder {
      */
     public LessOptionsBuilder includePaths(final Collection&lt;? extends CharSequence&gt; includePaths) {
 <span class="fc bfc" id="L265" title="All 2 branches covered.">        if (includePaths != null) {</span>
-<span class="fc" id="L266">            final List&lt;String&gt; paths = new ArrayList&lt;String&gt;(includePaths.size());</span>
+<span class="fc" id="L266">            final List&lt;String&gt; paths = new ArrayList&lt;&gt;(includePaths.size());</span>
 <span class="fc bfc" id="L267" title="All 2 branches covered.">            for (final CharSequence path : includePaths) {</span>
 <span class="fc" id="L268">                paths.add(StringUtils.toStringIfNotNull(path));</span>
 <span class="fc" id="L269">            }</span>
@@ -808,4 +808,4 @@ public class LessOptionsBuilder {
 <span class="nc" id="L808">        return options;</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

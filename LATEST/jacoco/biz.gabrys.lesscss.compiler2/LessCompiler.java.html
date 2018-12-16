@@ -15,6 +15,7 @@ package biz.gabrys.lesscss.compiler2;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import biz.gabrys.lesscss.compiler2.io.FileUtils;
 import biz.gabrys.lesscss.compiler2.io.SystemDefaultTemporaryFileFactory;
@@ -148,8 +149,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler() {
-<span class="nc" id="L151">        this(new NativeLessCompiler());</span>
-<span class="nc" id="L152">    }</span>
+<span class="nc" id="L152">        this(new NativeLessCompiler());</span>
+<span class="nc" id="L153">    }</span>
 
     /**
      * Constructs a new instance.
@@ -158,8 +159,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler(final NativeLessCompiler compiler) {
-<span class="fc" id="L161">        this(compiler, new SystemDefaultTemporaryFileFactory());</span>
-<span class="fc" id="L162">    }</span>
+<span class="fc" id="L162">        this(compiler, new SystemDefaultTemporaryFileFactory());</span>
+<span class="fc" id="L163">    }</span>
 
     /**
      * Constructs a new instance.
@@ -169,8 +170,8 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public LessCompiler(final TemporaryFileFactory fileFactory) {
-<span class="nc" id="L172">        this(new NativeLessCompiler(), fileFactory);</span>
-<span class="nc" id="L173">    }</span>
+<span class="nc" id="L173">        this(new NativeLessCompiler(), fileFactory);</span>
+<span class="nc" id="L174">    }</span>
 
     /**
      * Constructs a new instance.
@@ -180,16 +181,16 @@ public class LessCompiler {
      * @throws IllegalArgumentException if the native compiler or file factory is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L183">    public LessCompiler(final NativeLessCompiler compiler, final TemporaryFileFactory fileFactory) {</span>
-<span class="fc bfc" id="L184" title="All 2 branches covered.">        if (compiler == null) {</span>
-<span class="fc" id="L185">            throw new IllegalArgumentException(&quot;Native Less compiler cannot be null&quot;);</span>
+<span class="fc" id="L184">    public LessCompiler(final NativeLessCompiler compiler, final TemporaryFileFactory fileFactory) {</span>
+<span class="fc bfc" id="L185" title="All 2 branches covered.">        if (compiler == null) {</span>
+<span class="fc" id="L186">            throw new IllegalArgumentException(&quot;Native Less compiler cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L187" title="All 2 branches covered.">        if (fileFactory == null) {</span>
-<span class="fc" id="L188">            throw new IllegalArgumentException(&quot;Temporary file factory cannot be null&quot;);</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (fileFactory == null) {</span>
+<span class="fc" id="L189">            throw new IllegalArgumentException(&quot;Temporary file factory cannot be null&quot;);</span>
         }
-<span class="fc" id="L190">        this.compiler = compiler;</span>
-<span class="fc" id="L191">        this.fileFactory = fileFactory;</span>
-<span class="fc" id="L192">    }</span>
+<span class="fc" id="L191">        this.compiler = compiler;</span>
+<span class="fc" id="L192">        this.fileFactory = fileFactory;</span>
+<span class="fc" id="L193">    }</span>
 
     /**
      * Compiles a Less source code to a CSS code.
@@ -204,14 +205,14 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileCode(final CharSequence code) {
-<span class="fc" id="L207">        validateSourceCode(code);</span>
-<span class="fc" id="L208">        final String encoding = getDefaultPlatformEncoding();</span>
-<span class="fc" id="L209">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
-<span class="fc" id="L210">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L211">        builder.inputFile(sourceFile.getAbsolutePath()).encoding(encoding);</span>
-<span class="fc" id="L212">        final String css = compiler.execute(builder.build());</span>
-<span class="fc" id="L213">        deleteFile(sourceFile);</span>
-<span class="fc" id="L214">        return css;</span>
+<span class="fc" id="L208">        validateSourceCode(code);</span>
+<span class="fc" id="L209">        final String encoding = getDefaultPlatformEncoding();</span>
+<span class="fc" id="L210">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
+<span class="fc" id="L211">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L212">        builder.inputFile(sourceFile.getAbsolutePath()).encoding(encoding);</span>
+<span class="fc" id="L213">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L214">        deleteFile(sourceFile);</span>
+<span class="fc" id="L215">        return css;</span>
     }
 
     /**
@@ -228,15 +229,15 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileCode(final CharSequence code, final LessOptions options) {
-<span class="fc" id="L231">        validateSourceCode(code);</span>
-<span class="fc" id="L232">        validateOptions(options);</span>
-<span class="fc" id="L233">        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());</span>
-<span class="fc" id="L234">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
-<span class="fc" id="L235">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L236">        builder.inputFile(sourceFile.getAbsolutePath()).options(options).encoding(encoding);</span>
-<span class="fc" id="L237">        final String css = compiler.execute(builder.build());</span>
-<span class="fc" id="L238">        deleteFile(sourceFile);</span>
-<span class="fc" id="L239">        return css;</span>
+<span class="fc" id="L232">        validateSourceCode(code);</span>
+<span class="fc" id="L233">        validateOptions(options);</span>
+<span class="fc" id="L234">        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());</span>
+<span class="fc" id="L235">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
+<span class="fc" id="L236">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L237">        builder.inputFile(sourceFile.getAbsolutePath()).options(options).encoding(encoding);</span>
+<span class="fc" id="L238">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L239">        deleteFile(sourceFile);</span>
+<span class="fc" id="L240">        return css;</span>
     }
 
     /**
@@ -253,10 +254,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final String input) {
-<span class="fc" id="L256">        validateInputPath(input);</span>
-<span class="fc" id="L257">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L258">        builder.inputFile(input);</span>
-<span class="fc" id="L259">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L257">        validateInputPath(input);</span>
+<span class="fc" id="L258">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L259">        builder.inputFile(input);</span>
+<span class="fc" id="L260">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -273,10 +274,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final File input) {
-<span class="fc" id="L276">        validateInputFile(input);</span>
-<span class="fc" id="L277">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L278">        builder.inputFile(input.getAbsolutePath());</span>
-<span class="fc" id="L279">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L277">        validateInputFile(input);</span>
+<span class="fc" id="L278">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L279">        builder.inputFile(input.getAbsolutePath());</span>
+<span class="fc" id="L280">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -294,11 +295,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final String input, final Charset encoding) {
-<span class="fc" id="L297">        validateInputPath(input);</span>
-<span class="fc" id="L298">        validateEncoding(encoding);</span>
-<span class="fc" id="L299">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L300">        builder.inputFile(input).encoding(encoding.name());</span>
-<span class="fc" id="L301">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L298">        validateInputPath(input);</span>
+<span class="fc" id="L299">        validateEncoding(encoding);</span>
+<span class="fc" id="L300">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L301">        builder.inputFile(input).encoding(encoding.name());</span>
+<span class="fc" id="L302">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -316,11 +317,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final File input, final Charset encoding) {
-<span class="fc" id="L319">        validateInputFile(input);</span>
-<span class="fc" id="L320">        validateEncoding(encoding);</span>
-<span class="fc" id="L321">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L322">        builder.inputFile(input.getAbsolutePath()).encoding(encoding.name());</span>
-<span class="fc" id="L323">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L320">        validateInputFile(input);</span>
+<span class="fc" id="L321">        validateEncoding(encoding);</span>
+<span class="fc" id="L322">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L323">        builder.inputFile(input.getAbsolutePath()).encoding(encoding.name());</span>
+<span class="fc" id="L324">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -337,12 +338,12 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final String input, final File output) {
-<span class="fc" id="L340">        validateInputPath(input);</span>
-<span class="fc" id="L341">        validateOutputFile(output);</span>
-<span class="fc" id="L342">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L343">        builder.inputFile(input).outputFile(output);</span>
-<span class="fc" id="L344">        compiler.execute(builder.build());</span>
-<span class="fc" id="L345">    }</span>
+<span class="fc" id="L341">        validateInputPath(input);</span>
+<span class="fc" id="L342">        validateOutputFile(output);</span>
+<span class="fc" id="L343">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L344">        builder.inputFile(input).outputFile(output);</span>
+<span class="fc" id="L345">        compiler.execute(builder.build());</span>
+<span class="fc" id="L346">    }</span>
 
     /**
      * Compiles a Less source file to a CSS code and saves it in an output file.
@@ -358,12 +359,12 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final File input, final File output) {
-<span class="fc" id="L361">        validateInputFile(input);</span>
-<span class="fc" id="L362">        validateOutputFile(output);</span>
-<span class="fc" id="L363">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L364">        builder.inputFile(input.getAbsolutePath()).outputFile(output);</span>
-<span class="fc" id="L365">        compiler.execute(builder.build());</span>
-<span class="fc" id="L366">    }</span>
+<span class="fc" id="L362">        validateInputFile(input);</span>
+<span class="fc" id="L363">        validateOutputFile(output);</span>
+<span class="fc" id="L364">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L365">        builder.inputFile(input.getAbsolutePath()).outputFile(output);</span>
+<span class="fc" id="L366">        compiler.execute(builder.build());</span>
+<span class="fc" id="L367">    }</span>
 
     /**
      * Compiles a Less source file specified by path to a CSS code and saves it in an output file using custom encoding.
@@ -380,13 +381,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final String input, final File output, final Charset encoding) {
-<span class="fc" id="L383">        validateInputPath(input);</span>
-<span class="fc" id="L384">        validateOutputFile(output);</span>
-<span class="fc" id="L385">        validateEncoding(encoding);</span>
-<span class="fc" id="L386">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L387">        builder.inputFile(input).outputFile(output).encoding(encoding.name());</span>
-<span class="fc" id="L388">        compiler.execute(builder.build());</span>
-<span class="fc" id="L389">    }</span>
+<span class="fc" id="L384">        validateInputPath(input);</span>
+<span class="fc" id="L385">        validateOutputFile(output);</span>
+<span class="fc" id="L386">        validateEncoding(encoding);</span>
+<span class="fc" id="L387">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L388">        builder.inputFile(input).outputFile(output).encoding(encoding.name());</span>
+<span class="fc" id="L389">        compiler.execute(builder.build());</span>
+<span class="fc" id="L390">    }</span>
 
     /**
      * Compiles a Less source file to a CSS code and saves it in an output file using custom encoding.
@@ -403,13 +404,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final File input, final File output, final Charset encoding) {
-<span class="fc" id="L406">        validateInputFile(input);</span>
-<span class="fc" id="L407">        validateOutputFile(output);</span>
-<span class="fc" id="L408">        validateEncoding(encoding);</span>
-<span class="fc" id="L409">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L410">        builder.inputFile(input.getAbsolutePath()).outputFile(output).encoding(encoding.name());</span>
-<span class="fc" id="L411">        compiler.execute(builder.build());</span>
-<span class="fc" id="L412">    }</span>
+<span class="fc" id="L407">        validateInputFile(input);</span>
+<span class="fc" id="L408">        validateOutputFile(output);</span>
+<span class="fc" id="L409">        validateEncoding(encoding);</span>
+<span class="fc" id="L410">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L411">        builder.inputFile(input.getAbsolutePath()).outputFile(output).encoding(encoding.name());</span>
+<span class="fc" id="L412">        compiler.execute(builder.build());</span>
+<span class="fc" id="L413">    }</span>
 
     /**
      * Compiles a Less source file specified by path with custom configuration options to a CSS code.
@@ -426,11 +427,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final String input, final LessOptions options) {
-<span class="fc" id="L429">        validateInputPath(input);</span>
-<span class="fc" id="L430">        validateOptions(options);</span>
-<span class="fc" id="L431">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L432">        builder.inputFile(input).options(options);</span>
-<span class="fc" id="L433">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L430">        validateInputPath(input);</span>
+<span class="fc" id="L431">        validateOptions(options);</span>
+<span class="fc" id="L432">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L433">        builder.inputFile(input).options(options);</span>
+<span class="fc" id="L434">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -448,11 +449,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compile(final File input, final LessOptions options) {
-<span class="fc" id="L451">        validateInputFile(input);</span>
-<span class="fc" id="L452">        validateOptions(options);</span>
-<span class="fc" id="L453">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L454">        builder.inputFile(input.getAbsolutePath()).options(options);</span>
-<span class="fc" id="L455">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L452">        validateInputFile(input);</span>
+<span class="fc" id="L453">        validateOptions(options);</span>
+<span class="fc" id="L454">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L455">        builder.inputFile(input.getAbsolutePath()).options(options);</span>
+<span class="fc" id="L456">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -471,13 +472,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final String input, final File output, final LessOptions options) {
-<span class="fc" id="L474">        validateInputPath(input);</span>
-<span class="fc" id="L475">        validateOutputFile(output);</span>
-<span class="fc" id="L476">        validateOptions(options);</span>
-<span class="fc" id="L477">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L478">        builder.inputFile(input).outputFile(output).options(options);</span>
-<span class="fc" id="L479">        compiler.execute(builder.build());</span>
-<span class="fc" id="L480">    }</span>
+<span class="fc" id="L475">        validateInputPath(input);</span>
+<span class="fc" id="L476">        validateOutputFile(output);</span>
+<span class="fc" id="L477">        validateOptions(options);</span>
+<span class="fc" id="L478">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L479">        builder.inputFile(input).outputFile(output).options(options);</span>
+<span class="fc" id="L480">        compiler.execute(builder.build());</span>
+<span class="fc" id="L481">    }</span>
 
     /**
      * Compiles a Less source file with custom configuration options and saves result in an output file.
@@ -494,13 +495,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compile(final File input, final File output, final LessOptions options) {
-<span class="fc" id="L497">        validateInputFile(input);</span>
-<span class="fc" id="L498">        validateOutputFile(output);</span>
-<span class="fc" id="L499">        validateOptions(options);</span>
-<span class="fc" id="L500">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L501">        builder.inputFile(input.getAbsolutePath()).outputFile(output).options(options);</span>
-<span class="fc" id="L502">        compiler.execute(builder.build());</span>
-<span class="fc" id="L503">    }</span>
+<span class="fc" id="L498">        validateInputFile(input);</span>
+<span class="fc" id="L499">        validateOutputFile(output);</span>
+<span class="fc" id="L500">        validateOptions(options);</span>
+<span class="fc" id="L501">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L502">        builder.inputFile(input.getAbsolutePath()).outputFile(output).options(options);</span>
+<span class="fc" id="L503">        compiler.execute(builder.build());</span>
+<span class="fc" id="L504">    }</span>
 
     /**
      * Compiles a Less source code to a compressed CSS code.
@@ -515,14 +516,14 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileCodeAndCompress(final CharSequence code) {
-<span class="fc" id="L518">        validateSourceCode(code);</span>
-<span class="fc" id="L519">        final String encoding = getDefaultPlatformEncoding();</span>
-<span class="fc" id="L520">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
-<span class="fc" id="L521">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L522">        builder.inputFile(sourceFile.getAbsolutePath()).compress(true).encoding(encoding);</span>
-<span class="fc" id="L523">        final String css = compiler.execute(builder.build());</span>
-<span class="fc" id="L524">        deleteFile(sourceFile);</span>
-<span class="fc" id="L525">        return css;</span>
+<span class="fc" id="L519">        validateSourceCode(code);</span>
+<span class="fc" id="L520">        final String encoding = getDefaultPlatformEncoding();</span>
+<span class="fc" id="L521">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
+<span class="fc" id="L522">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L523">        builder.inputFile(sourceFile.getAbsolutePath()).compress(true).encoding(encoding);</span>
+<span class="fc" id="L524">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L525">        deleteFile(sourceFile);</span>
+<span class="fc" id="L526">        return css;</span>
     }
 
     /**
@@ -539,10 +540,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final String input) {
-<span class="fc" id="L542">        validateInputPath(input);</span>
-<span class="fc" id="L543">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L544">        builder.inputFile(input).compress(true);</span>
-<span class="fc" id="L545">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L543">        validateInputPath(input);</span>
+<span class="fc" id="L544">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L545">        builder.inputFile(input).compress(true);</span>
+<span class="fc" id="L546">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -559,10 +560,10 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final File input) {
-<span class="fc" id="L562">        validateInputFile(input);</span>
-<span class="fc" id="L563">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L564">        builder.inputFile(input.getAbsolutePath()).compress(true);</span>
-<span class="fc" id="L565">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L563">        validateInputFile(input);</span>
+<span class="fc" id="L564">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L565">        builder.inputFile(input.getAbsolutePath()).compress(true);</span>
+<span class="fc" id="L566">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -580,11 +581,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final String input, final Charset encoding) {
-<span class="fc" id="L583">        validateInputPath(input);</span>
-<span class="fc" id="L584">        validateEncoding(encoding);</span>
-<span class="fc" id="L585">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L586">        builder.inputFile(input).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L587">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L584">        validateInputPath(input);</span>
+<span class="fc" id="L585">        validateEncoding(encoding);</span>
+<span class="fc" id="L586">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L587">        builder.inputFile(input).encoding(encoding.name()).compress(true);</span>
+<span class="fc" id="L588">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -602,11 +603,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileAndCompress(final File input, final Charset encoding) {
-<span class="fc" id="L605">        validateInputFile(input);</span>
-<span class="fc" id="L606">        validateEncoding(encoding);</span>
-<span class="fc" id="L607">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L608">        builder.inputFile(input.getAbsolutePath()).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L609">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L606">        validateInputFile(input);</span>
+<span class="fc" id="L607">        validateEncoding(encoding);</span>
+<span class="fc" id="L608">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L609">        builder.inputFile(input.getAbsolutePath()).encoding(encoding.name()).compress(true);</span>
+<span class="fc" id="L610">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -623,12 +624,12 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final String input, final File output) {
-<span class="fc" id="L626">        validateInputPath(input);</span>
-<span class="fc" id="L627">        validateOutputFile(output);</span>
-<span class="fc" id="L628">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L629">        builder.inputFile(input).outputFile(output).compress(true);</span>
-<span class="fc" id="L630">        compiler.execute(builder.build());</span>
-<span class="fc" id="L631">    }</span>
+<span class="fc" id="L627">        validateInputPath(input);</span>
+<span class="fc" id="L628">        validateOutputFile(output);</span>
+<span class="fc" id="L629">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L630">        builder.inputFile(input).outputFile(output).compress(true);</span>
+<span class="fc" id="L631">        compiler.execute(builder.build());</span>
+<span class="fc" id="L632">    }</span>
 
     /**
      * Compiles a Less source file to a compressed CSS code and saves it in an output file.
@@ -644,12 +645,12 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final File input, final File output) {
-<span class="fc" id="L647">        validateInputFile(input);</span>
-<span class="fc" id="L648">        validateOutputFile(output);</span>
-<span class="fc" id="L649">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L650">        builder.inputFile(input.getAbsolutePath()).outputFile(output).compress(true);</span>
-<span class="fc" id="L651">        compiler.execute(builder.build());</span>
-<span class="fc" id="L652">    }</span>
+<span class="fc" id="L648">        validateInputFile(input);</span>
+<span class="fc" id="L649">        validateOutputFile(output);</span>
+<span class="fc" id="L650">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L651">        builder.inputFile(input.getAbsolutePath()).outputFile(output).compress(true);</span>
+<span class="fc" id="L652">        compiler.execute(builder.build());</span>
+<span class="fc" id="L653">    }</span>
 
     /**
      * Compiles a Less source file specified by path to a compressed CSS code and saves it in an output file using
@@ -667,13 +668,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final String input, final File output, final Charset encoding) {
-<span class="fc" id="L670">        validateInputPath(input);</span>
-<span class="fc" id="L671">        validateOutputFile(output);</span>
-<span class="fc" id="L672">        validateEncoding(encoding);</span>
-<span class="fc" id="L673">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L674">        builder.inputFile(input).outputFile(output).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L675">        compiler.execute(builder.build());</span>
-<span class="fc" id="L676">    }</span>
+<span class="fc" id="L671">        validateInputPath(input);</span>
+<span class="fc" id="L672">        validateOutputFile(output);</span>
+<span class="fc" id="L673">        validateEncoding(encoding);</span>
+<span class="fc" id="L674">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L675">        builder.inputFile(input).outputFile(output).encoding(encoding.name()).compress(true);</span>
+<span class="fc" id="L676">        compiler.execute(builder.build());</span>
+<span class="fc" id="L677">    }</span>
 
     /**
      * Compiles a Less source file to a compressed CSS code and saves it in an output file using custom encoding.
@@ -690,13 +691,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileAndCompress(final File input, final File output, final Charset encoding) {
-<span class="fc" id="L693">        validateInputFile(input);</span>
-<span class="fc" id="L694">        validateOutputFile(output);</span>
-<span class="fc" id="L695">        validateEncoding(encoding);</span>
-<span class="fc" id="L696">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L697">        builder.inputFile(input.getAbsolutePath()).outputFile(output).encoding(encoding.name()).compress(true);</span>
-<span class="fc" id="L698">        compiler.execute(builder.build());</span>
-<span class="fc" id="L699">    }</span>
+<span class="fc" id="L694">        validateInputFile(input);</span>
+<span class="fc" id="L695">        validateOutputFile(output);</span>
+<span class="fc" id="L696">        validateEncoding(encoding);</span>
+<span class="fc" id="L697">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L698">        builder.inputFile(input.getAbsolutePath()).outputFile(output).encoding(encoding.name()).compress(true);</span>
+<span class="fc" id="L699">        compiler.execute(builder.build());</span>
+<span class="fc" id="L700">    }</span>
 
     /**
      * Compiles a Less source code with custom configuration options to a CSS code with an inline Source Map.
@@ -712,15 +713,15 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileCodeWithInlineSourceMap(final CharSequence code, final LessOptions options) {
-<span class="fc" id="L715">        validateSourceCode(code);</span>
-<span class="fc" id="L716">        validateOptions(options);</span>
-<span class="fc" id="L717">        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());</span>
-<span class="fc" id="L718">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
-<span class="fc" id="L719">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L720">        builder.inputFile(sourceFile.getAbsolutePath()).sourceMapInline(true).options(options).encoding(encoding);</span>
-<span class="fc" id="L721">        final String css = compiler.execute(builder.build());</span>
-<span class="fc" id="L722">        deleteFile(sourceFile);</span>
-<span class="fc" id="L723">        return css;</span>
+<span class="fc" id="L716">        validateSourceCode(code);</span>
+<span class="fc" id="L717">        validateOptions(options);</span>
+<span class="fc" id="L718">        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());</span>
+<span class="fc" id="L719">        final File sourceFile = createTemporaryFileWithCode(code, encoding);</span>
+<span class="fc" id="L720">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L721">        builder.inputFile(sourceFile.getAbsolutePath()).sourceMapInline(true).options(options).encoding(encoding);</span>
+<span class="fc" id="L722">        final String css = compiler.execute(builder.build());</span>
+<span class="fc" id="L723">        deleteFile(sourceFile);</span>
+<span class="fc" id="L724">        return css;</span>
     }
 
     /**
@@ -739,11 +740,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileWithInlineSourceMap(final String input, final LessOptions options) {
-<span class="fc" id="L742">        validateInputPath(input);</span>
-<span class="fc" id="L743">        validateOptions(options);</span>
-<span class="fc" id="L744">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L745">        builder.inputFile(input).sourceMapInline(true).options(options);</span>
-<span class="fc" id="L746">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L743">        validateInputPath(input);</span>
+<span class="fc" id="L744">        validateOptions(options);</span>
+<span class="fc" id="L745">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L746">        builder.inputFile(input).sourceMapInline(true).options(options);</span>
+<span class="fc" id="L747">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -761,11 +762,11 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public String compileWithInlineSourceMap(final File input, final LessOptions options) {
-<span class="fc" id="L764">        validateInputFile(input);</span>
-<span class="fc" id="L765">        validateOptions(options);</span>
-<span class="fc" id="L766">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L767">        builder.inputFile(input.getAbsolutePath()).sourceMapInline(true).options(options);</span>
-<span class="fc" id="L768">        return compiler.execute(builder.build());</span>
+<span class="fc" id="L765">        validateInputFile(input);</span>
+<span class="fc" id="L766">        validateOptions(options);</span>
+<span class="fc" id="L767">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L768">        builder.inputFile(input.getAbsolutePath()).sourceMapInline(true).options(options);</span>
+<span class="fc" id="L769">        return compiler.execute(builder.build());</span>
     }
 
     /**
@@ -784,13 +785,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithInlineSourceMap(final String input, final File output, final LessOptions options) {
-<span class="fc" id="L787">        validateInputPath(input);</span>
-<span class="fc" id="L788">        validateOutputFile(output);</span>
-<span class="fc" id="L789">        validateOptions(options);</span>
-<span class="fc" id="L790">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L791">        builder.inputFile(input).outputFile(output).sourceMapInline(true).options(options);</span>
-<span class="fc" id="L792">        compiler.execute(builder.build());</span>
-<span class="fc" id="L793">    }</span>
+<span class="fc" id="L788">        validateInputPath(input);</span>
+<span class="fc" id="L789">        validateOutputFile(output);</span>
+<span class="fc" id="L790">        validateOptions(options);</span>
+<span class="fc" id="L791">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L792">        builder.inputFile(input).outputFile(output).sourceMapInline(true).options(options);</span>
+<span class="fc" id="L793">        compiler.execute(builder.build());</span>
+<span class="fc" id="L794">    }</span>
 
     /**
      * Compiles a Less source file with custom configuration to a CSS code with an inline Source Map and saves it in an
@@ -808,13 +809,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithInlineSourceMap(final File input, final File output, final LessOptions options) {
-<span class="fc" id="L811">        validateInputFile(input);</span>
-<span class="fc" id="L812">        validateOutputFile(output);</span>
-<span class="fc" id="L813">        validateOptions(options);</span>
-<span class="fc" id="L814">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L815">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapInline(true).options(options);</span>
-<span class="fc" id="L816">        compiler.execute(builder.build());</span>
-<span class="fc" id="L817">    }</span>
+<span class="fc" id="L812">        validateInputFile(input);</span>
+<span class="fc" id="L813">        validateOutputFile(output);</span>
+<span class="fc" id="L814">        validateOptions(options);</span>
+<span class="fc" id="L815">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L816">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapInline(true).options(options);</span>
+<span class="fc" id="L817">        compiler.execute(builder.build());</span>
+<span class="fc" id="L818">    }</span>
 
     /**
      * Compiles a Less source file specified by path with custom configuration to a CSS code with a Source Map. The CSS
@@ -833,13 +834,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithSourceMap(final String input, final File output, final LessOptions options) {
-<span class="fc" id="L836">        validateInputPath(input);</span>
-<span class="fc" id="L837">        validateOutputFile(output);</span>
-<span class="fc" id="L838">        validateOptions(options);</span>
-<span class="fc" id="L839">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L840">        builder.inputFile(input).outputFile(output).sourceMapDefault(true).options(options);</span>
-<span class="fc" id="L841">        compiler.execute(builder.build());</span>
-<span class="fc" id="L842">    }</span>
+<span class="fc" id="L837">        validateInputPath(input);</span>
+<span class="fc" id="L838">        validateOutputFile(output);</span>
+<span class="fc" id="L839">        validateOptions(options);</span>
+<span class="fc" id="L840">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L841">        builder.inputFile(input).outputFile(output).sourceMapDefault(true).options(options);</span>
+<span class="fc" id="L842">        compiler.execute(builder.build());</span>
+<span class="fc" id="L843">    }</span>
 
     /**
      * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved
@@ -858,13 +859,13 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithSourceMap(final File input, final File output, final LessOptions options) {
-<span class="fc" id="L861">        validateInputFile(input);</span>
-<span class="fc" id="L862">        validateOutputFile(output);</span>
-<span class="fc" id="L863">        validateOptions(options);</span>
-<span class="fc" id="L864">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L865">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapDefault(true).options(options);</span>
-<span class="fc" id="L866">        compiler.execute(builder.build());</span>
-<span class="fc" id="L867">    }</span>
+<span class="fc" id="L862">        validateInputFile(input);</span>
+<span class="fc" id="L863">        validateOutputFile(output);</span>
+<span class="fc" id="L864">        validateOptions(options);</span>
+<span class="fc" id="L865">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L866">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapDefault(true).options(options);</span>
+<span class="fc" id="L867">        compiler.execute(builder.build());</span>
+<span class="fc" id="L868">    }</span>
 
     /**
      * Compiles a Less source file specified by path with custom configuration to a CSS code with a Source Map. The CSS
@@ -883,14 +884,14 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithSourceMap(final String input, final File output, final File outputSourceMap, final LessOptions options) {
-<span class="fc" id="L886">        validateInputPath(input);</span>
-<span class="fc" id="L887">        validateOutputFile(output);</span>
-<span class="fc" id="L888">        validateOutputSourceMapFile(outputSourceMap);</span>
-<span class="fc" id="L889">        validateOptions(options);</span>
-<span class="fc" id="L890">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L891">        builder.inputFile(input).outputFile(output).sourceMapFile(outputSourceMap).options(options);</span>
-<span class="fc" id="L892">        compiler.execute(builder.build());</span>
-<span class="fc" id="L893">    }</span>
+<span class="fc" id="L887">        validateInputPath(input);</span>
+<span class="fc" id="L888">        validateOutputFile(output);</span>
+<span class="fc" id="L889">        validateOutputSourceMapFile(outputSourceMap);</span>
+<span class="fc" id="L890">        validateOptions(options);</span>
+<span class="fc" id="L891">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L892">        builder.inputFile(input).outputFile(output).sourceMapFile(outputSourceMap).options(options);</span>
+<span class="fc" id="L893">        compiler.execute(builder.build());</span>
+<span class="fc" id="L894">    }</span>
 
     /**
      * Compiles a Less source file with custom configuration to a CSS code with a Source Map. The CSS code will be saved
@@ -909,90 +910,92 @@ public class LessCompiler {
      * @since 2.0.0
      */
     public void compileWithSourceMap(final File input, final File output, final File outputSourceMap, final LessOptions options) {
-<span class="fc" id="L912">        validateInputFile(input);</span>
-<span class="fc" id="L913">        validateOutputFile(output);</span>
-<span class="fc" id="L914">        validateOutputSourceMapFile(outputSourceMap);</span>
-<span class="fc" id="L915">        validateOptions(options);</span>
-<span class="fc" id="L916">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
-<span class="fc" id="L917">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapFile(outputSourceMap).options(options);</span>
-<span class="fc" id="L918">        compiler.execute(builder.build());</span>
-<span class="fc" id="L919">    }</span>
+<span class="fc" id="L913">        validateInputFile(input);</span>
+<span class="fc" id="L914">        validateOutputFile(output);</span>
+<span class="fc" id="L915">        validateOutputSourceMapFile(outputSourceMap);</span>
+<span class="fc" id="L916">        validateOptions(options);</span>
+<span class="fc" id="L917">        final NativeLessOptionsBuilder builder = createOptionsBuilder();</span>
+<span class="fc" id="L918">        builder.inputFile(input.getAbsolutePath()).outputFile(output).sourceMapFile(outputSourceMap).options(options);</span>
+<span class="fc" id="L919">        compiler.execute(builder.build());</span>
+<span class="fc" id="L920">    }</span>
 
     void validateSourceCode(final CharSequence code) {
-<span class="fc bfc" id="L922" title="All 2 branches covered.">        if (code == null) {</span>
-<span class="fc" id="L923">            throw new IllegalArgumentException(&quot;Source code cannot be null&quot;);</span>
+<span class="fc bfc" id="L923" title="All 2 branches covered.">        if (code == null) {</span>
+<span class="fc" id="L924">            throw new IllegalArgumentException(&quot;Source code cannot be null&quot;);</span>
         }
-<span class="fc" id="L925">    }</span>
+<span class="fc" id="L926">    }</span>
 
     void validateInputPath(final String input) {
-<span class="fc bfc" id="L928" title="All 2 branches covered.">        if (input == null) {</span>
-<span class="fc" id="L929">            throw new IllegalArgumentException(&quot;Source path cannot be null&quot;);</span>
+<span class="fc bfc" id="L929" title="All 2 branches covered.">        if (input == null) {</span>
+<span class="fc" id="L930">            throw new IllegalArgumentException(&quot;Source path cannot be null&quot;);</span>
         }
-<span class="fc" id="L931">    }</span>
+<span class="fc" id="L932">    }</span>
 
     void validateInputFile(final File input) {
-<span class="fc bfc" id="L934" title="All 2 branches covered.">        if (input == null) {</span>
-<span class="fc" id="L935">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
+<span class="fc bfc" id="L935" title="All 2 branches covered.">        if (input == null) {</span>
+<span class="fc" id="L936">            throw new IllegalArgumentException(&quot;Source file cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L937" title="All 2 branches covered.">        if (!input.exists()) {</span>
-<span class="fc" id="L938">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + input.getAbsolutePath());</span>
+<span class="fc bfc" id="L938" title="All 2 branches covered.">        if (!input.exists()) {</span>
+<span class="fc" id="L939">            throw new IllegalArgumentException(&quot;Source file does not exist: &quot; + input.getAbsolutePath());</span>
         }
-<span class="fc" id="L940">    }</span>
+<span class="fc" id="L941">    }</span>
 
     void validateOutputFile(final File output) {
-<span class="fc bfc" id="L943" title="All 2 branches covered.">        if (output == null) {</span>
-<span class="fc" id="L944">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
+<span class="fc bfc" id="L944" title="All 2 branches covered.">        if (output == null) {</span>
+<span class="fc" id="L945">            throw new IllegalArgumentException(&quot;Output file cannot be null&quot;);</span>
         }
-<span class="fc" id="L946">    }</span>
+<span class="fc" id="L947">    }</span>
 
     void validateOutputSourceMapFile(final File outputSourceMap) {
-<span class="pc bpc" id="L949" title="1 of 2 branches missed.">        if (outputSourceMap == null) {</span>
-<span class="nc" id="L950">            throw new IllegalArgumentException(&quot;Output Source Map file cannot be null&quot;);</span>
+<span class="pc bpc" id="L950" title="1 of 2 branches missed.">        if (outputSourceMap == null) {</span>
+<span class="nc" id="L951">            throw new IllegalArgumentException(&quot;Output Source Map file cannot be null&quot;);</span>
         }
-<span class="fc" id="L952">    }</span>
+<span class="fc" id="L953">    }</span>
 
     void validateOptions(final LessOptions options) {
-<span class="fc bfc" id="L955" title="All 2 branches covered.">        if (options == null) {</span>
-<span class="fc" id="L956">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="fc bfc" id="L956" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L957">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="fc" id="L958">    }</span>
+<span class="fc" id="L959">    }</span>
 
     void validateEncoding(final Charset encoding) {
-<span class="fc bfc" id="L961" title="All 2 branches covered.">        if (encoding == null) {</span>
-<span class="fc" id="L962">            throw new IllegalArgumentException(&quot;Encoding cannot be null&quot;);</span>
+<span class="fc bfc" id="L962" title="All 2 branches covered.">        if (encoding == null) {</span>
+<span class="fc" id="L963">            throw new IllegalArgumentException(&quot;Encoding cannot be null&quot;);</span>
         }
-<span class="fc" id="L964">    }</span>
+<span class="fc" id="L965">    }</span>
 
     NativeLessOptionsBuilder createOptionsBuilder() {
-<span class="nc" id="L967">        return new NativeLessOptionsBuilder();</span>
+<span class="nc" id="L968">        return new NativeLessOptionsBuilder();</span>
     }
 
     String getDefaultPlatformEncoding() {
-<span class="nc" id="L971">        return Charset.defaultCharset().toString();</span>
+<span class="nc" id="L972">        return Charset.defaultCharset().toString();</span>
     }
 
     File createTemporaryFileWithCode(final CharSequence code, final String encoding) {
-<span class="nc" id="L975">        File file = null;</span>
+<span class="nc" id="L976">        File file = null;</span>
         try {
-<span class="nc" id="L977">            file = fileFactory.create();</span>
-<span class="nc" id="L978">        } catch (final IOException e) {</span>
-<span class="nc" id="L979">            throw new CompilerException(&quot;Cannot create a temporary file&quot;, e);</span>
-<span class="nc" id="L980">        }</span>
+<span class="nc" id="L978">            file = fileFactory.create();</span>
+<span class="nc" id="L979">        } catch (final IOException e) {</span>
+<span class="nc" id="L980">            throw new CompilerException(&quot;Cannot create a temporary file&quot;, e);</span>
+<span class="nc" id="L981">        }</span>
         try {
-<span class="nc" id="L982">            FileUtils.write(file, code, encoding);</span>
-<span class="nc" id="L983">        } catch (final IOException e) {</span>
-<span class="nc" id="L984">            throw new CompilerException(&quot;Cannot save source code in the temporaty file: &quot; + file.getAbsolutePath(), e);</span>
-<span class="nc" id="L985">        }</span>
-<span class="nc" id="L986">        return file;</span>
+<span class="nc" id="L983">            FileUtils.write(file, code, encoding);</span>
+<span class="nc" id="L984">        } catch (final IOException e) {</span>
+<span class="nc" id="L985">            throw new CompilerException(&quot;Cannot save source code in the temporaty file: &quot; + file.getAbsolutePath(), e);</span>
+<span class="nc" id="L986">        }</span>
+<span class="nc" id="L987">        return file;</span>
     }
 
     void deleteFile(final File file) {
-<span class="fc bfc" id="L990" title="All 2 branches covered.">        if (file == null) {</span>
-<span class="fc" id="L991">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
+<span class="fc bfc" id="L991" title="All 2 branches covered.">        if (file == null) {</span>
+<span class="fc" id="L992">            throw new IllegalArgumentException(&quot;File cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L993" title="All 2 branches covered.">        if (!file.delete()) {</span>
-<span class="fc" id="L994">            throw new CompilerException(&quot;Cannot delete the temporary file: &quot; + file.getAbsolutePath());</span>
-        }
-<span class="fc" id="L996">    }</span>
+        try {
+<span class="fc" id="L995">            Files.delete(file.toPath());</span>
+<span class="fc" id="L996">        } catch (final IOException e) {</span>
+<span class="fc" id="L997">            throw new CompilerException(&quot;Cannot delete the temporary file&quot;, e);</span>
+<span class="fc" id="L998">        }</span>
+<span class="fc" id="L999">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

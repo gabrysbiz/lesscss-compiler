@@ -24,7 +24,7 @@ import java.util.List;
 public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
 
     private final Checker&lt;T&gt; checker;
-<span class="fc" id="L27">    private final List&lt;T&gt; values = new LinkedList&lt;T&gt;();</span>
+<span class="fc" id="L27">    private final List&lt;T&gt; values = new LinkedList&lt;&gt;();</span>
 
     /**
      * Constructs a new instance.
@@ -73,7 +73,7 @@ public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
      * @since 2.0.0
      */
     public List&lt;T&gt; build() {
-<span class="fc" id="L76">        return new ArrayList&lt;T&gt;(values);</span>
+<span class="fc" id="L76">        return new ArrayList&lt;&gt;(values);</span>
     }
 
     /**
@@ -92,4 +92,4 @@ public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
         boolean isNotEmpty(T value);
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

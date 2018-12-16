@@ -24,8 +24,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import biz.gabrys.lesscss.compiler2.io.IOUtils;
-
 /**
  * &lt;p&gt;
  * Represents a file system accessible via &lt;a href=&quot;https://www.w3.org/Protocols/rfc959/&quot;&gt;FTP&lt;/a&gt; protocol.
@@ -51,11 +49,11 @@ public class FtpFileSystem implements FileSystem {
      *             library is not available in the classpath.
      * @since 2.0.0
      */
-<span class="fc" id="L54">    public FtpFileSystem() {</span>
-<span class="pc bpc" id="L55" title="1 of 2 branches missed.">        if (!isAvailable()) {</span>
-<span class="nc" id="L56">            throw new IllegalStateException(&quot;Apache Commons Net library is required to work with FTP file system&quot;);</span>
+<span class="fc" id="L52">    public FtpFileSystem() {</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (!isAvailable()) {</span>
+<span class="nc" id="L54">            throw new IllegalStateException(&quot;Apache Commons Net library is required to work with FTP file system&quot;);</span>
         }
-<span class="fc" id="L58">    }</span>
+<span class="fc" id="L56">    }</span>
 
     /**
      * Tests whether the file system is available (all requirements are met).
@@ -64,44 +62,44 @@ public class FtpFileSystem implements FileSystem {
      */
     public static boolean isAvailable() {
         try {
-<span class="fc" id="L67">            Class.forName(&quot;org.apache.commons.net.ftp.FTP&quot;);</span>
-<span class="fc" id="L68">            return true;</span>
-<span class="nc" id="L69">        } catch (final ClassNotFoundException e) {</span>
-<span class="nc" id="L70">            return false;</span>
+<span class="fc" id="L65">            Class.forName(&quot;org.apache.commons.net.ftp.FTP&quot;);</span>
+<span class="fc" id="L66">            return true;</span>
+<span class="nc" id="L67">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L68">            return false;</span>
         }
     }
 
     @Override
     public void configure(final Map&lt;String, String&gt; parameters) {
         // do nothing
-<span class="nc" id="L77">    }</span>
+<span class="nc" id="L75">    }</span>
 
     @Override
     public boolean isSupported(final String path) {
-<span class="fc" id="L81">        return path.startsWith(&quot;ftp://&quot;);</span>
+<span class="fc" id="L79">        return path.startsWith(&quot;ftp://&quot;);</span>
     }
 
     @Override
     public String normalize(final String path) throws URISyntaxException {
-<span class="fc" id="L86">        return new URI(path).normalize().toString();</span>
+<span class="fc" id="L84">        return new URI(path).normalize().toString();</span>
     }
 
     @Override
     public String expandRedirection(final String path) {
-<span class="fc" id="L91">        return path;</span>
+<span class="fc" id="L89">        return path;</span>
     }
 
     @Override
     public boolean exists(final String path) throws IOException {
-<span class="fc" id="L96">        final URL url = new URL(path);</span>
-<span class="fc" id="L97">        FTPClient connection = null;</span>
+<span class="fc" id="L94">        final URL url = new URL(path);</span>
+<span class="fc" id="L95">        FTPClient connection = null;</span>
         try {
-<span class="fc" id="L99">            connection = makeConnection(url);</span>
-<span class="fc" id="L100">            return isFileExist(connection, url);</span>
-<span class="fc" id="L101">        } catch (final IOException e) {</span>
-<span class="fc" id="L102">            throw new IOException(String.format(&quot;cannot access source \&quot;%s\&quot; file&quot;, url), e);</span>
+<span class="fc" id="L97">            connection = makeConnection(url);</span>
+<span class="fc" id="L98">            return isFileExist(connection, url);</span>
+<span class="fc" id="L99">        } catch (final IOException e) {</span>
+<span class="fc" id="L100">            throw new IOException(String.format(&quot;cannot access source \&quot;%s\&quot; file&quot;, url), e);</span>
         } finally {
-<span class="fc" id="L104">            disconnect(connection);</span>
+<span class="fc" id="L102">            disconnect(connection);</span>
         }
     }
 
@@ -114,26 +112,22 @@ public class FtpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
-<span class="fc" id="L117">        InputStream inputStream = null;</span>
-        try {
-<span class="fc" id="L119">            inputStream = connection.retrieveFileStream(url.getPath());</span>
-<span class="fc bfc" id="L120" title="All 4 branches covered.">            return inputStream != null &amp;&amp; connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;</span>
-        } finally {
-<span class="fc" id="L122">            IOUtils.closeQuietly(inputStream);</span>
+<span class="fc" id="L115">        try (final InputStream inputStream = connection.retrieveFileStream(url.getPath())) {</span>
+<span class="fc bfc" id="L116" title="All 4 branches covered.">            return inputStream != null &amp;&amp; connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;</span>
         }
     }
 
     @Override
     public FileData fetch(final String path) throws IOException {
-<span class="fc" id="L128">        final URL url = new URL(path);</span>
-<span class="fc" id="L129">        FTPClient connection = null;</span>
+<span class="fc" id="L122">        final URL url = new URL(path);</span>
+<span class="fc" id="L123">        FTPClient connection = null;</span>
         try {
-<span class="fc" id="L131">            connection = makeConnection(url);</span>
-<span class="fc" id="L132">            return new FileData(fetchContent(connection, url));</span>
-<span class="fc" id="L133">        } catch (final IOException e) {</span>
-<span class="fc" id="L134">            throw new IOException(String.format(&quot;cannot download source \&quot;%s\&quot; file&quot;, url), e);</span>
+<span class="fc" id="L125">            connection = makeConnection(url);</span>
+<span class="fc" id="L126">            return new FileData(fetchContent(connection, url));</span>
+<span class="fc" id="L127">        } catch (final IOException e) {</span>
+<span class="fc" id="L128">            throw new IOException(String.format(&quot;cannot download source \&quot;%s\&quot; file&quot;, url), e);</span>
         } finally {
-<span class="fc" id="L136">            disconnect(connection);</span>
+<span class="fc" id="L130">            disconnect(connection);</span>
         }
     }
 
@@ -146,17 +140,17 @@ public class FtpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected FTPClient makeConnection(final URL url) throws IOException {
-<span class="fc" id="L149">        final FTPClient connection = createFtpClient();</span>
-<span class="fc" id="L150">        connection.setAutodetectUTF8(true);</span>
-<span class="fc bfc" id="L151" title="All 2 branches covered.">        final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;</span>
-<span class="fc" id="L152">        connection.connect(url.getHost(), port);</span>
-<span class="fc" id="L153">        connection.enterLocalActiveMode();</span>
-<span class="fc bfc" id="L154" title="All 2 branches covered.">        if (!connection.login(&quot;anonymous&quot;, &quot;anonymous&quot;)) {</span>
-<span class="fc" id="L155">            throw new IOException(String.format(&quot;cannot login as anonymous user, reason: %s&quot;, connection.getReplyString()));</span>
+<span class="fc" id="L143">        final FTPClient connection = createFtpClient();</span>
+<span class="fc" id="L144">        connection.setAutodetectUTF8(true);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;</span>
+<span class="fc" id="L146">        connection.connect(url.getHost(), port);</span>
+<span class="fc" id="L147">        connection.enterLocalActiveMode();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (!connection.login(&quot;anonymous&quot;, &quot;anonymous&quot;)) {</span>
+<span class="fc" id="L149">            throw new IOException(String.format(&quot;cannot login as anonymous user, reason: %s&quot;, connection.getReplyString()));</span>
         }
-<span class="fc" id="L157">        connection.enterLocalPassiveMode();</span>
-<span class="fc" id="L158">        connection.setFileType(FTP.BINARY_FILE_TYPE);</span>
-<span class="fc" id="L159">        return connection;</span>
+<span class="fc" id="L151">        connection.enterLocalPassiveMode();</span>
+<span class="fc" id="L152">        connection.setFileType(FTP.BINARY_FILE_TYPE);</span>
+<span class="fc" id="L153">        return connection;</span>
     }
 
     /**
@@ -166,7 +160,7 @@ public class FtpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected FTPClient createFtpClient() {
-<span class="nc" id="L169">        return new FTPClient();</span>
+<span class="nc" id="L163">        return new FTPClient();</span>
     }
 
     /**
@@ -177,14 +171,11 @@ public class FtpFileSystem implements FileSystem {
      * @throws IOException if an I/O exception occurs.
      */
     protected byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
-<span class="fc" id="L180">        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();</span>
-        try {
-<span class="fc bfc" id="L182" title="All 2 branches covered.">            if (!connection.retrieveFile(url.getPath(), outputStream)) {</span>
-<span class="fc" id="L183">                throw new IOException(String.format(&quot;cannot retrieve file, reason: %s&quot;, connection.getReplyString()));</span>
+<span class="fc" id="L174">        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (!connection.retrieveFile(url.getPath(), outputStream)) {</span>
+<span class="fc" id="L176">                throw new IOException(String.format(&quot;cannot retrieve file, reason: %s&quot;, connection.getReplyString()));</span>
             }
-<span class="fc" id="L185">            return outputStream.toByteArray();</span>
-        } finally {
-<span class="fc" id="L187">            IOUtils.closeQuietly(outputStream);</span>
+<span class="fc" id="L178">            return outputStream.toByteArray();</span>
         }
     }
 
@@ -194,14 +185,14 @@ public class FtpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     protected void disconnect(final FTPClient connection) {
-<span class="fc bfc" id="L197" title="All 2 branches covered.">        if (connection == null) {</span>
-<span class="fc" id="L198">            return;</span>
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (connection == null) {</span>
+<span class="fc" id="L189">            return;</span>
         }
         try {
-<span class="fc" id="L201">            connection.disconnect();</span>
-<span class="fc" id="L202">        } catch (final Exception e) {</span>
+<span class="fc" id="L192">            connection.disconnect();</span>
+<span class="fc" id="L193">        } catch (final Exception e) {</span>
             // do nothing
-<span class="fc" id="L204">        }</span>
-<span class="fc" id="L205">    }</span>
+<span class="fc" id="L195">        }</span>
+<span class="fc" id="L196">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

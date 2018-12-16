@@ -54,7 +54,7 @@ public class FileSystemOption {
 <span class="fc" id="L54">    private static final Pattern EQUAL_PATTERN = Pattern.compile(&quot;&quot; + EQUAL_SIGN);</span>
 
     private final String className;
-<span class="fc" id="L57">    private final Map&lt;String, String&gt; parameters = new LinkedHashMap&lt;String, String&gt;();</span>
+<span class="fc" id="L57">    private final Map&lt;String, String&gt; parameters = new LinkedHashMap&lt;&gt;();</span>
 
     /**
      * Constructs a new instance with a file system class and no parameters.
@@ -127,7 +127,7 @@ public class FileSystemOption {
      * @since 2.0.0
      */
     public Map&lt;String, String&gt; getParameters() {
-<span class="fc" id="L130">        return new LinkedHashMap&lt;String, String&gt;(parameters);</span>
+<span class="fc" id="L130">        return new LinkedHashMap&lt;&gt;(parameters);</span>
     }
 
     /**
@@ -189,4 +189,4 @@ public class FileSystemOption {
 <span class="fc" id="L189">        return EQUAL_PATTERN.matcher(escaped).replaceAll(UNDERSCORE_SIGN + EQUAL_SIGN);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

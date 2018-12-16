@@ -56,7 +56,7 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
  */
 public class FileSystemOptionsBuilder {
 
-<span class="fc" id="L59">    private final Set&lt;FileSystemOption&gt; options = new LinkedHashSet&lt;FileSystemOption&gt;();</span>
+<span class="fc" id="L59">    private final Set&lt;FileSystemOption&gt; options = new LinkedHashSet&lt;&gt;();</span>
 
     /**
      * Constructs a new instance.
@@ -143,7 +143,7 @@ public class FileSystemOptionsBuilder {
      * @throws IllegalArgumentException is the file system classes are equal to {@code null}.
      * @since 2.0.0
      */
-    public FileSystemOptionsBuilder appendCustom(final Class&lt;? extends FileSystem&gt;... classes) {
+    public FileSystemOptionsBuilder appendCustom(@SuppressWarnings(&quot;unchecked&quot;) final Class&lt;? extends FileSystem&gt;... classes) {
 <span class="fc bfc" id="L147" title="All 2 branches covered.">        if (classes == null) {</span>
 <span class="fc" id="L148">            throw new IllegalArgumentException(&quot;File system classes cannot be null&quot;);</span>
         }
@@ -263,7 +263,7 @@ public class FileSystemOptionsBuilder {
      * @since 2.0.0
      */
     public List&lt;FileSystemOption&gt; build() {
-<span class="fc" id="L266">        return new ArrayList&lt;FileSystemOption&gt;(options);</span>
+<span class="fc" id="L266">        return new ArrayList&lt;&gt;(options);</span>
     }
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

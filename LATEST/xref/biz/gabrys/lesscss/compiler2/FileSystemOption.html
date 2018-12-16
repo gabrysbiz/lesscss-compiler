@@ -8,7 +8,7 @@
 <div id="overview"><a href="../../../../../apidocs/biz/gabrys/lesscss/compiler2/FileSystemOption.html">View Javadoc</a></div><pre>
 <a class="jxr_linenumber" name="L1" href="#L1">1</a>   <em class="jxr_comment">/*</em>
 <a class="jxr_linenumber" name="L2" href="#L2">2</a>   <em class="jxr_comment"> * LessCSS Compiler</em>
-<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * <a href="http://lesscss-compiler.projects.gabrys.biz" target="alexandria_uri">http://lesscss-compiler.projects.gabrys.biz</a>/</em>
+<a class="jxr_linenumber" name="L3" href="#L3">3</a>   <em class="jxr_comment"> * <a href="http://lesscss-compiler.projects.gabrys.biz/" target="alexandria_uri">http://lesscss-compiler.projects.gabrys.biz/</a></em>
 <a class="jxr_linenumber" name="L4" href="#L4">4</a>   <em class="jxr_comment"> *</em>
 <a class="jxr_linenumber" name="L5" href="#L5">5</a>   <em class="jxr_comment"> * Copyright (c) 2015 Adam Gabrys</em>
 <a class="jxr_linenumber" name="L6" href="#L6">6</a>   <em class="jxr_comment"> *</em>
@@ -16,7 +16,7 @@
 <a class="jxr_linenumber" name="L8" href="#L8">8</a>   <em class="jxr_comment"> * You may not use this file except in compliance with the License.</em>
 <a class="jxr_linenumber" name="L9" href="#L9">9</a>   <em class="jxr_comment"> * You may obtain:</em>
 <a class="jxr_linenumber" name="L10" href="#L10">10</a>  <em class="jxr_comment"> *  - a copy of the License at project page</em>
-<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause</em>
+<a class="jxr_linenumber" name="L11" href="#L11">11</a>  <em class="jxr_comment"> *  - a template of the License at <a href="https://opensource.org/licenses/BSD-3-Clause" target="alexandria_uri">https://opensource.org/licenses/BSD-3-Clause</a></em>
 <a class="jxr_linenumber" name="L12" href="#L12">12</a>  <em class="jxr_comment"> */</em>
 <a class="jxr_linenumber" name="L13" href="#L13">13</a>  <strong class="jxr_keyword">package</strong> biz.gabrys.lesscss.compiler2;
 <a class="jxr_linenumber" name="L14" href="#L14">14</a>  
@@ -51,7 +51,7 @@
 <a class="jxr_linenumber" name="L43" href="#L43">43</a>  <em class="jxr_javadoccomment"> * @see FileSystem</em>
 <a class="jxr_linenumber" name="L44" href="#L44">44</a>  <em class="jxr_javadoccomment"> * @see FileSystemOptionBuilder</em>
 <a class="jxr_linenumber" name="L45" href="#L45">45</a>  <em class="jxr_javadoccomment"> */</em>
-<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a> {
+<a class="jxr_linenumber" name="L46" href="#L46">46</a>  <strong class="jxr_keyword">public</strong> <strong class="jxr_keyword">class</strong> <a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a> {
 <a class="jxr_linenumber" name="L47" href="#L47">47</a>  
 <a class="jxr_linenumber" name="L48" href="#L48">48</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> String UNDERSCORE_SIGN = <span class="jxr_string">"_"</span>;
 <a class="jxr_linenumber" name="L49" href="#L49">49</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> <strong class="jxr_keyword">char</strong> COMMA_SIGN = ',';
@@ -62,7 +62,7 @@
 <a class="jxr_linenumber" name="L54" href="#L54">54</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">static</strong> <strong class="jxr_keyword">final</strong> Pattern EQUAL_PATTERN = Pattern.compile(<span class="jxr_string">""</span> + EQUAL_SIGN);
 <a class="jxr_linenumber" name="L55" href="#L55">55</a>  
 <a class="jxr_linenumber" name="L56" href="#L56">56</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> String className;
-<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, String&gt;();
+<a class="jxr_linenumber" name="L57" href="#L57">57</a>      <strong class="jxr_keyword">private</strong> <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters = <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;&gt;();
 <a class="jxr_linenumber" name="L58" href="#L58">58</a>  
 <a class="jxr_linenumber" name="L59" href="#L59">59</a>      <em class="jxr_javadoccomment">/**</em>
 <a class="jxr_linenumber" name="L60" href="#L60">60</a>  <em class="jxr_javadoccomment">     * Constructs a new instance with a file system class and no parameters.</em>
@@ -70,7 +70,7 @@
 <a class="jxr_linenumber" name="L62" href="#L62">62</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file system class is {@code null}.</em>
 <a class="jxr_linenumber" name="L63" href="#L63">63</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L64" href="#L64">64</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> FileSystem&gt; clazz) {
+<a class="jxr_linenumber" name="L65" href="#L65">65</a>      <strong class="jxr_keyword">public</strong> <a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> FileSystem&gt; clazz) {
 <a class="jxr_linenumber" name="L66" href="#L66">66</a>          <strong class="jxr_keyword">this</strong>(clazz, Collections.&lt;String, String&gt;emptyMap());
 <a class="jxr_linenumber" name="L67" href="#L67">67</a>      }
 <a class="jxr_linenumber" name="L68" href="#L68">68</a>  
@@ -81,7 +81,7 @@
 <a class="jxr_linenumber" name="L73" href="#L73">73</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file system class or parameters is {@code null}.</em>
 <a class="jxr_linenumber" name="L74" href="#L74">74</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L75" href="#L75">75</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> FileSystem&gt; clazz, <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters) {
+<a class="jxr_linenumber" name="L76" href="#L76">76</a>      <strong class="jxr_keyword">public</strong> <a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> Class&lt;? <strong class="jxr_keyword">extends</strong> FileSystem&gt; clazz, <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters) {
 <a class="jxr_linenumber" name="L77" href="#L77">77</a>          <strong class="jxr_keyword">if</strong> (clazz == <strong class="jxr_keyword">null</strong>) {
 <a class="jxr_linenumber" name="L78" href="#L78">78</a>              <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"File system class cannot be null"</span>);
 <a class="jxr_linenumber" name="L79" href="#L79">79</a>          }
@@ -98,7 +98,7 @@
 <a class="jxr_linenumber" name="L90" href="#L90">90</a>  <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file system class name is blank.</em>
 <a class="jxr_linenumber" name="L91" href="#L91">91</a>  <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L92" href="#L92">92</a>  <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> String className) {
+<a class="jxr_linenumber" name="L93" href="#L93">93</a>      <strong class="jxr_keyword">public</strong> <a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> String className) {
 <a class="jxr_linenumber" name="L94" href="#L94">94</a>          <strong class="jxr_keyword">this</strong>(className, Collections.&lt;String, String&gt;emptyMap());
 <a class="jxr_linenumber" name="L95" href="#L95">95</a>      }
 <a class="jxr_linenumber" name="L96" href="#L96">96</a>  
@@ -109,7 +109,7 @@
 <a class="jxr_linenumber" name="L101" href="#L101">101</a> <em class="jxr_javadoccomment">     * @throws IllegalArgumentException if the file system class name or parameters is {@code null}.</em>
 <a class="jxr_linenumber" name="L102" href="#L102">102</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L103" href="#L103">103</a> <em class="jxr_javadoccomment">     */</em>
-<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">public</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> String className, <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters) {
+<a class="jxr_linenumber" name="L104" href="#L104">104</a>     <strong class="jxr_keyword">public</strong> <a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>(<strong class="jxr_keyword">final</strong> String className, <strong class="jxr_keyword">final</strong> Map&lt;String, String&gt; parameters) {
 <a class="jxr_linenumber" name="L105" href="#L105">105</a>         <strong class="jxr_keyword">if</strong> (StringUtils.isBlank(className)) {
 <a class="jxr_linenumber" name="L106" href="#L106">106</a>             <strong class="jxr_keyword">throw</strong> <strong class="jxr_keyword">new</strong> IllegalArgumentException(<span class="jxr_string">"Class name cannot be blank"</span>);
 <a class="jxr_linenumber" name="L107" href="#L107">107</a>         }
@@ -135,7 +135,7 @@
 <a class="jxr_linenumber" name="L127" href="#L127">127</a> <em class="jxr_javadoccomment">     * @since 2.0.0</em>
 <a class="jxr_linenumber" name="L128" href="#L128">128</a> <em class="jxr_javadoccomment">     */</em>
 <a class="jxr_linenumber" name="L129" href="#L129">129</a>     <strong class="jxr_keyword">public</strong> Map&lt;String, String&gt; getParameters() {
-<a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;String, String&gt;(parameters);
+<a class="jxr_linenumber" name="L130" href="#L130">130</a>         <strong class="jxr_keyword">return</strong> <strong class="jxr_keyword">new</strong> LinkedHashMap&lt;&gt;(parameters);
 <a class="jxr_linenumber" name="L131" href="#L131">131</a>     }
 <a class="jxr_linenumber" name="L132" href="#L132">132</a> 
 <a class="jxr_linenumber" name="L133" href="#L133">133</a>     <em class="jxr_javadoccomment">/**</em>
@@ -161,7 +161,7 @@
 <a class="jxr_linenumber" name="L153" href="#L153">153</a>         <strong class="jxr_keyword">if</strong> (obj == <strong class="jxr_keyword">null</strong> || getClass() != obj.getClass()) {
 <a class="jxr_linenumber" name="L154" href="#L154">154</a>             <strong class="jxr_keyword">return</strong> false;
 <a class="jxr_linenumber" name="L155" href="#L155">155</a>         }
-<a class="jxr_linenumber" name="L156" href="#L156">156</a>         <strong class="jxr_keyword">final</strong> <a href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html">FileSystemOption</a> other = (FileSystemOption) obj;
+<a class="jxr_linenumber" name="L156" href="#L156">156</a>         <strong class="jxr_keyword">final</strong> <a name="FileSystemOption"<a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a> other = (<a name="FileSystemOption" href="../../../../biz/gabrys/lesscss/compiler2/FileSystemOption.html#FileSystemOption">FileSystemOption</a>) obj;
 <a class="jxr_linenumber" name="L157" href="#L157">157</a>         <strong class="jxr_keyword">return</strong> className.equals(other.className) &amp;&amp; parameters.equals(other.parameters);
 <a class="jxr_linenumber" name="L158" href="#L158">158</a>     }
 <a class="jxr_linenumber" name="L159" href="#L159">159</a> 

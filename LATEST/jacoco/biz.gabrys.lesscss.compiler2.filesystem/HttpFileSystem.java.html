@@ -84,7 +84,7 @@ public class HttpFileSystem implements FileSystem {
     protected static final Collection&lt;Integer&gt; OK_NOTFOUND_REDIRECT_CODES;
 
     static {
-<span class="fc" id="L87">        final Collection&lt;Integer&gt; codes = new ArrayList&lt;Integer&gt;(5);</span>
+<span class="fc" id="L87">        final Collection&lt;Integer&gt; codes = new ArrayList&lt;&gt;(5);</span>
 <span class="fc" id="L88">        codes.addAll(OK_NOTFOUND_CODES);</span>
 <span class="fc" id="L89">        codes.addAll(REDIRECT_CODES);</span>
 <span class="fc" id="L90">        OK_NOTFOUND_REDIRECT_CODES = Collections.unmodifiableCollection(codes);</span>
@@ -202,7 +202,7 @@ public class HttpFileSystem implements FileSystem {
      */
     protected void validateResponseCode(final int responseCode, final Collection&lt;Integer&gt; validCodes) throws IOException {
 <span class="fc bfc" id="L204" title="All 2 branches covered.">        if (!validCodes.contains(responseCode)) {</span>
-<span class="fc" id="L205">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;Integer&gt;(validCodes);</span>
+<span class="fc" id="L205">            final List&lt;Integer&gt; supportedCodes = new ArrayList&lt;&gt;(validCodes);</span>
 <span class="fc" id="L206">            Collections.sort(supportedCodes);</span>
 <span class="fc" id="L207">            throw new IOException(String.format(&quot;response HTTP status code %s is not allowed (supports only: %s)&quot;, responseCode,</span>
 <span class="fc" id="L208">                    supportedCodes.toString().replaceAll(&quot;\\[|\\]&quot;, &quot;&quot;)));</span>
@@ -242,4 +242,4 @@ public class HttpFileSystem implements FileSystem {
 <span class="fc" id="L242">        }</span>
 <span class="fc" id="L243">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

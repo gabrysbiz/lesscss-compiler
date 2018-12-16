@@ -52,13 +52,9 @@ public final class FileUtils {
 <span class="fc" id="L52">            throw new IOException(&quot;Cannot create parent directories for the file: &quot; + file);</span>
         }
 
-<span class="nc" id="L55">        Writer writer = null;</span>
-        try {
-<span class="nc" id="L57">            writer = new PrintWriter(file, encoding);</span>
-<span class="nc" id="L58">            writer.write(content.toString());</span>
-        } finally {
-<span class="nc" id="L60">            IOUtils.closeQuietly(writer);</span>
+<span class="nc" id="L55">        try (final Writer writer = new PrintWriter(file, encoding)) {</span>
+<span class="nc" id="L56">            writer.write(content.toString());</span>
         }
-<span class="nc" id="L62">    }</span>
+<span class="nc" id="L58">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

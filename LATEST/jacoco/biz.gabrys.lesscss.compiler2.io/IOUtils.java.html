@@ -43,18 +43,15 @@ public final class IOUtils {
 <span class="fc" id="L43">            throw new IllegalArgumentException(&quot;Input cannot be null&quot;);</span>
         }
 
-<span class="fc" id="L46">        ByteArrayOutputStream outputStream = null;</span>
-        try {
-<span class="fc" id="L48">            outputStream = new ByteArrayOutputStream();</span>
-<span class="fc" id="L49">            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];</span>
-<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (int readBytes = inputStream.read(buffer); readBytes != END_OF_FILE; readBytes = inputStream.read(buffer)) {</span>
-<span class="fc" id="L51">                outputStream.write(buffer, 0, readBytes);</span>
+<span class="fc" id="L46">        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {</span>
+<span class="fc" id="L47">            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            for (int readBytes = inputStream.read(buffer); readBytes != END_OF_FILE; readBytes = inputStream.read(buffer)) {</span>
+<span class="fc" id="L49">                outputStream.write(buffer, 0, readBytes);</span>
             }
-<span class="fc" id="L53">            outputStream.flush();</span>
-<span class="fc" id="L54">            return outputStream.toByteArray();</span>
+<span class="fc" id="L51">            outputStream.flush();</span>
+<span class="fc" id="L52">            return outputStream.toByteArray();</span>
         } finally {
-<span class="fc" id="L56">            closeQuietly(inputStream);</span>
-<span class="fc" id="L57">            closeQuietly(outputStream);</span>
+<span class="fc" id="L54">            closeQuietly(inputStream);</span>
         }
     }
 
@@ -64,14 +61,14 @@ public final class IOUtils {
      * @since 2.0.0
      */
     public static void closeQuietly(final Closeable closeable) {
-<span class="fc bfc" id="L67" title="All 2 branches covered.">        if (closeable == null) {</span>
-<span class="fc" id="L68">            return;</span>
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (closeable == null) {</span>
+<span class="fc" id="L65">            return;</span>
         }
         try {
-<span class="fc" id="L71">            closeable.close();</span>
-<span class="fc" id="L72">        } catch (final Exception e) {</span>
+<span class="fc" id="L68">            closeable.close();</span>
+<span class="fc" id="L69">        } catch (final Exception e) {</span>
             // do nothing
-<span class="fc" id="L74">        }</span>
-<span class="fc" id="L75">    }</span>
+<span class="fc" id="L71">        }</span>
+<span class="fc" id="L72">    }</span>
 }
-</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.1.201803210924</span></div></body></html>
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
