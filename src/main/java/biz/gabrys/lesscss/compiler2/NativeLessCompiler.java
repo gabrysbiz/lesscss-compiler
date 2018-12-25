@@ -91,7 +91,7 @@ public class NativeLessCompiler {
      * character on Windows and ':' character on Unix/Linux machines</li>
      * <li>does not support options:
      * <ul>
-     * <li>allow imports from insecure HTTPS hosts ({@code --insecure})</li>
+     * <li>allow importing from insecure HTTPS hosts ({@code --insecure})</li>
      * <li>lint ({@code -l} or {@code --lint})</li>
      * <li>makefile ({@code -M} or {@code --depends})</li>
      * <li>no color ({@code --no-color})</li>
@@ -186,8 +186,7 @@ public class NativeLessCompiler {
             final String message = ScriptableObject.getProperty(value, "message").toString();
 
             final Iterable<ExceptionConverter> converters = Arrays.asList(new ReadFileErrorExceptionConverter(),
-                    new NotSupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(),
-                    new SourceFileExceptionConverter());
+                    new UnsupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(), new SourceFileExceptionConverter());
 
             for (final ExceptionConverter converter : converters) {
                 final Matcher matcher = converter.getPattern().matcher(message);
@@ -228,20 +227,20 @@ public class NativeLessCompiler {
         }
     }
 
-    private static class NotSupportedProtocolExceptionConverter implements ExceptionConverter {
+    private static class UnsupportedProtocolExceptionConverter implements ExceptionConverter {
 
         private static final int IMPORTED_FILENAME_GROUP_INDEX = 1;
         private static final int SOURCE_FILEPATH_GROUP_INDEX = 2;
 
         @Override
         public Pattern getPattern() {
-            return Pattern.compile("^FileError:\\sNotSupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$");
+            return Pattern.compile("^FileError:\\sUnsupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$");
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
             final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);
-            return new ReadFileException(String.format("Cannot read file \"%s\": the protocol is not supported.%nError in %s",
+            return new ReadFileException(String.format("Cannot read file \"%s\": the protocol is unsupported.%nError in %s",
                     importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);
         }
     }

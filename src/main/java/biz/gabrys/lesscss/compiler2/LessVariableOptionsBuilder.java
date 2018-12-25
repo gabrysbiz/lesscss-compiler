@@ -22,9 +22,8 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 
 /**
  * <p>
- * Allows to create value of the {@link LessOptions#getGlobalVariables() global} and
- * {@link LessOptions#getModifyVariables() modify} variables options. The builder allows adding multiple variables with
- * the same name (they are not replaced).
+ * Creates values of the {@link LessOptions#getGlobalVariables() global} and {@link LessOptions#getModifyVariables()
+ * modify} variables options. The builder allows adding multiple variables with the same name (they are not replaced).
  * </p>
  * <p>
  * Example code:

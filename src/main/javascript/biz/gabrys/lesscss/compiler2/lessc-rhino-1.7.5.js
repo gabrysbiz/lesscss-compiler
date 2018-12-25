@@ -103,7 +103,7 @@ gabrysLessCompiler.getFileSystem = function(path) {
             return fileSystem;
         }
     }
-    throw new Error('NotSupportedProtocol');
+    throw new Error('UnsupportedProtocol');
 };
 
 gabrysLessCompiler.readFile = function(path) {
@@ -362,7 +362,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
             } catch (e) {
                 throwConfigurationError('Cannot configure a new instance of the file system: ' + option.className);
             }
-            fileSystems[fileSystems.length] = new FileSystem(fileSystem);
+            fileSystems[fileSystems.length] = new FileSystem(fileSystem, option.className);
         }
         return fileSystems;
 
@@ -428,7 +428,11 @@ gabrysLessCompiler.removeDuplications = function(array) {
             }
         }
 
-        function FileSystem(fileSystem) {
+        function FileSystem(fileSystem, className) {
+            this.getClassName = function() {
+                return className;
+            };
+
             this.isSupported = function(path) {
                 try {
                     return fileSystem.isSupported(path);

@@ -14,6 +14,7 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a file data returned by an instance of the {@link FileSystem}.
@@ -96,10 +97,7 @@ public class FileData implements Serializable {
         if (!Arrays.equals(content, other.content)) {
             return false;
         }
-        if (encoding == null) {
-            return other.encoding == null;
-        }
-        return encoding.equals(other.encoding);
+        return Objects.equals(encoding, other.encoding);
     }
 
     /**

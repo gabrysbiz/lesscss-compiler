@@ -24,6 +24,20 @@ public final class NativeLessOptionsBuilderTest {
     @Spy
     private NativeLessOptionsBuilder builder;
 
+    @Test(expected = IllegalArgumentException.class)
+    public void options_optionsIsNull_throwsException() {
+        builder.options(null);
+    }
+
+    @Test
+    public void options_optionsIsNotNull_overwritesOptions() {
+        builder.silent(true);
+
+        assertThat(builder.getSilentOption()).isEqualTo("--silent");
+        builder.options(new LessOptionsBuilder().silent(false).build());
+        assertThat(builder.getSilentOption()).isEmpty();
+    }
+
     @Test
     public void getInputFileOption_fileIsNotSet_returnsEmptyText() {
         final String option = builder.inputFile(null).getInputFileOption();
@@ -398,12 +412,6 @@ public final class NativeLessOptionsBuilderTest {
     @Test
     public void getFileSystemsOptions_fileSystemsAreNull_returnsEmptyArray() {
         final String[] options = builder.fileSystems(null).getFileSystemsOptions();
-        assertThat(options).isEmpty();
-    }
-
-    @Test
-    public void getFileSystemsOptions_fileSystemsAreEmpty_returnsEmptyArray() {
-        final String[] options = builder.fileSystems(Collections.<FileSystemOption>emptyList()).getFileSystemsOptions();
         assertThat(options).isEmpty();
     }
 

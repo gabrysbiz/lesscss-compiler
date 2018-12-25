@@ -299,6 +299,21 @@ public final class NativeLessCompilerTest {
     }
 
     @Test
+    public void execute_unsupportedFileSystem_throwsException() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/unsupported-protocol.less").getPath());
+        final Collection<String> options = builder.inputFile(source.getAbsolutePath())
+                .fileSystems(new FileSystemOptionsBuilder().appendCustom(UnsupportedFileSystem.class).build()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        try {
+            compiler.execute(options);
+            fail("Compiler should throw exception");
+        } catch (final ReadFileException e) {
+            assertThat(e.getMessage()).startsWith("Cannot read file \"unsupported://file.less\": the protocol is unsupported.");
+        }
+    }
+
+    @Test
     public void execute_useCustomFileSystems_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/filesystems.less").getPath());
 
@@ -395,6 +410,14 @@ public final class NativeLessCompilerTest {
             }
             code.append('}');
             return new FileData(code.toString().getBytes("UTF-8"), "UTF-8");
+        }
+    }
+
+    public static class UnsupportedFileSystem extends LocalFileSystem {
+
+        @Override
+        public boolean isSupported(final String path) {
+            return !path.startsWith("unsupported://");
         }
     }
 }

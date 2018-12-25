@@ -894,7 +894,7 @@ public class NativeLessOptionsBuilder {
      */
     protected String[] getFileSystemsOptions() {
         final Collection<FileSystemOption> fileSystems = options.getFileSystems();
-        if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {
+        if (LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {
             return new String[0];
         }
         final List<String> commandLineOptions = new ArrayList<>(fileSystems.size());

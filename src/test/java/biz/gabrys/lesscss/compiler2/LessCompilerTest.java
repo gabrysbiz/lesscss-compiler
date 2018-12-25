@@ -922,6 +922,11 @@ public final class LessCompilerTest {
         verifyNoMoreInteractions(compiler);
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void validateOutputSourceMapFile_fileIsNull_throwsException() {
+        compiler.validateOutputSourceMapFile(null);
+    }
+
     @Test
     public void validateOutputSourceMapFile_fileDoesNotExist_doesNothing() {
         final File outputSourceMap = mock(File.class);

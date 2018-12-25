@@ -10,6 +10,7 @@ import org.assertj.core.data.MapEntry;
 import org.junit.Test;
 
 import biz.gabrys.lesscss.compiler2.filesystem.FileSystem;
+import nl.jqno.equalsverifier.EqualsVerifier;
 
 public class FileSystemOptionTest {
 
@@ -75,108 +76,8 @@ public class FileSystemOptionTest {
     }
 
     @Test
-    public void hashCode_optionsAreTheSame_returnsTheSameNumber() {
-        final String className = "className";
-        final Map<String, String> parameters = new HashMap<>();
-        parameters.put("name", "value");
-
-        final FileSystemOption option1 = new FileSystemOption(className, parameters);
-        final FileSystemOption option2 = new FileSystemOption(className, parameters);
-
-        final int hashCode1 = option1.hashCode();
-        final int hashCode2 = option2.hashCode();
-
-        assertThat(hashCode1).isEqualTo(hashCode2);
-    }
-
-    @Test
-    public void hashCode_optionsHaveDifferentClassNames_returnsDifferentNumbers() {
-        final Map<String, String> parameters = new HashMap<>();
-        parameters.put("name", "value");
-
-        final FileSystemOption option1 = new FileSystemOption("className1", parameters);
-        final FileSystemOption option2 = new FileSystemOption("className2", parameters);
-
-        final int hashCode1 = option1.hashCode();
-        final int hashCode2 = option2.hashCode();
-
-        assertThat(hashCode1).isNotEqualTo(hashCode2);
-    }
-
-    @Test
-    public void hashCode_optionsHaveDifferentParameters_returnsDifferentNumbers() {
-        final String className = "className";
-        final Map<String, String> parameters1 = new HashMap<>();
-        parameters1.put("name", "value");
-        final Map<String, String> parameters2 = new HashMap<>();
-        parameters1.put("value", "name");
-
-        final FileSystemOption option1 = new FileSystemOption(className, parameters1);
-        final FileSystemOption option2 = new FileSystemOption(className, parameters2);
-
-        final int hashCode1 = option1.hashCode();
-        final int hashCode2 = option2.hashCode();
-
-        assertThat(hashCode1).isNotEqualTo(hashCode2);
-    }
-
-    @Test
-    public void equals_optionsAreTheSame_returnsTrue() {
-        final String className = "className";
-        final Map<String, String> parameters = new HashMap<>();
-        parameters.put("name", "value");
-
-        final FileSystemOption option1 = new FileSystemOption(className, parameters);
-        final FileSystemOption option2 = new FileSystemOption(className, parameters);
-
-        assertThat(option1.equals(option1)).isTrue();
-        assertThat(option1.equals(option2)).isTrue();
-        assertThat(option2.equals(option1)).isTrue();
-    }
-
-    @Test
-    public void equals_optionsHaveDifferentClassNames_returnsFalse() {
-        final Map<String, String> parameters = new HashMap<>();
-        parameters.put("name", "value");
-
-        final FileSystemOption option1 = new FileSystemOption("className1", parameters);
-        final FileSystemOption option2 = new FileSystemOption("className2", parameters);
-
-        assertThat(option1.equals(option2)).isFalse();
-        assertThat(option2.equals(option1)).isFalse();
-    }
-
-    @Test
-    public void equals_optionsHaveDifferentParameters_returnFalse() {
-        final String className = "className";
-        final Map<String, String> parameters1 = new HashMap<>();
-        parameters1.put("name", "value");
-        final Map<String, String> parameters2 = new HashMap<>();
-        parameters1.put("value", "name");
-
-        final FileSystemOption option1 = new FileSystemOption(className, parameters1);
-        final FileSystemOption option2 = new FileSystemOption(className, parameters2);
-
-        assertThat(option1.equals(option2)).isFalse();
-        assertThat(option2.equals(option1)).isFalse();
-    }
-
-    @Test
-    public void equals_nullAndOtherClass_returnFalse() {
-        final FileSystemOption option = new FileSystemOption("className");
-
-        assertThat(option.equals(new Object())).isFalse();
-        assertThat(option.equals(null)).isFalse();
-    }
-
-    @Test
-    public void toString_parametersIsEmpty() {
-        final String className = "org.example.ClassName";
-        final FileSystemOption option = new FileSystemOption(className);
-
-        final String result = option.toString();
-
-        assertThat(result).isEqualTo(className);
+    public void testEqualsAndHashCodeContracts() {
+        EqualsVerifier.forClass(FileSystemOption.class).usingGetClass().withNonnullFields("className", "parameters").verify();
     }
 
     @Test

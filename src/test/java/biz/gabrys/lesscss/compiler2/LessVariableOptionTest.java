@@ -4,6 +4,8 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
+import nl.jqno.equalsverifier.EqualsVerifier;
+
 public class LessVariableOptionTest {
 
     @Test(expected = IllegalArgumentException.class)
@@ -38,46 +40,8 @@ public class LessVariableOptionTest {
     }
 
     @Test
-    public void hashCode_variablesAreTheSame_returnsTheSameNumber() {
-        final LessVariableOption variable1 = new LessVariableOption("name", "value");
-        final LessVariableOption variable2 = new LessVariableOption("name", "value");
-
-        final int hashCode1 = variable1.hashCode();
-        final int hashCode2 = variable2.hashCode();
-
-        assertThat(hashCode1).isEqualTo(hashCode2);
-    }
-
-    @Test
-    public void hashCode_variablesAreNotTheSame_returnsDifferentNumbers() {
-        final LessVariableOption variable1 = new LessVariableOption("name", "value");
-        final LessVariableOption variable2 = new LessVariableOption("value", "name");
-
-        final int hashCode1 = variable1.hashCode();
-        final int hashCode2 = variable2.hashCode();
-
-        assertThat(hashCode1).isNotEqualTo(hashCode2);
-    }
-
-    @Test
-    public void equals_variablesAreTheSame_returnsTrue() {
-        final LessVariableOption variable1 = new LessVariableOption("name", "value");
-        final LessVariableOption variable2 = new LessVariableOption("name", "value");
-
-        assertThat(variable1.equals(variable1)).isTrue();
-        assertThat(variable1.equals(variable2)).isTrue();
-        assertThat(variable2.equals(variable1)).isTrue();
-    }
-
-    @Test
-    public void equals_variablesAreNotTheSame_returnsFalse() {
-        final LessVariableOption variable = new LessVariableOption("name", "value");
-
-        assertThat(variable.equals(new LessVariableOption("value", "name"))).isFalse();
-        assertThat(variable.equals(new LessVariableOption("name", "name"))).isFalse();
-        assertThat(variable.equals(new LessVariableOption("value", "value"))).isFalse();
-        assertThat(variable.equals(new Object())).isFalse();
-        assertThat(variable.equals(null)).isFalse();
+    public void testEqualsAndHashCodeContracts() {
+        EqualsVerifier.forClass(LessVariableOption.class).usingGetClass().withNonnullFields("name", "value").verify();
     }
 
     @Test

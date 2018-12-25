@@ -16,6 +16,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+import java.util.Objects;
 
 import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
 
@@ -750,12 +751,13 @@ public class LessOptions {
 
     /**
      * Sets file systems used to fetch content of the source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
-     * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
+     * @param fileSystems the file systems ({@code null} and empty collections are treated as
+     *            {@link #DEFAULT_FILE_SYSTEMS}).
      * @since 2.0.0
      * @see FileSystemOptionsBuilder
      */
     public void setFileSystems(final List<FileSystemOption> fileSystems) {
-        if (fileSystems == null) {
+        if (fileSystems == null || fileSystems.isEmpty()) {
             this.fileSystems = DEFAULT_FILE_SYSTEMS;
         } else {
             this.fileSystems = new ArrayList<>(fileSystems);
@@ -831,5 +833,107 @@ public class LessOptions {
         } else {
             this.modifyVariables = new ArrayList<>(modifyVariables);
         }
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        int result = prime + (banner == null ? 0 : banner.hashCode());
+        result = prime * result + (compress ? 1231 : 1237);
+        result = prime * result + (encoding == null ? 0 : encoding.hashCode());
+        result = prime * result + (fileSystems == null ? 0 : fileSystems.hashCode());
+        result = prime * result + (globalVariables == null ? 0 : globalVariables.hashCode());
+        result = prime * result + (ieCompatibility ? 1231 : 1237);
+        result = prime * result + (includePaths == null ? 0 : includePaths.hashCode());
+        result = prime * result + (javaScript ? 1231 : 1237);
+        result = prime * result + (lineNumbers == null ? 0 : lineNumbers.hashCode());
+        result = prime * result + (modifyVariables == null ? 0 : modifyVariables.hashCode());
+        result = prime * result + (relativeUrls ? 1231 : 1237);
+        result = prime * result + (rootPath == null ? 0 : rootPath.hashCode());
+        result = prime * result + (silent ? 1231 : 1237);
+        result = prime * result + (sourceMapBasePath == null ? 0 : sourceMapBasePath.hashCode());
+        result = prime * result + (sourceMapLessInline ? 1231 : 1237);
+        result = prime * result + (sourceMapRootPath == null ? 0 : sourceMapRootPath.hashCode());
+        result = prime * result + (sourceMapUrl == null ? 0 : sourceMapUrl.hashCode());
+        result = prime * result + (strictImports ? 1231 : 1237);
+        result = prime * result + (strictMath ? 1231 : 1237);
+        return prime * result + (strictUnits ? 1231 : 1237);
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final LessOptions other = (LessOptions) obj;
+        if (!Objects.equals(banner, other.banner)) {
+            return false;
+        }
+        if (compress != other.compress) {
+            return false;
+        }
+        if (!Objects.equals(encoding, other.encoding)) {
+            return false;
+        }
+        if (!Objects.equals(fileSystems, other.fileSystems)) {
+            return false;
+        }
+        if (!Objects.equals(globalVariables, other.globalVariables)) {
+            return false;
+        }
+        if (ieCompatibility != other.ieCompatibility) {
+            return false;
+        }
+        if (!Objects.equals(includePaths, other.includePaths)) {
+            return false;
+        }
+        if (javaScript != other.javaScript) {
+            return false;
+        }
+        if (lineNumbers != other.lineNumbers) {
+            return false;
+        }
+        if (!Objects.equals(modifyVariables, other.modifyVariables)) {
+            return false;
+        }
+        if (relativeUrls != other.relativeUrls) {
+            return false;
+        }
+        if (!Objects.equals(rootPath, other.rootPath)) {
+            return false;
+        }
+        if (silent != other.silent) {
+            return false;
+        }
+        if (!Objects.equals(sourceMapBasePath, other.sourceMapBasePath)) {
+            return false;
+        }
+        if (sourceMapLessInline != other.sourceMapLessInline) {
+            return false;
+        }
+        if (!Objects.equals(sourceMapRootPath, other.sourceMapRootPath)) {
+            return false;
+        }
+        if (!Objects.equals(sourceMapUrl, other.sourceMapUrl)) {
+            return false;
+        }
+        if (strictImports != other.strictImports) {
+            return false;
+        }
+        if (strictMath != other.strictMath) {
+            return false;
+        }
+        return strictUnits == other.strictUnits;
     }
 }

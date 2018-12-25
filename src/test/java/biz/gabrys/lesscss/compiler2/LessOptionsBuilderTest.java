@@ -34,6 +34,21 @@ public final class LessOptionsBuilderTest {
         doReturn(options).when(builder).getOptions();
     }
 
+    @Test(expected = IllegalArgumentException.class)
+    public void construct_optionsIsNull_throwsException() {
+        new LessOptionsBuilder(null);
+    }
+
+    @Test
+    public void construct_optionsIsNotNull_constructsNewObject() {
+        final LessOptions options = new LessOptions();
+
+        final LessOptionsBuilder localBuilder = new LessOptionsBuilder(options);
+
+        assertThat(localBuilder.getOptions()).isEqualTo(options);
+        assertThat(localBuilder.getOptions()).isNotSameAs(options);
+    }
+
     @Test
     public void silent_true() {
         final LessOptionsBuilder builder2 = builder.silent(true);
