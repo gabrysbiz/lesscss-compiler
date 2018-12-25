@@ -1,38 +1,45 @@
-properties([[
-    $class: 'BuildDiscarderProperty',
-    strategy: [
-        $class: 'LogRotator',
-        artifactDaysToKeepStr: '-1',
-        artifactNumToKeepStr: '10',
-        daysToKeepStr: '-1',
-        numToKeepStr: '10'
-    ]
-]])
-
-node {
-    timestamps {
-        stage('Pre Build Cleanup') {
-           step($class: 'WsCleanup')
-        }
-        stage('Checkout') {
-            checkout scm
-        }
-
-        withMaven(maven: 'MVN-3', jdk: 'JDK-8', mavenLocalRepo: '.repository') {
-            stage('Build') {
-                sh 'mvn -e install site -DskipTests'
-            }
-            stage('Test') {
-                sh 'mvn -e test'
-                junit 'target/surefire-reports/TEST-*.xml'
+pipeline {
+    agent any
+    options {
+        buildDiscarder(logRotator(artifactDaysToKeepStr: '-1', artifactNumToKeepStr: '10', daysToKeepStr: '-1', numToKeepStr: '10'))
+        timestamps()
+    }
+    tools {
+        // withMaven ignores tools: https://issues.jenkins-ci.org/browse/JENKINS-43651
+        maven 'MVN-3'
+        jdk 'JDK-9'
+    }
+    environment {
+        MAVEN_ARGS = '-e -Dmaven.repo.local=.repository'
+    }
+    stages {
+        stage('Build') {
+            steps {
+                withMaven(maven: 'MVN-3', jdk: 'JDK-9', publisherStrategy: 'EXPLICIT', options: [
+                    artifactsPublisher(disabled: false), dependenciesFingerprintPublisher(disabled: false), openTasksPublisher(disabled: false)
+                ]) {
+                    sh "mvn ${MAVEN_ARGS} package -DskipTests"
+                }
             }
         }
-
-        stage('Archive') {
-            archiveArtifacts artifacts: 'target/*.jar', fingerprint: true
+        stage('Verify') {
+            steps {
+                withMaven(maven: 'MVN-3', jdk: 'JDK-9', publisherStrategy: 'EXPLICIT', options: [junitPublisher(disabled: false)]) {
+                    sh "mvn ${MAVEN_ARGS} verify"
+                }
+            }
         }
-        stage('Post Build Cleanup') {
-           step($class: 'WsCleanup')
+        stage('Build Docs') {
+            steps {
+                withMaven(maven: 'MVN-3', jdk: 'JDK-9', publisherStrategy: 'EXPLICIT') {
+                    sh "mvn ${MAVEN_ARGS} site"
+                }
+            }
+        }
+    }
+    post {
+        always {
+            cleanWs()
         }
     }
 }
