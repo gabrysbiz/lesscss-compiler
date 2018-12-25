@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<document xmlns="http://maven.apache.org/XDOC/2.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/XDOC/2.0 http://maven.apache.org/xsd/xdoc-2.0.xsd">
+
+    <properties>
+        <title>Migration</title>
+    </properties>
+
+    <body>
+        <section name="How to switch">
+            <p>
+                This page describes how to switch from the
+                <a href="http://lesscss-compiler.projects.gabrys.biz/1.2.2/">1.X</a>
+                to 2.X version.
+            </p>
+            <table>
+                <caption>Replacements</caption>
+                <tr>
+                    <th>What</th>
+                    <th>2.X</th>
+                    <th>1.X</th>
+                </tr>
+                <tr>
+                    <td>main package</td>
+                    <td><a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/package-summary.html">biz.gabrys.lesscss.compiler2</a></td>
+                    <td><a href="http://lesscss-compiler.projects.gabrys.biz/1.2.2/apidocs/index.html?biz/gabrys/lesscss/compiler/package-summary.html">biz.gabrys.lesscss.compiler</a></td>
+                </tr>
+                <tr>
+                    <td>compiler class</td>
+                    <td><a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html">biz.gabrys.lesscss.compiler2.LessCompiler</a></td>
+                    <td><a href="http://lesscss-compiler.projects.gabrys.biz/1.2.2/apidocs/index.html?biz/gabrys/lesscss/compiler/LessCompilerImpl.html">biz.gabrys.lesscss.compiler.LessCompilerImpl</a></td>
+                </tr>
+                <tr>
+                    <td>options class</td>
+                    <td><a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/LessOptions.html">biz.gabrys.lesscss.compiler2.LessOptions</a></td>
+                    <td><a href="http://lesscss-compiler.projects.gabrys.biz/1.2.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptions.html">biz.gabrys.lesscss.compiler.CompilerOptions</a></td>
+                </tr>
+                <tr>
+                    <td>options builder class</td>
+                    <td><a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/LessOptionsBuilder.html">biz.gabrys.lesscss.compiler2.LessOptionsBuilder</a></td>
+                    <td><a href="http://lesscss-compiler.projects.gabrys.biz/1.2.2/apidocs/index.html?biz/gabrys/lesscss/compiler/CompilerOptionsBuilder.html">biz.gabrys.lesscss.compiler.CompilerOptionsBuilder</a></td>
+                </tr>
+            </table>
+        </section>
+    </body>
+</document>

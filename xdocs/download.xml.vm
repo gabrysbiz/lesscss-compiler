@@ -19,11 +19,11 @@
                         #if (!$snapshot)
                             style="vertical-align: middle;"
                         #end
-                    >compiler-${project.version}.jar</td>
+                    >${project.artifactId}-${project.version}.jar</td>
                     <td>
-                        <a href="files/compiler-${project.version}.jar">gabrys.biz</a>
+                        <a href="files/${project.artifactId}-${project.version}.jar">gabrys.biz</a>
                         #if (!$snapshot)
-                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/compiler/${project.version}/compiler-${project.version}.jar">repo.maven.apache.org</a>
+                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/${project.artifactId}/${project.version}/${project.artifactId}-${project.version}.jar">repo.maven.apache.org</a>
                         #end
                     </td>
                 </tr>
@@ -32,11 +32,11 @@
                         #if (!$snapshot)
                             style="vertical-align: middle;"
                         #end
-                    >compiler-${project.version}-javadoc.jar</td>
+                    >${project.artifactId}-${project.version}-javadoc.jar</td>
                     <td>
-                        <a href="files/compiler-${project.version}-javadoc.jar">gabrys.biz</a>
+                        <a href="files/${project.artifactId}-${project.version}-javadoc.jar">gabrys.biz</a>
                         #if (!$snapshot)
-                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/compiler/${project.version}/compiler-${project.version}-javadoc.jar">repo.maven.apache.org</a>
+                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/${project.artifactId}/${project.version}/${project.artifactId}-${project.version}-javadoc.jar">repo.maven.apache.org</a>
                         #end
                     </td>
                 </tr>
@@ -45,11 +45,11 @@
                         #if (!$snapshot)
                             style="vertical-align: middle;"
                         #end
-                    >compiler-${project.version}-sources.jar</td>
+                    >${project.artifactId}-${project.version}-sources.jar</td>
                     <td>
-                        <a href="files/compiler-${project.version}-sources.jar">gabrys.biz</a>
+                        <a href="files/${project.artifactId}-${project.version}-sources.jar">gabrys.biz</a>
                         #if (!$snapshot)
-                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/compiler/${project.version}/compiler-${project.version}-sources.jar">repo.maven.apache.org</a>
+                            <br /><a href="https://repo.maven.apache.org/maven2/biz/gabrys/lesscss/${project.artifactId}/${project.version}/${project.artifactId}-${project.version}-sources.jar">repo.maven.apache.org</a>
                         #end
                     </td>
                 </tr>
