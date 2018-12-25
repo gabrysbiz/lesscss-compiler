@@ -1,1 +1,0 @@
-packageSearchIndex = [{"l":"All Packages","url":"allpackages-index.html"},{"l":"biz.gabrys.lesscss.compiler2"},{"l":"biz.gabrys.lesscss.compiler2.filesystem"},{"l":"biz.gabrys.lesscss.compiler2.io"},{"l":"biz.gabrys.lesscss.compiler2.util"}]
