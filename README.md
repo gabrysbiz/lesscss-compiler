@@ -24,11 +24,45 @@ You can download the library from [this page](http://lesscss-compiler.projects.g
 or using various [dependency management tools](http://lesscss-compiler.projects.gabrys.biz/LATEST/dependency-info.html).
 
 # Concept
-The idea for the `LessCompilerImpl` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)
+The library contains two compilers:
+* `NativeLessCompiler` a compiler with a shell-type API
+* `LessCompiler` a facade for the `NativeLessCompiler` with a developer-friendly API
+
+The idea for the `NativeLessCompiler` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)
 library by [Marcel Overdijk](https://github.com/marceloverdijk).
 
 # Usage
-How to compile a source file:
+The `LessCompiler` contains 14 methods. Below is an example of how to use some of them:
 ```
-// TODO
+String cssCode = null;
+LessOptions options = null;
+
+// create compiler
+LessCompiler compiler = new LessCompiler();
+
+// compile source code
+cssCode = compiler.compile(".basic { display: block; }");
+
+// compile source code with custom options
+options = new LessOptionsBuilder().ieCompatibilityOff().build();
+cssCode = compiler.compile(".basic { display: block; }", options);
+
+// compile source file
+cssCode = compiler.compile(new File("source.less"));
+
+// compile source file and save CSS code in an output file
+compiler.compile(new File("source.less"), new File("output.css"));
+
+// compile source file and compress CSS code
+cssCode = compiler.compileAndCompress(new File("source.less"));
+
+// compile source code and generate inline source map
+cssCode = compiler.compileWithInlineSourceMap(".basic { display: block; }", new LessOptions());
+
+// compile source file and generate source map (save it in output.map file)
+options = new LessOptionsBuilder().sourceMapBasePath("basePath").build();
+compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), new File("output.map"), options);
+
+// compile source file and generate source map (save it in output.css.map file)
+compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), options);
 ```

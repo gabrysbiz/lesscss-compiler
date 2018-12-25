@@ -252,34 +252,30 @@ less.Parser = function Parser(env) {
                 callback(e, root, importedPreviously, fullPath);
             };
 
-            if (less.Parser.importer) {
-                less.Parser.importer(path, currentFileInfo, fileParsedFunc, env);
-            } else {
-                less.Parser.fileLoader(path, currentFileInfo, function(e, contents, fullPath, newFileInfo) {
-                    if (e) {
-                        fileParsedFunc(e);
-                        return;
-                    }
+            less.Parser.fileLoader(path, currentFileInfo, function(e, contents, fullPath, newFileInfo) {
+                if (e) {
+                    fileParsedFunc(e);
+                    return;
+                }
 
-                    var newEnv = new tree.parseEnv(env);
+                var newEnv = new tree.parseEnv(env);
 
-                    newEnv.currentFileInfo = newFileInfo;
-                    newEnv.processImports = false;
-                    newEnv.contents[fullPath] = contents;
+                newEnv.currentFileInfo = newFileInfo;
+                newEnv.processImports = false;
+                newEnv.contents[fullPath] = contents;
 
-                    if (currentFileInfo.reference || importOptions.reference) {
-                        newFileInfo.reference = true;
-                    }
+                if (currentFileInfo.reference || importOptions.reference) {
+                    newFileInfo.reference = true;
+                }
 
-                    if (importOptions.inline) {
-                        fileParsedFunc(null, contents, fullPath);
-                    } else {
-                        new(less.Parser)(newEnv).parse(contents, function(e, root) {
-                            fileParsedFunc(e, root, fullPath);
-                        });
-                    }
-                }, env);
-            }
+                if (importOptions.inline) {
+                    fileParsedFunc(null, contents, fullPath);
+                } else {
+                    new(less.Parser)(newEnv).parse(contents, function(e, root) {
+                        fileParsedFunc(e, root, fullPath);
+                    });
+                }
+            }, env);
         }
     };
 
@@ -3053,7 +3049,7 @@ less.Parser.serializeVars = function(vars) {
 
             if (useBase64) {
                 try {
-                    returner = require('./encoder').encodeBase64(returner); // TODO browser implementation
+                    returner = less.encoder.encodeBase64(returner);
                 } catch (e) {
                     useBase64 = false;
                 }
@@ -7921,7 +7917,7 @@ less.Parser.serializeVars = function(vars) {
 
     tree.sourceMapOutput.prototype.toCSS = function(env) {
         this._sourceMapGenerator = new this._sourceMapGeneratorConstructor({
-            file: this._outputFilename,
+            file: typeof this._outputFilename !== 'undefined' ? this.normalizeFilename(this._outputFilename) : this._outputFilename,
             sourceRoot: null
         });
 
@@ -7952,7 +7948,7 @@ less.Parser.serializeVars = function(vars) {
             if (this._writeSourceMap) {
                 this._writeSourceMap(sourceMapContent);
             } else {
-                sourceMapURL = "data:application/json;base64," + require('./encoder.js').encodeBase64(sourceMapContent);
+                sourceMapURL = "data:application/json;base64," + less.encoder.encodeBase64(sourceMapContent);
             }
 
             if (sourceMapURL) {

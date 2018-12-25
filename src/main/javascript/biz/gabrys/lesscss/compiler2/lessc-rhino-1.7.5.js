@@ -6,8 +6,6 @@
 /*global name:true, less, loadStyleSheet, os */
 
 function formatError(ctx, options) {
-    options = options || {};
-
     var message = "";
     var extract = ctx.extract;
     var error = [];
@@ -55,39 +53,8 @@ function formatError(ctx, options) {
 
 function writeError(ctx, options) {
     options = options || {};
-    if (options.silent) {
-        return;
-    }
     var message = formatError(ctx, options);
     throw new Error(message);
-}
-
-function loadStyleSheet(sheet, callback, reload, remaining) {
-    var endOfPath = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\')), sheetName = name.slice(0, endOfPath + 1) + sheet.href, contents = sheet.contents
-            || {}, input = readFile(sheetName);
-
-    input = input.replace(/^\xEF\xBB\xBF/, '');
-
-    contents[sheetName] = input;
-
-    var parser = new less.Parser({
-        paths: [ sheet.href.replace(/[\w\.-]+$/, '') ],
-        contents: contents
-    });
-    parser.parse(input, function(e, root) {
-        if (e) {
-            return writeError(e);
-        }
-        try {
-            callback(e, root, input, sheet, {
-                local: false,
-                lastModified: 0,
-                remaining: remaining
-            }, sheetName);
-        } catch (e) {
-            writeError(e);
-        }
-    });
 }
 
 less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
@@ -131,7 +98,7 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     } catch (e) {
         callback({
             type: 'File',
-            message: "'" + less.modules.path.basename(href) + "' wasn't found"
+            message: "'" + less.modules.path.basename(href) + "' does not exist"
         });
         return;
     }
@@ -155,10 +122,12 @@ function writeFile(filename, content) {
 // Command line integration via Rhino
 (function(args) {
 
+    function throwConfigurationError(message) {
+        throw new Error('Configuration problem: ' + message);
+    }
+
     var options = {
-        depends: false,
         compress: false,
-        optimization: 1,
         silent: false,
         paths: [],
         strictImports: false,
@@ -168,29 +137,24 @@ function writeFile(filename, content) {
         strictMath: false,
         strictUnits: false
     };
-    var continueProcessing = true, currentErrorcode;
 
-    var checkArgFunc = function(arg, option) {
+    var validateArgument = function(arg, option) {
         if (!option) {
-            print(arg + " option requires a parameter");
-            continueProcessing = false;
-            return false;
+            throwConfigurationError('"' + arg + '" option requires a parameter');
         }
-        return true;
     };
 
-    var checkBooleanArg = function(arg) {
-        var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(arg);
+    var convertToBoolean = function(arg, option) {
+        var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(option);
         if (!onOff) {
-            print(" unable to parse " + arg + " as a boolean. use one of on/t/true/y/yes/off/f/false/n/no");
-            continueProcessing = false;
-            return false;
+            throwConfigurationError('Unable to parse "' + option + '" for ' + arg
+                    + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
         }
         return Boolean(onOff[2]);
     };
 
-    var warningMessages = "";
-    var sourceMapFileInline = false;
+    var sourceMapFilePath;
+    var sourceMapInline = false;
 
     args = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
@@ -220,10 +184,6 @@ function writeFile(filename, content) {
             case 'compress':
                 options.compress = true;
                 break;
-            case 'M':
-            case 'depends':
-                options.depends = true;
-                break;
             case 'no-ie-compat':
                 options.ieCompat = false;
                 break;
@@ -231,60 +191,46 @@ function writeFile(filename, content) {
                 options.javascriptEnabled = false;
                 break;
             case 'include-path':
-                if (checkArgFunc(arg, match[2])) {
-                    options.paths = match[2].split(os.type().match(/Windows/) ? ';' : ':').map(function(p) {
-                        if (p) {
-                            return p;
-                        }
-                    });
-                }
+                validateArgument(arg, match[2]);
+                options.paths = match[2].split('gabrys-lesscss-compiler-path-separator').map(function(p) {
+                    if (p) {
+                        return p;
+                    }
+                });
                 break;
             case 'line-numbers':
-                if (checkArgFunc(arg, match[2])) {
-                    options.dumpLineNumbers = match[2];
-                }
+                validateArgument(arg, match[2]);
+                options.dumpLineNumbers = match[2];
                 break;
             case 'source-map':
-                if (!match[2]) {
-                    options.sourceMap = true;
-                } else {
-                    options.sourceMap = match[2];
+                options.sourceMap = true;
+                if (match[2]) {
+                    sourceMapFilePath = match[2];
                 }
                 break;
             case 'source-map-rootpath':
-                if (checkArgFunc(arg, match[2])) {
-                    options.sourceMapRootpath = match[2];
-                }
+                validateArgument(arg, match[2]);
+                options.sourceMapRootpath = match[2];
                 break;
             case 'source-map-basepath':
-                if (checkArgFunc(arg, match[2])) {
-                    options.sourceMapBasepath = match[2];
-                }
+                validateArgument(arg, match[2]);
+                options.sourceMapBasepath = match[2];
                 break;
             case 'source-map-map-inline':
-                sourceMapFileInline = true;
+                sourceMapInline = true;
                 options.sourceMap = true;
                 break;
             case 'source-map-less-inline':
                 options.outputSourceFiles = true;
                 break;
             case 'source-map-url':
-                if (checkArgFunc(arg, match[2])) {
-                    options.sourceMapURL = match[2];
-                }
-                break;
-            case 'source-map-output-map-file':
-                if (checkArgFunc(arg, match[2])) {
-                    options.writeSourceMap = function(sourceMapContent) {
-                        writeFile(match[2], sourceMapContent);
-                    };
-                }
+                validateArgument(arg, match[2]);
+                options.sourceMapURL = match[2];
                 break;
             case 'rp':
             case 'rootpath':
-                if (checkArgFunc(arg, match[2])) {
-                    options.rootpath = match[2].replace(/\\/g, '/');
-                }
+                validateArgument(arg, match[2]);
+                options.rootpath = match[2].replace(/\\/g, '/');
                 break;
             case "ru":
             case "relative-urls":
@@ -292,98 +238,68 @@ function writeFile(filename, content) {
                 break;
             case "sm":
             case "strict-math":
-                if (checkArgFunc(arg, match[2])) {
-                    options.strictMath = checkBooleanArg(match[2]);
-                }
+                validateArgument(arg, match[2]);
+                options.strictMath = convertToBoolean(arg, match[2]);
                 break;
             case "su":
             case "strict-units":
-                if (checkArgFunc(arg, match[2])) {
-                    options.strictUnits = checkBooleanArg(match[2]);
-                }
+                validateArgument(arg, match[2]);
+                options.strictUnits = convertToBoolean(arg, match[2]);
                 break;
             default:
-                console.log('invalid option ' + arg);
-                continueProcessing = false;
+                throwConfigurationError('Invalid option "' + arg + '"');
         }
     });
 
-    if (!continueProcessing) {
-        return;
+    var source = args[0];
+    if (source == null) {
+        throwConfigurationError('Source file has not been specified');
     }
 
-    var name = args[0];
     var output = args[1];
-    var outputbase = args[1];
-    if (output) {
-        options.sourceMapOutputFilename = output;
-        if (warningMessages) {
-            console.log(warningMessages);
+
+    if (options.sourceMap) {
+        if (sourceMapFilePath == null && output == null && !sourceMapInline) {
+            throwConfigurationError('The sourcemap option has an optional filename only if the output CSS filename is given or you also pass the source-map-map-inline option');
         }
-    }
-
-    if (options.sourceMap === true) {
-        console.log("output: " + output);
-        if (!output && !sourceMapFileInline) {
-            console.log("the sourcemap option only has an optional filename if the css filename is given");
-            return;
+        if (!sourceMapInline) {
+            var sourceMapFilename = sourceMapFilePath;
+            if (sourceMapFilePath == null) {
+                sourceMapFilePath = output + '.map';
+                sourceMapFilename = less.modules.path.basename(sourceMapFilePath);
+            }
+            options.writeSourceMap = function(sourceMapContent) {
+                writeFile(sourceMapFilePath, sourceMapContent);
+            };
+            options.sourceMapFilename = sourceMapFilename;
+            options.sourceMapOutputFilename = output;
         }
-        options.sourceMapFullFilename = options.sourceMapOutputFilename + ".map";
-        options.sourceMap = less.modules.path.basename(options.sourceMapFullFilename);
-    } else if (options.sourceMap) {
-        options.sourceMapOutputFilename = options.sourceMap;
-    }
-
-    if (!name) {
-        console.log("lessc: no inout files");
-        console.log("");
-        currentErrorcode = 1;
-        return;
-    }
-
-    if (options.depends) {
-        if (!outputbase) {
-            console.log("option --depends requires an output path to be specified");
-            return;
-        }
-        console.log(outputbase + ": ");
-    }
-
-    if (!name) {
-        console.log('No files present in the fileset');
-        quit(1);
     }
 
     var input = null;
     try {
-        input = readFile(name, 'utf-8');
-
+        input = readFile(source, 'utf-8');
     } catch (e) {
-        console.log('lesscss: couldn\'t open file ' + name);
-        quit(1);
+        throw new Error('Couldn\'t open file ' + source);
     }
 
-    options.filename = name;
+    options.filename = source;
     var result;
     try {
         var parser = new less.Parser(options);
         parser.parse(input, function(e, root) {
             if (e) {
                 writeError(e, options);
-                quit(1);
-            } else {
-                result = root.toCSS(options);
-                if (output) {
-                    writeFile(output, result);
-                    console.log("Written to " + output);
-                } else {
-                    print(result);
-                }
-                quit(0);
             }
+            result = root.toCSS(options);
+            if (output != null) {
+                writeFile(output, result);
+            } else {
+                print(result);
+            }
+            quit(0);
         });
     } catch (e) {
         writeError(e, options);
-        quit(1);
     }
 }(arguments));

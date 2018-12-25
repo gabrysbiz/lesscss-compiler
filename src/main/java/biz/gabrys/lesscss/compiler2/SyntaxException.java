@@ -10,22 +10,22 @@
  *  - a copy of the License at project page
  *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
  */
-package biz.gabrys.lesscss.compiler;
+package biz.gabrys.lesscss.compiler2;
 
 /**
- * Thrown to indicate that an error occurred during compiler initialization.
- * @since 1.0
+ * Thrown to indicate that a syntax error occurred during source code compilation.
+ * @since 2.0.0
  */
-public class InitializationException extends CompilerException {
+public class SyntaxException extends CompilerException {
 
-    private static final long serialVersionUID = -191305953198018336L;
+    private static final long serialVersionUID = -4536288025531546466L;
 
     /**
      * Constructs a new instance with the specified detail message.
      * @param message the detail message.
-     * @since 1.0
+     * @since 2.0.0
      */
-    public InitializationException(final String message) {
+    public SyntaxException(final String message) {
         super(message);
     }
 
@@ -33,18 +33,18 @@ public class InitializationException extends CompilerException {
      * Constructs a new instance with the specified detail message and cause.
      * @param message the detail message.
      * @param cause the cause.
-     * @since 1.0
+     * @since 2.0.0
      */
-    public InitializationException(final String message, final Throwable cause) {
+    public SyntaxException(final String message, final Throwable cause) {
         super(message, cause);
     }
 
     /**
      * Constructs a new instance with the specified cause.
      * @param cause the cause.
-     * @since 1.0
+     * @since 2.0.0
      */
-    public InitializationException(final Throwable cause) {
+    public SyntaxException(final Throwable cause) {
         super(cause);
     }
 }

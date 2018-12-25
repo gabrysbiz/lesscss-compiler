@@ -10,20 +10,20 @@
  *  - a copy of the License at project page
  *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
  */
-package biz.gabrys.lesscss.compiler;
+package biz.gabrys.lesscss.compiler2;
 
 /**
  * Thrown to indicate that an error occurred during compilation process.
- * @since 1.0
+ * @since 2.0.0
  */
-public class CompilerException extends Exception {
+public class CompilerException extends RuntimeException {
 
-    private static final long serialVersionUID = 6161027740855943934L;
+    private static final long serialVersionUID = -818505762769749946L;
 
     /**
      * Constructs a new instance with the specified detail message.
      * @param message the detail message.
-     * @since 1.0
+     * @since 2.0.0
      */
     public CompilerException(final String message) {
         super(message);
@@ -33,7 +33,7 @@ public class CompilerException extends Exception {
      * Constructs a new instance with the specified detail message and cause.
      * @param message the detail message.
      * @param cause the cause.
-     * @since 1.0
+     * @since 2.0.0
      */
     public CompilerException(final String message, final Throwable cause) {
         super(message, cause);
@@ -42,7 +42,7 @@ public class CompilerException extends Exception {
     /**
      * Constructs a new instance with the specified cause.
      * @param cause the cause.
-     * @since 1.0
+     * @since 2.0.0
      */
     public CompilerException(final Throwable cause) {
         super(cause);

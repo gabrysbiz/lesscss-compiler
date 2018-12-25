@@ -11,7 +11,7 @@
             <p>Features:</p>
             <ul>
                 <li>Added support for <code>HTTP</code>, <code>HTTPS</code>, <code>FTP</code> and <code>classpath</code> protocols</li>
-                <li>Added support for Source maps</li>
+                <li>Added support for Source Maps</li>
             </ul>
         </section>
         <section id="release-1.2.2" name="Release 1.2.2">

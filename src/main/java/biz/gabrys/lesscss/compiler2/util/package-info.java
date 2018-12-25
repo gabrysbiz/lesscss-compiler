@@ -11,7 +11,7 @@
  *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
  */
 /**
- * The LessCSS Compiler compiles <a href="http://lesscss.compiler.org/">Less</a> source files to the
- * <a href="http://www.w3.org/Style/CSS/">CSS</a> code.
+ * Utilities classes responsible for operating on strings and collections.
+ * @since 2.0.0
  */
-package biz.gabrys.lesscss.compiler;
+package biz.gabrys.lesscss.compiler2.util;

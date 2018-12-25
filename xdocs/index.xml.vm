@@ -43,17 +43,61 @@
         </section>
         <section name="Concept">
             <p>
-                The idea for the <a href="xref/biz/gabrys/lesscss/compiler/LessCompilerImpl.html">LessCompilerImpl</a>
+                The library contains two compilers:
+            </p>
+            <ul>
+                <li>
+                    <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
+                    a compiler with a shell-type API
+                </li>
+                <li>
+                    <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>
+                    a facade for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
+                    with a developer-friendly API
+                </li>
+            </ul>
+            <p>
+                The idea for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
                 class was based on the <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a>
                 library by <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
             </p>
         </section>
         <section name="Usage">
             <p>
-                How to compile a source file:
+                The <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a> contains 14 methods.
+                Below is an example of how to use some of them:
             </p>
-            <pre>//TODO
-</pre>
+            <pre>String cssCode = null;
+LessOptions options = null;
+
+// create compiler
+LessCompiler compiler = new LessCompiler();
+
+// compile source code
+cssCode = compiler.compile(".basic { display: block; }");
+
+// compile source code with custom options
+options = new LessOptionsBuilder().ieCompatibilityOff().build();
+cssCode = compiler.compile(".basic { display: block; }", options);
+
+// compile source file
+cssCode = compiler.compile(new File("source.less"));
+
+// compile source file and save CSS code in an output file
+compiler.compile(new File("source.less"), new File("output.css"));
+
+// compile source file and compress CSS code
+cssCode = compiler.compileAndCompress(new File("source.less"));
+
+// compile source code and generate inline source map
+cssCode = compiler.compileWithInlineSourceMap(".basic { display: block; }", new LessOptions());
+
+// compile source file and generate source map (save it in output.map file)
+options = new LessOptionsBuilder().sourceMapBasePath("basePath").build();
+compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), new File("output.map"), options);
+
+// compile source file and generate source map (save it in output.css.map file)
+compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), options);</pre>
         </section>
     </body>
 </document>

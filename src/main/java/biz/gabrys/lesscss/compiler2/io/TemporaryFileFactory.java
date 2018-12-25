@@ -10,18 +10,22 @@
  *  - a copy of the License at project page
  *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
  */
-package biz.gabrys.lesscss.compiler;
+package biz.gabrys.lesscss.compiler2.io;
+
+import java.io.File;
+import java.io.IOException;
 
 /**
- * Responsible for checking operating system.
- * @since 1.0
+ * Responsible for creating temporary files.
+ * @since 2.0.0
  */
-public interface OperatingSystemChecker {
+public interface TemporaryFileFactory {
 
     /**
-     * Tests whether operating system is <a href="http://www.microsoft.com/">Windows</a>.
-     * @return {@code true} whether operating system is Windows, otherwise {@code false}.
-     * @since 1.0
+     * Creates a temporary file.
+     * @return the temporary file.
+     * @throws IOException if the temporary file could not be created.
+     * @since 2.0.0
      */
-    boolean isWindows();
+    File create() throws IOException;
 }
