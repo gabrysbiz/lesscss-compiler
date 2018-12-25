@@ -10,11 +10,9 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     var absolute = true;
 
     var includePaths = [''];
-    if (currentFileInfo != null && currentFileInfo.currentDirectory != null) {
-        if (!/^(?:[a-z-]+:|\/)/.test(file)) {
-            absolute = false;
-            includePaths[0] = currentFileInfo.currentDirectory;
-        }
+    if (currentFileInfo != null && currentFileInfo.currentDirectory != null && !/^(?:[a-z-]+:|\/)/.test(file)) {
+        absolute = false;
+        includePaths[0] = currentFileInfo.currentDirectory;
     }
     includePaths = gabrysLessCompiler.removeDuplications(includePaths.concat(gabrysLessCompiler.includePaths));
 
@@ -73,7 +71,7 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     }
 
     var j = file.lastIndexOf('/');
-    if (newFileInfo.relativeUrls && !absolute && j != -1) {
+    if (newFileInfo.relativeUrls && !absolute && j !== -1) {
         var relativeSubDirectory = file.slice(0, j + 1);
         // append (sub|sup) directory path of imported file
         newFileInfo.rootpath = newFileInfo.rootpath + relativeSubDirectory;
@@ -114,7 +112,14 @@ gabrysLessCompiler.getFileSystem = function(path) {
 
 gabrysLessCompiler.readFile = function(path) {
     var fileSystem = this.getFileSystem(path);
-    return fileSystem.fetch(path);
+    var filePath = fileSystem.normalize(path);
+    var expandedPath = fileSystem.expandRedirection(filePath);
+    while (expandedPath !== filePath) {
+        filePath = expandedPath;
+        fileSystem = this.getFileSystem(filePath);
+        expandedPath = fileSystem.expandRedirection(filePath);
+    }
+    return fileSystem.fetch(expandedPath);
 };
 
 gabrysLessCompiler.removeDuplications = function(array) {
@@ -191,9 +196,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
             case 'include-path':
                 validateArgument(arg, match[2]);
                 gabrysLessCompiler.includePaths = gabrysLessCompiler.removeDuplications(
-                    match[2].split('' + Packages.biz.gabrys.lesscss.compiler2.NativeLessCompiler.INCLUDE_PATHS_SEPARATOR).map(function(line) {
-                        return line;
-                    })
+                    match[2].split('' + Packages.biz.gabrys.lesscss.compiler2.NativeLessCompiler.INCLUDE_PATHS_SEPARATOR)
                 );
                 break;
             case 'line-numbers':

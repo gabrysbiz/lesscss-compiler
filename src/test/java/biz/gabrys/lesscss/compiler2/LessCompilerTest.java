@@ -56,7 +56,7 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceCode() {
+    public void compileCode_code() {
         final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
@@ -66,10 +66,10 @@ public final class LessCompilerTest {
         doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
 
-        final String result = compiler.compile(code);
+        final String result = compiler.compileCode(code);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(code);
+        verify(compiler).compileCode(code);
         verify(compiler).validateSourceCode(code);
         verify(compiler).createOptionsBuilder();
         verify(compiler).getDefaultPlatformEncoding();
@@ -84,27 +84,27 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceCode_options_encodingIsNotNull() {
-        final String source = "code";
+    public void compileCode_code_options_encodingIsNotNull() {
+        final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
         when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
         doReturn(null).when(compiler).getDefaultPlatformEncoding();
-        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(encoding);
 
-        final String result = compiler.compile(source, options);
+        final String result = compiler.compileCode(code, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(source, options);
-        verify(compiler).validateSourceCode(source);
+        verify(compiler).compileCode(code, options);
+        verify(compiler).validateSourceCode(code);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
         verify(compiler).getDefaultPlatformEncoding();
-        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
         verify(sourceFile).getAbsolutePath();
         verify(optionsBuilder).inputFile(absolutePath);
         verify(optionsBuilder).options(options);
@@ -116,27 +116,27 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceCode_options_encodingIsNull() {
-        final String source = "code";
+    public void compileCode_code_options_encodingIsNull() {
+        final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
         when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
         doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(null);
 
-        final String result = compiler.compile(source, options);
+        final String result = compiler.compileCode(code, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(source, options);
-        verify(compiler).validateSourceCode(source);
+        verify(compiler).compileCode(code, options);
+        verify(compiler).validateSourceCode(code);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
         verify(compiler).getDefaultPlatformEncoding();
-        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
         verify(sourceFile).getAbsolutePath();
         verify(optionsBuilder).inputFile(absolutePath);
         verify(optionsBuilder).options(options);
@@ -148,17 +148,33 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile() {
-        final File sourceFile = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(sourceFile);
+    public void compile_inputPath() {
+        final String input = "path";
 
-        final String result = compiler.compile(sourceFile);
+        final String result = compiler.compile(input);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(sourceFile);
-        verify(compiler).validateSourceFile(sourceFile);
+        verify(compiler).compile(input);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+
+        final String result = compiler.compile(input);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compile(input);
+        verify(compiler).validateInputFile(input);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
         verify(optionsBuilder).build();
@@ -167,19 +183,37 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile_encoding() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
+    public void compile_inputPath_encoding() {
+        final String input = "path";
         final Charset encoding = Charset.defaultCharset();
-        doNothing().when(compiler).validateSourceFile(source);
-        doNothing().when(compiler).validateEncoding(encoding);
 
-        final String result = compiler.compile(source, encoding);
+        final String result = compiler.compile(input, encoding);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(source, encoding);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compile(input, encoding);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile_encoding() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        final Charset encoding = Charset.defaultCharset();
+        doNothing().when(compiler).validateInputFile(input);
+
+        final String result = compiler.compile(input, encoding);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compile(input, encoding);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateEncoding(encoding);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -190,18 +224,35 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile_outputFile() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compile_inputPath_outputFile() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
 
-        compiler.compile(source, output);
+        compiler.compile(input, output);
 
-        verify(compiler).compile(source, output);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compile(input, output);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile_outputFile() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+
+        compiler.compile(input, output);
+
+        verify(compiler).compile(input, output);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -212,20 +263,39 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile_outputFile_encoding() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compile_inputPath_outputFile_encoding() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final Charset encoding = Charset.defaultCharset();
-        doNothing().when(compiler).validateEncoding(encoding);
 
-        compiler.compile(source, output, encoding);
+        compiler.compile(input, output, encoding);
 
-        verify(compiler).compile(source, output, encoding);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compile(input, output, encoding);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile_outputFile_encoding() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final Charset encoding = Charset.defaultCharset();
+
+        compiler.compile(input, output, encoding);
+
+        verify(compiler).compile(input, output, encoding);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateEncoding(encoding);
         verify(compiler).createOptionsBuilder();
@@ -238,18 +308,37 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compile_inputPath_options() {
+        final String input = "path";
         final LessOptions options = new LessOptions();
 
-        final String result = compiler.compile(source, options);
+        final String result = compiler.compile(input, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compile(source, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compile(input, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final LessOptions options = new LessOptions();
+
+        final String result = compiler.compile(input, options);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compile(input, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -260,19 +349,39 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceFile_outputFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compile_inputPath_outputFile_options() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
-        compiler.compile(source, output, options);
+        compiler.compile(input, output, options);
 
-        verify(compiler).compile(source, output, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compile(input, output, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_inputFile_outputFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final LessOptions options = new LessOptions();
+
+        compiler.compile(input, output, options);
+
+        verify(compiler).compile(input, output, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
@@ -285,24 +394,24 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileAndCompress_sourceCode() {
-        final String source = "code";
+    public void compileCodeAndCompress_code() {
+        final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
         when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
         doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
 
-        final String result = compiler.compileAndCompress(source);
+        final String result = compiler.compileCodeAndCompress(code);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileAndCompress(source);
-        verify(compiler).validateSourceCode(source);
+        verify(compiler).compileCodeAndCompress(code);
+        verify(compiler).validateSourceCode(code);
         verify(compiler).createOptionsBuilder();
         verify(compiler).getDefaultPlatformEncoding();
-        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
         verify(sourceFile).getAbsolutePath();
         verify(optionsBuilder).inputFile(absolutePath);
         verify(optionsBuilder).compress(true);
@@ -314,17 +423,34 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileAndCompress_sourceFile() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileAndCompress_inputPath() {
+        final String input = "path";
 
-        final String result = compiler.compileAndCompress(source);
+        final String result = compiler.compileAndCompress(input);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileAndCompress(source);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileAndCompress(input);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileAndCompress_inputFile() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+
+        final String result = compiler.compileAndCompress(input);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compileAndCompress(input);
+        verify(compiler).validateInputFile(input);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
         verify(optionsBuilder).compress(true);
@@ -334,19 +460,38 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileAndCompress_sourceFile_encoding() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileAndCompress_inputPath_encoding() {
+        final String input = "path";
         final Charset encoding = Charset.defaultCharset();
-        doNothing().when(compiler).validateEncoding(encoding);
 
-        final String result = compiler.compileAndCompress(source, encoding);
+        final String result = compiler.compileAndCompress(input, encoding);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileAndCompress(source, encoding);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileAndCompress(input, encoding);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileAndCompress_inputFile_encoding() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final Charset encoding = Charset.defaultCharset();
+
+        final String result = compiler.compileAndCompress(input, encoding);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compileAndCompress(input, encoding);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateEncoding(encoding);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -358,18 +503,36 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileAndCompress_sourceFile_outputFile() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileAndCompress_inputPath_outputFile() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
 
-        compiler.compileAndCompress(source, output);
+        compiler.compileAndCompress(input, output);
 
-        verify(compiler).compileAndCompress(source, output);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileAndCompress(input, output);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileAndCompress_inputFile_outputFile() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+
+        compiler.compileAndCompress(input, output);
+
+        verify(compiler).compileAndCompress(input, output);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -381,20 +544,40 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileAndCompress_sourceFile_outputFile_encoding() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileAndCompress_inputPath_outputFile_encoding() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final Charset encoding = Charset.defaultCharset();
-        doNothing().when(compiler).validateEncoding(encoding);
 
-        compiler.compileAndCompress(source, output, encoding);
+        compiler.compileAndCompress(input, output, encoding);
 
-        verify(compiler).compileAndCompress(source, output, encoding);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileAndCompress(input, output, encoding);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileAndCompress_inputFile_outputFile_encoding() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final Charset encoding = Charset.defaultCharset();
+
+        compiler.compileAndCompress(input, output, encoding);
+
+        verify(compiler).compileAndCompress(input, output, encoding);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateEncoding(encoding);
         verify(compiler).createOptionsBuilder();
@@ -408,26 +591,26 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithInlineSourceMap_sourceCode_options_encodingIsNotNull() {
-        final String source = "code";
+    public void compileCodeWithInlineSourceMap_code_options_encodingIsNotNull() {
+        final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
         when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
         doReturn(null).when(compiler).getDefaultPlatformEncoding();
-        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(encoding);
 
-        final String result = compiler.compileWithInlineSourceMap(source, options);
+        final String result = compiler.compileCodeWithInlineSourceMap(code, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileWithInlineSourceMap(source, options);
-        verify(compiler).validateSourceCode(source);
+        verify(compiler).compileCodeWithInlineSourceMap(code, options);
+        verify(compiler).validateSourceCode(code);
         verify(compiler).validateOptions(options);
         verify(compiler).getDefaultPlatformEncoding();
-        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
         verify(compiler).createOptionsBuilder();
         verify(sourceFile).getAbsolutePath();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -441,26 +624,26 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithInlineSourceMap_sourceCode_options_encodingIsNull() {
-        final String source = "code";
+    public void compileCodeWithInlineSourceMap_code_options_encodingIsNull() {
+        final String code = "code";
         final File sourceFile = mock(File.class);
         final String absolutePath = "absolutePath";
         when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
         doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
         doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(null);
 
-        final String result = compiler.compileWithInlineSourceMap(source, options);
+        final String result = compiler.compileCodeWithInlineSourceMap(code, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileWithInlineSourceMap(source, options);
-        verify(compiler).validateSourceCode(source);
+        verify(compiler).compileCodeWithInlineSourceMap(code, options);
+        verify(compiler).validateSourceCode(code);
         verify(compiler).validateOptions(options);
         verify(compiler).getDefaultPlatformEncoding();
-        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
         verify(compiler).createOptionsBuilder();
         verify(sourceFile).getAbsolutePath();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -474,18 +657,38 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithInlineSourceMap_sourceFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileWithInlineSourceMap_inputPath_options() {
+        final String input = "path";
         final LessOptions options = new LessOptions();
 
-        final String result = compiler.compileWithInlineSourceMap(source, options);
+        final String result = compiler.compileWithInlineSourceMap(input, options);
         assertThat(result).isSameAs(RESULT);
 
-        verify(compiler).compileWithInlineSourceMap(source, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileWithInlineSourceMap(input, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileWithInlineSourceMap_inputFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final LessOptions options = new LessOptions();
+
+        final String result = compiler.compileWithInlineSourceMap(input, options);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compileWithInlineSourceMap(input, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
         verify(optionsBuilder).inputFile(absolutePath);
@@ -497,19 +700,40 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithInlineSourceMap_sourceFile_outputFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileWithInlineSourceMap_inputPath_outputFile_options() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
-        compiler.compileWithInlineSourceMap(source, output, options);
+        compiler.compileWithInlineSourceMap(input, output, options);
 
-        verify(compiler).compileWithInlineSourceMap(source, output, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileWithInlineSourceMap(input, output, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileWithInlineSourceMap_inputFile_outputFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final LessOptions options = new LessOptions();
+
+        compiler.compileWithInlineSourceMap(input, output, options);
+
+        verify(compiler).compileWithInlineSourceMap(input, output, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
@@ -523,19 +747,40 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithSourceMap_sourceFile_outputFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileWithSourceMap_inputPath_outputFile_options() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
-        compiler.compileWithSourceMap(source, output, options);
+        compiler.compileWithSourceMap(input, output, options);
 
-        verify(compiler).compileWithSourceMap(source, output, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileWithSourceMap(input, output, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapDefault(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileWithSourceMap_inputFile_outputFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final LessOptions options = new LessOptions();
+
+        compiler.compileWithSourceMap(input, output, options);
+
+        verify(compiler).compileWithSourceMap(input, output, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateOptions(options);
         verify(compiler).createOptionsBuilder();
@@ -549,21 +794,43 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compileWithSourceMap_sourceFile_outputFile_outputSourceMapFile_options() {
-        final File source = mock(File.class);
-        final String absolutePath = "absolutePath";
-        when(source.getAbsolutePath()).thenReturn(absolutePath);
-        doNothing().when(compiler).validateSourceFile(source);
+    public void compileWithSourceMap_inputPath_outputFile_outputSourceMapFile_options() {
+        final String input = "path";
         final File output = mock(File.class);
-        doNothing().when(compiler).validateOutputFile(output);
         final File outputSourceMap = mock(File.class);
-        doNothing().when(compiler).validateOutputSourceMapFile(outputSourceMap);
         final LessOptions options = new LessOptions();
 
-        compiler.compileWithSourceMap(source, output, outputSourceMap, options);
+        compiler.compileWithSourceMap(input, output, outputSourceMap, options);
 
-        verify(compiler).compileWithSourceMap(source, output, outputSourceMap, options);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).compileWithSourceMap(input, output, outputSourceMap, options);
+        verify(compiler).validateInputPath(input);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOutputSourceMapFile(outputSourceMap);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(input);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapFile(outputSourceMap);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compileWithSourceMap_inputFile_outputFile_outputSourceMapFile_options() {
+        final File input = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(input.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateInputFile(input);
+        final File output = mock(File.class);
+        final File outputSourceMap = mock(File.class);
+        final LessOptions options = new LessOptions();
+
+        compiler.compileWithSourceMap(input, output, outputSourceMap, options);
+
+        verify(compiler).compileWithSourceMap(input, output, outputSourceMap, options);
+        verify(compiler).validateInputFile(input);
         verify(compiler).validateOutputFile(output);
         verify(compiler).validateOutputSourceMapFile(outputSourceMap);
         verify(compiler).validateOptions(options);
@@ -578,12 +845,12 @@ public final class LessCompilerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void validateSourceCode_sourceIsNull_throwsException() {
+    public void validateSourceCode_codeIsNull_throwsException() {
         compiler.validateSourceCode(null);
     }
 
     @Test
-    public void validateSourceCode_sourceIsNotNull_doesNothing() {
+    public void validateSourceCode_codeIsNotNull_doesNothing() {
         final String source = "";
         compiler.validateSourceCode(source);
 
@@ -592,24 +859,38 @@ public final class LessCompilerTest {
     }
 
     @Test(expected = IllegalArgumentException.class)
-    public void validateSourceFile_fileIsNull_throwsException() {
-        compiler.validateSourceFile(null);
-    }
-
-    @Test(expected = IllegalArgumentException.class)
-    public void validateSourceFile_fileDoesNotExist_throwsException() {
-        final File source = mock(File.class);
-
-        compiler.validateSourceFile(source);
+    public void validateInputPath_pathIsNull_throwsException() {
+        compiler.validateInputPath(null);
     }
 
     @Test
-    public void validateSourceFile_fileExists_doesNothing() {
-        final File source = mock(File.class);
-        when(source.exists()).thenReturn(Boolean.TRUE);
+    public void validateInputPath_pathIsNotNull_doesNothing() {
+        final String input = "";
+        compiler.validateInputPath(input);
 
-        compiler.validateSourceFile(source);
-        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateInputPath(input);
+        verifyNoMoreInteractions(compiler);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validateInputFile_fileIsNull_throwsException() {
+        compiler.validateInputFile(null);
+    }
+
+    @Test(expected = IllegalArgumentException.class)
+    public void validateInputFile_fileDoesNotExist_throwsException() {
+        final File input = mock(File.class);
+
+        compiler.validateInputFile(input);
+    }
+
+    @Test
+    public void validateInputFile_fileExists_doesNothing() {
+        final File input = mock(File.class);
+        when(input.exists()).thenReturn(Boolean.TRUE);
+
+        compiler.validateInputFile(input);
+        verify(compiler).validateInputFile(input);
         verifyNoMoreInteractions(compiler);
     }
 

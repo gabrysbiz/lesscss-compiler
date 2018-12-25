@@ -18,7 +18,7 @@ It supports sources located at:
 * local drives
 * protocols: 
   * [HTTP](https://www.w3.org/Protocols/) and HTTPS
-  * [FTP](https://www.w3.org/Protocols/rfc959/) (requires [Apache Commons Net](https://commons.apache.org/proper/commons-net/") library in the class path)
+  * [FTP](https://www.w3.org/Protocols/rfc959/) (requires [Apache Commons Net](https://commons.apache.org/proper/commons-net/) library in the class path)
   * class path (prefix `classpath://`)
 * custom - defined by programmers (see [FileSystem](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html))
 
@@ -40,7 +40,7 @@ The idea for the `NativeLessCompiler` class was based on the [lesscss-java](http
 library by [Marcel Overdijk](https://github.com/marceloverdijk).
 
 # Usage
-The `LessCompiler` contains 18 methods. Below is an example of how to use some of them:
+The `LessCompiler` contains 32 methods. Below is an example of how to use some of them:
 ```java
 String cssCode = null;
 LessOptions options = null;
@@ -49,14 +49,20 @@ LessOptions options = null;
 LessCompiler compiler = new LessCompiler();
 
 // compile source code
-cssCode = compiler.compile(".basic { display: block; }");
+cssCode = compiler.compileCode(".basic { display: block; }");
 
 // compile source code with custom options
 options = new LessOptionsBuilder().ieCompatibilityOff().build();
-cssCode = compiler.compile(".basic { display: block; }", options);
+cssCode = compiler.compileCode(".basic { display: block; }", options);
+
+// compile source file specified by path
+cssCode = compiler.compile("http://www.example.org/style.less");
 
 // compile source file
 cssCode = compiler.compile(new File("source.less"));
+
+// compile source file specified by path and save CSS code in an output file
+compiler.compile("http://www.example.org/style.less", new File("output.css"));
 
 // compile source file and save CSS code in an output file
 compiler.compile(new File("source.less"), new File("output.css"));
@@ -64,16 +70,16 @@ compiler.compile(new File("source.less"), new File("output.css"));
 // compile source file and compress CSS code
 cssCode = compiler.compileAndCompress(new File("source.less"));
 
-// compile source file and compress CSS code using custom encoding
-cssCode = compiler.compileAndCompress(new File("source.less"), Charset.forName("UTF-8"));
+// compile source file specified by path and compress CSS code using custom encoding
+cssCode = compiler.compileAndCompress("http://www.example.org/style.less", Charset.forName("UTF-8"));
 
 // compile source code and generate inline source map
-cssCode = compiler.compileWithInlineSourceMap(".basic { display: block; }", new LessOptions());
+cssCode = compiler.compileCodeWithInlineSourceMap(".basic { display: block; }", new LessOptions());
 
 // compile source file and generate source map (save it in output.map file)
 options = new LessOptionsBuilder().sourceMapBasePath("basePath").build();
 compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), new File("output.map"), options);
 
-// compile source file and generate source map (save it in output.css.map file)
-compiler.compileWithSourceMap(new File("source.less"), new File("output.css"), options);
+// compile source file specified by path and generate source map (save it in output.css.map file)
+compiler.compileWithSourceMap("http://www.example.org/style.less", new File("output.css"), options);
 ```
