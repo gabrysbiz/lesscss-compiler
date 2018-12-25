@@ -65,7 +65,7 @@ public class FileSystemOptionBuilderTest {
 
     @Test
     public void build_appendParameters_parametersAreNotNull_returnsOption() {
-        final Map<CharSequence, CharSequence> parameters = new HashMap<CharSequence, CharSequence>();
+        final Map<CharSequence, CharSequence> parameters = new HashMap<>();
         parameters.put("param1", "value1");
         parameters.put("param2", "value2");
         parameters.put("param3", "value3");

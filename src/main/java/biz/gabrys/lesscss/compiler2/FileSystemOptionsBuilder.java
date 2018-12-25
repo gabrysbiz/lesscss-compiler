@@ -56,7 +56,7 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
  */
 public class FileSystemOptionsBuilder {
 
-    private final Set<FileSystemOption> options = new LinkedHashSet<FileSystemOption>();
+    private final Set<FileSystemOption> options = new LinkedHashSet<>();
 
     /**
      * Constructs a new instance.
@@ -143,7 +143,7 @@ public class FileSystemOptionsBuilder {
      * @throws IllegalArgumentException is the file system classes are equal to {@code null}.
      * @since 2.0.0
      */
-    public FileSystemOptionsBuilder appendCustom(final Class<? extends FileSystem>... classes) {
+    public FileSystemOptionsBuilder appendCustom(@SuppressWarnings("unchecked") final Class<? extends FileSystem>... classes) {
         if (classes == null) {
             throw new IllegalArgumentException("File system classes cannot be null");
         }
@@ -263,6 +263,6 @@ public class FileSystemOptionsBuilder {
      * @since 2.0.0
      */
     public List<FileSystemOption> build() {
-        return new ArrayList<FileSystemOption>(options);
+        return new ArrayList<>(options);
     }
 }

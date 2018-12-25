@@ -25,7 +25,7 @@ public class FileSystemOptionTest {
 
     @Test
     public void construct_classAndParametersAreValid_createdSuccessfully() {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option = new FileSystemOption(FileSystem.class, parameters);
@@ -52,7 +52,7 @@ public class FileSystemOptionTest {
     @Test
     public void construct_classNameAndParametersAreValid_createdSuccessfully() {
         final String className = "className";
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option = new FileSystemOption(className, parameters);
@@ -63,7 +63,7 @@ public class FileSystemOptionTest {
 
     @Test
     public void getParameters_mapIsOrdered_orderIsPreserved() {
-        final Map<String, String> parameters = new LinkedHashMap<String, String>();
+        final Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("b", "v_a,l=B");
         parameters.put("a", "v,a_l=A");
         parameters.put("c", "v=a,l_C");
@@ -77,7 +77,7 @@ public class FileSystemOptionTest {
     @Test
     public void hashCode_optionsAreTheSame_returnsTheSameNumber() {
         final String className = "className";
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option1 = new FileSystemOption(className, parameters);
@@ -91,7 +91,7 @@ public class FileSystemOptionTest {
 
     @Test
     public void hashCode_optionsHaveDifferentClassNames_returnsDifferentNumbers() {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option1 = new FileSystemOption("className1", parameters);
@@ -106,9 +106,9 @@ public class FileSystemOptionTest {
     @Test
     public void hashCode_optionsHaveDifferentParameters_returnsDifferentNumbers() {
         final String className = "className";
-        final Map<String, String> parameters1 = new HashMap<String, String>();
+        final Map<String, String> parameters1 = new HashMap<>();
         parameters1.put("name", "value");
-        final Map<String, String> parameters2 = new HashMap<String, String>();
+        final Map<String, String> parameters2 = new HashMap<>();
         parameters1.put("value", "name");
 
         final FileSystemOption option1 = new FileSystemOption(className, parameters1);
@@ -123,7 +123,7 @@ public class FileSystemOptionTest {
     @Test
     public void hashCode_optionsAreTheSame_returnsTrue() {
         final String className = "className";
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option1 = new FileSystemOption(className, parameters);
@@ -136,7 +136,7 @@ public class FileSystemOptionTest {
 
     @Test
     public void equals_optionsHaveDifferentClassNames_returnsFalse() {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
 
         final FileSystemOption option1 = new FileSystemOption("className1", parameters);
@@ -149,9 +149,9 @@ public class FileSystemOptionTest {
     @Test
     public void equals_optionsHaveDifferentParameters_returnFalse() {
         final String className = "className";
-        final Map<String, String> parameters1 = new HashMap<String, String>();
+        final Map<String, String> parameters1 = new HashMap<>();
         parameters1.put("name", "value");
-        final Map<String, String> parameters2 = new HashMap<String, String>();
+        final Map<String, String> parameters2 = new HashMap<>();
         parameters1.put("value", "name");
 
         final FileSystemOption option1 = new FileSystemOption(className, parameters1);
@@ -182,7 +182,7 @@ public class FileSystemOptionTest {
     @Test
     public void toString_parametersIsNotEmpty() {
         final String className = "org.example.ClassName";
-        final Map<String, String> parameters = new LinkedHashMap<String, String>();
+        final Map<String, String> parameters = new LinkedHashMap<>();
         parameters.put("name1", "value1");
         parameters.put("n,a_m=e", "v_al_=u,e");
         parameters.put("null", null);

@@ -15,6 +15,7 @@ package biz.gabrys.lesscss.compiler2;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
 
 import biz.gabrys.lesscss.compiler2.io.FileUtils;
 import biz.gabrys.lesscss.compiler2.io.SystemDefaultTemporaryFileFactory;
@@ -990,8 +991,10 @@ public class LessCompiler {
         if (file == null) {
             throw new IllegalArgumentException("File cannot be null");
         }
-        if (!file.delete()) {
-            throw new CompilerException("Cannot delete the temporary file: " + file.getAbsolutePath());
+        try {
+            Files.delete(file.toPath());
+        } catch (final IOException e) {
+            throw new CompilerException("Cannot delete the temporary file", e);
         }
     }
 }

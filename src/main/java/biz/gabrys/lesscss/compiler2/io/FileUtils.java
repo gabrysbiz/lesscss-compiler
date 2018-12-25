@@ -47,12 +47,8 @@ public final class FileUtils {
             throw new IllegalArgumentException("Encoding cannot be null");
         }
 
-        Writer writer = null;
-        try {
-            writer = new PrintWriter(file, encoding);
+        try (final Writer writer = new PrintWriter(file, encoding)) {
             writer.write(content.toString());
-        } finally {
-            IOUtils.closeQuietly(writer);
         }
     }
 }

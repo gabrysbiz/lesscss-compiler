@@ -53,7 +53,7 @@
                 The compiler to run requires:
             </p>
             <ul>
-                <li>Java 6.0 or higher</li>
+                <li>Java 8 or higher</li>
                 <li>Third-Party Dependencies (<a href="dependencies.html">see list</a>)</li>
             </ul>
         </section>

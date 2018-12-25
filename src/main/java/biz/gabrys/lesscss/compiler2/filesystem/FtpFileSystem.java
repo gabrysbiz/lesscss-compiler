@@ -24,8 +24,6 @@ import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
 import org.apache.commons.net.ftp.FTPReply;
 
-import biz.gabrys.lesscss.compiler2.io.IOUtils;
-
 /**
  * <p>
  * Represents a file system accessible via <a href="https://www.w3.org/Protocols/rfc959/">FTP</a> protocol.
@@ -106,12 +104,8 @@ public class FtpFileSystem implements FileSystem {
     }
 
     boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
-        InputStream inputStream = null;
-        try {
-            inputStream = connection.retrieveFileStream(url.getPath());
+        try (final InputStream inputStream = connection.retrieveFileStream(url.getPath())) {
             return inputStream != null && connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;
-        } finally {
-            IOUtils.closeQuietly(inputStream);
         }
     }
 
@@ -148,14 +142,11 @@ public class FtpFileSystem implements FileSystem {
     }
 
     byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
-        final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
-        try {
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             if (!connection.retrieveFile(url.getPath(), outputStream)) {
                 throw new IOException(String.format("cannot retrieve file, reason: %s", connection.getReplyString()));
             }
             return outputStream.toByteArray();
-        } finally {
-            IOUtils.closeQuietly(outputStream);
         }
     }
 

@@ -302,21 +302,21 @@ public final class NativeLessCompilerTest {
     public void execute_useCustomFileSystems_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/filesystems.less").getPath());
 
-        final Map<String, String> parameters1 = new HashMap<String, String>();
+        final Map<String, String> parameters1 = new HashMap<>();
         parameters1.put("file=name", "system1.less");
         parameters1.put(",class__name,", "class1");
         parameters1.put("param-1", "'_=,'");
         parameters1.put("empty", "");
         final FileSystemOption fileSystem1 = new FileSystemOption(FakeFileSystem.class, parameters1);
 
-        final Map<String, String> parameters2 = new HashMap<String, String>();
+        final Map<String, String> parameters2 = new HashMap<>();
         parameters2.put("file=name", "system2.less");
         parameters2.put(",class__name,", "class2");
         parameters2.put("param", "100px");
         parameters2.put("param1_2", "'A__,,==A'");
         final FileSystemOption fileSystem2 = new FileSystemOption(FakeFileSystem.class, parameters2);
 
-        final Map<String, String> parameters3 = new HashMap<String, String>();
+        final Map<String, String> parameters3 = new HashMap<>();
         parameters3.put("file=name", "system3.less");
         parameters3.put(",class__name,", "class3");
         final FileSystemOption fileSystem3 = new FileSystemOption(FakeFileSystem.class, parameters3);

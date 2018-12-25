@@ -60,7 +60,7 @@ public class HttpFileSystem implements FileSystem {
     private static final Collection<Integer> OK_NOTFOUND_REDIRECT_CODES;
 
     static {
-        final Collection<Integer> codes = new ArrayList<Integer>(5);
+        final Collection<Integer> codes = new ArrayList<>(5);
         codes.addAll(OK_NOTFOUND_CODES);
         codes.addAll(REDIRECT_CODES);
         OK_NOTFOUND_REDIRECT_CODES = Collections.unmodifiableCollection(codes);
@@ -141,7 +141,7 @@ public class HttpFileSystem implements FileSystem {
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(fetchResponseBody ? "GET" : "HEAD");
         if (!validCodes.contains(connection.getResponseCode())) {
-            final List<Integer> supportedCodes = new ArrayList<Integer>(validCodes);
+            final List<Integer> supportedCodes = new ArrayList<>(validCodes);
             Collections.sort(supportedCodes);
             throw new IOException(String.format("response HTTP status code %s is not allowed (supports only: %s)",
                     connection.getResponseCode(), supportedCodes.toString().replaceAll("\\[|\\]", "")));

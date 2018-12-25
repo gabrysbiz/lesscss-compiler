@@ -26,7 +26,7 @@ public class LessVariableOptionsBuilderTest {
 
     @Test
     public void append_mapIsNotNull_variablesAreAdded() {
-        final Map<String, String> variables = new LinkedHashMap<String, String>();
+        final Map<String, String> variables = new LinkedHashMap<>();
         variables.put("name1", "value1");
         variables.put("name2", "value2");
 
@@ -101,7 +101,7 @@ public class LessVariableOptionsBuilderTest {
 
     @Test
     public void build() {
-        final Map<String, String> variablesMap = new LinkedHashMap<String, String>();
+        final Map<String, String> variablesMap = new LinkedHashMap<>();
         variablesMap.put("name1", "value1");
         variablesMap.put("name2", "value2");
 

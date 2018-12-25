@@ -18,6 +18,7 @@ import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.io.SequenceInputStream;
 import java.net.URL;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -31,8 +32,6 @@ import org.mozilla.javascript.JavaScriptException;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
 import org.mozilla.javascript.tools.shell.Global;
-
-import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
 /**
  * <p>
@@ -69,8 +68,6 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * @see NativeLessOptionsBuilder
  */
 public class NativeLessCompiler {
-
-    private static final String CHARSET = "UTF-8";
 
     private final Object mutex = new Object();
 
@@ -140,7 +137,7 @@ public class NativeLessCompiler {
                 compileScope.defineProperty("arguments", arguments, ScriptableObject.DONTENUM);
 
                 compiler.call(context, compileScope, null, new Object[0]);
-                return console.toString(CHARSET);
+                return console.toString(StandardCharsets.UTF_8.name());
 
             } catch (final JavaScriptException e) {
                 throw parseException(e);
@@ -154,8 +151,6 @@ public class NativeLessCompiler {
     }
 
     private void initialize() {
-        InputStream inputStream = null;
-        InputStreamReader streamReader = null;
         try {
             final Context context = Context.enter();
             context.setLanguageVersion(Context.VERSION_1_8);
@@ -165,25 +160,24 @@ public class NativeLessCompiler {
             scope = context.initStandardObjects(global);
 
             console = new ByteArrayOutputStream();
-            global.setOut(new PrintStream(console, false, CHARSET));
+            global.setOut(new PrintStream(console, false, StandardCharsets.UTF_8.name()));
 
             final URL lessFile = NativeLessCompiler.class.getResource("/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js");
             final URL lesscFile = NativeLessCompiler.class.getResource("/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js");
 
-            final Collection<InputStream> streams = new ArrayList<InputStream>();
+            final Collection<InputStream> streams = new ArrayList<>();
             streams.add(lessFile.openConnection().getInputStream());
             streams.add(lesscFile.openConnection().getInputStream());
 
-            inputStream = new SequenceInputStream(Collections.enumeration(streams));
-            streamReader = new InputStreamReader(inputStream, CHARSET);
-            compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);
+            try (final InputStream inputStream = new SequenceInputStream(Collections.enumeration(streams));
+                    final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
+                compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);
+            }
 
         } catch (final Exception e) {
             throw new InitializationException("Failed to initialize native Less compiler", e);
 
         } finally {
-            IOUtils.closeQuietly(streamReader);
-            IOUtils.closeQuietly(inputStream);
             Context.exit();
         }
     }

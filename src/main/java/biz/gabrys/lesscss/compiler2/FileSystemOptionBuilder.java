@@ -49,7 +49,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 public class FileSystemOptionBuilder {
 
     private String className;
-    private final Map<String, String> parameters = new LinkedHashMap<String, String>();
+    private final Map<String, String> parameters = new LinkedHashMap<>();
 
     /**
      * Constructs a new instance.

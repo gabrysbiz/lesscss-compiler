@@ -54,7 +54,7 @@ public class FileSystemOption {
     private static final Pattern EQUAL_PATTERN = Pattern.compile(EQUAL_SIGN);
 
     private final String className;
-    private final Map<String, String> parameters = new LinkedHashMap<String, String>();
+    private final Map<String, String> parameters = new LinkedHashMap<>();
 
     /**
      * Constructs a new instance with a file system class and no parameters.
@@ -127,7 +127,7 @@ public class FileSystemOption {
      * @since 2.0.0
      */
     public Map<String, String> getParameters() {
-        return new LinkedHashMap<String, String>(parameters);
+        return new LinkedHashMap<>(parameters);
     }
 
     @Override

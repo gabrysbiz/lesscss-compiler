@@ -18,7 +18,6 @@ import java.util.Collection;
 import java.util.List;
 
 import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder;
-import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder.Checker;
 import biz.gabrys.lesscss.compiler2.util.StringUtils;
 
 /**
@@ -371,7 +370,7 @@ public class NativeLessOptionsBuilder {
      */
     protected String[] getIncludePathsOptions() {
         final List<String> includePaths = options.getIncludePaths();
-        final List<String> commandLineOptions = new ArrayList<String>(includePaths.size());
+        final List<String> commandLineOptions = new ArrayList<>(includePaths.size());
         for (final String includePath : includePaths) {
             if (StringUtils.isNotBlank(includePath)) {
                 commandLineOptions.add("--include-path=" + includePath);
@@ -898,7 +897,7 @@ public class NativeLessOptionsBuilder {
         if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {
             return new String[0];
         }
-        final List<String> commandLineOptions = new ArrayList<String>(fileSystems.size());
+        final List<String> commandLineOptions = new ArrayList<>(fileSystems.size());
         for (final FileSystemOption fileSystem : fileSystems) {
             if (fileSystem != null) {
                 final StringBuilder commandLineOption = new StringBuilder();
@@ -957,7 +956,7 @@ public class NativeLessOptionsBuilder {
      */
     protected String[] getGlobalVariablesOptions() {
         final List<LessVariableOption> variables = options.getGlobalVariables();
-        final List<String> commandLineOptions = new ArrayList<String>(variables.size());
+        final List<String> commandLineOptions = new ArrayList<>(variables.size());
         for (final LessVariableOption variable : variables) {
             if (variable != null) {
                 final StringBuilder commandLineOption = new StringBuilder();
@@ -990,7 +989,7 @@ public class NativeLessOptionsBuilder {
      */
     protected String[] getModifyVariablesOptions() {
         final List<LessVariableOption> variables = options.getModifyVariables();
-        final List<String> commandLineOptions = new ArrayList<String>(variables.size());
+        final List<String> commandLineOptions = new ArrayList<>(variables.size());
         for (final LessVariableOption variable : variables) {
             if (variable != null) {
                 final StringBuilder commandLineOption = new StringBuilder();
@@ -1009,13 +1008,7 @@ public class NativeLessOptionsBuilder {
      * @since 2.0.0
      */
     public Collection<String> build() {
-        final ListWithoutEmptyValuesBuilder<String> configurationOptions = new ListWithoutEmptyValuesBuilder<String>(new Checker<String>() {
-
-            @Override
-            public boolean isNotEmpty(final String value) {
-                return StringUtils.isNotBlank(value);
-            }
-        });
+        final ListWithoutEmptyValuesBuilder<String> configurationOptions = new ListWithoutEmptyValuesBuilder<>(StringUtils::isNotBlank);
         configurationOptions.append(getSilentOption());
         configurationOptions.append(getStrictImportsOption());
         configurationOptions.append(getCompressOption());

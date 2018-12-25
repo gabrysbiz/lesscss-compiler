@@ -80,7 +80,7 @@ public final class FileSystemOptionsBuilderTest {
 
     @Test
     public void build_customEnabledByClassWithParameters() {
-        final Map<String, String> parameters = new HashMap<String, String>();
+        final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");
         final List<FileSystemOption> fileSystems = builder.appendCustom(CustomFileSystem1.class, parameters).build();
 
@@ -116,9 +116,9 @@ public final class FileSystemOptionsBuilderTest {
 
     @Test
     public void build_multiple() {
-        final Map<String, String> parameters1 = new HashMap<String, String>();
+        final Map<String, String> parameters1 = new HashMap<>();
         parameters1.put("name1", "value1");
-        final Map<String, String> parameters2 = new HashMap<String, String>();
+        final Map<String, String> parameters2 = new HashMap<>();
         parameters2.put("name2", "value2");
 
         builder.appendCustom(CustomFileSystem1.class);

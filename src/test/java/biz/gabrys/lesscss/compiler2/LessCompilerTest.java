@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.ArgumentMatchers.anyCollection;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.doThrow;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.spy;
 import static org.mockito.Mockito.verify;
@@ -13,6 +14,9 @@ import static org.mockito.Mockito.when;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
+import java.nio.file.FileSystem;
+import java.nio.file.Path;
+import java.nio.file.spi.FileSystemProvider;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -971,21 +975,35 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void deleteFile_fileIsNotNull_deletesFile() {
+    public void deleteFile_fileIsNotNull_deletesFile() throws IOException {
         final File file = mock(File.class);
-        when(file.delete()).thenReturn(Boolean.TRUE);
+        final Path path = mock(Path.class);
+        when(file.toPath()).thenReturn(path);
+        final FileSystem fileSystem = mock(FileSystem.class);
+        when(path.getFileSystem()).thenReturn(fileSystem);
+        final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+        when(fileSystem.provider()).thenReturn(fileSystemProvider);
 
         compiler.deleteFile(file);
 
         verify(compiler).deleteFile(file);
-        verify(file).delete();
-        verifyNoMoreInteractions(compiler, file);
+        verify(file).toPath();
+        verify(path).getFileSystem();
+        verify(fileSystem).provider();
+        verify(fileSystemProvider).delete(path);
+        verifyNoMoreInteractions(compiler, file, path, fileSystem, fileSystemProvider);
     }
 
     @Test(expected = CompilerException.class)
-    public void deleteFile_fileCannotBeDeleted_throwsException() {
+    public void deleteFile_fileCannotBeDeleted_throwsException() throws IOException {
         final File file = mock(File.class);
-        when(file.delete()).thenReturn(Boolean.FALSE);
+        final Path path = mock(Path.class);
+        when(file.toPath()).thenReturn(path);
+        final FileSystem fileSystem = mock(FileSystem.class);
+        when(path.getFileSystem()).thenReturn(fileSystem);
+        final FileSystemProvider fileSystemProvider = mock(FileSystemProvider.class);
+        when(fileSystem.provider()).thenReturn(fileSystemProvider);
+        doThrow(IOException.class).when(fileSystemProvider).delete(path);
 
         compiler.deleteFile(file);
     }

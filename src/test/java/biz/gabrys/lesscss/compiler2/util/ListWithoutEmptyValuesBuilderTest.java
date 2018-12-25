@@ -10,26 +10,18 @@ import java.util.List;
 import org.junit.Before;
 import org.junit.Test;
 
-import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder.Checker;
-
 public final class ListWithoutEmptyValuesBuilderTest {
 
     private ListWithoutEmptyValuesBuilder<Object> builder;
 
     @Before
     public void setup() {
-        builder = spy(new ListWithoutEmptyValuesBuilder<Object>(new Checker<Object>() {
-
-            @Override
-            public boolean isNotEmpty(final Object value) {
-                return value != null;
-            }
-        }));
+        builder = spy(new ListWithoutEmptyValuesBuilder<>(value -> value != null));
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void construct_checkerIsNull_throwsException() {
-        new ListWithoutEmptyValuesBuilder<Object>(null);
+        new ListWithoutEmptyValuesBuilder<>(null);
     }
 
     @Test

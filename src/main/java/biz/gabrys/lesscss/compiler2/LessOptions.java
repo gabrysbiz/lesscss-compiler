@@ -148,7 +148,7 @@ public class LessOptions {
         compress = options.compress;
         ieCompatibility = options.ieCompatibility;
         javaScript = options.javaScript;
-        includePaths = new ArrayList<String>(options.includePaths);
+        includePaths = new ArrayList<>(options.includePaths);
         lineNumbers = options.lineNumbers;
         rootPath = options.rootPath;
         relativeUrls = options.relativeUrls;
@@ -161,11 +161,11 @@ public class LessOptions {
         sourceMapUrl = options.sourceMapUrl;
 
         banner = options.banner;
-        globalVariables = new ArrayList<LessVariableOption>(options.globalVariables);
-        modifyVariables = new ArrayList<LessVariableOption>(options.modifyVariables);
+        globalVariables = new ArrayList<>(options.globalVariables);
+        modifyVariables = new ArrayList<>(options.modifyVariables);
 
         encoding = options.encoding;
-        fileSystems = new ArrayList<FileSystemOption>(options.fileSystems);
+        fileSystems = new ArrayList<>(options.fileSystems);
     }
 
     /**
@@ -275,7 +275,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List<String> getIncludePaths() {
-        return new ArrayList<String>(includePaths);
+        return new ArrayList<>(includePaths);
     }
 
     /**
@@ -289,7 +289,7 @@ public class LessOptions {
         if (includePaths == null) {
             this.includePaths = Collections.emptyList();
         } else {
-            this.includePaths = new ArrayList<String>(includePaths);
+            this.includePaths = new ArrayList<>(includePaths);
         }
     }
 
@@ -745,7 +745,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List<FileSystemOption> getFileSystems() {
-        return new ArrayList<FileSystemOption>(fileSystems);
+        return new ArrayList<>(fileSystems);
     }
 
     /**
@@ -758,7 +758,7 @@ public class LessOptions {
         if (fileSystems == null) {
             this.fileSystems = DEFAULT_FILE_SYSTEMS;
         } else {
-            this.fileSystems = new ArrayList<FileSystemOption>(fileSystems);
+            this.fileSystems = new ArrayList<>(fileSystems);
         }
     }
 
@@ -787,7 +787,7 @@ public class LessOptions {
      * @return the global variables (never {@code null}).
      */
     public List<LessVariableOption> getGlobalVariables() {
-        return new ArrayList<LessVariableOption>(globalVariables);
+        return new ArrayList<>(globalVariables);
     }
 
     /**
@@ -802,7 +802,7 @@ public class LessOptions {
         if (globalVariables == null) {
             this.globalVariables = Collections.emptyList();
         } else {
-            this.globalVariables = new ArrayList<LessVariableOption>(globalVariables);
+            this.globalVariables = new ArrayList<>(globalVariables);
         }
     }
 
@@ -814,7 +814,7 @@ public class LessOptions {
      * @since 2.0.0
      */
     public List<LessVariableOption> getModifyVariables() {
-        return new ArrayList<LessVariableOption>(modifyVariables);
+        return new ArrayList<>(modifyVariables);
     }
 
     /**
@@ -829,7 +829,7 @@ public class LessOptions {
         if (modifyVariables == null) {
             this.modifyVariables = Collections.emptyList();
         } else {
-            this.modifyVariables = new ArrayList<LessVariableOption>(modifyVariables);
+            this.modifyVariables = new ArrayList<>(modifyVariables);
         }
     }
 }

@@ -24,7 +24,7 @@ It supports sources located at:
 
 # Requirements
 The compiler to run requires:
-* Java 6.0 or higher
+* Java 8 or higher
 * Third-Party Dependencies ([see list](http://lesscss-compiler.projects.gabrys.biz/LATEST/dependencies.html))
 
 # Download

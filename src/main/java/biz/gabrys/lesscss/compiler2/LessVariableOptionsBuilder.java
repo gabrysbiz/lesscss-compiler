@@ -52,7 +52,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  */
 public class LessVariableOptionsBuilder {
 
-    private final List<LessVariableOption> variables = new LinkedList<LessVariableOption>();
+    private final List<LessVariableOption> variables = new LinkedList<>();
 
     /**
      * Constructs a new instance.
@@ -147,7 +147,7 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public List<LessVariableOption> build() {
-        return new ArrayList<LessVariableOption>(getVariables());
+        return new ArrayList<>(getVariables());
     }
 
     /**

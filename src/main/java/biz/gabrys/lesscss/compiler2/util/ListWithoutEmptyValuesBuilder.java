@@ -24,7 +24,7 @@ import java.util.List;
 public class ListWithoutEmptyValuesBuilder<T> {
 
     private final Checker<T> checker;
-    private final List<T> values = new LinkedList<T>();
+    private final List<T> values = new LinkedList<>();
 
     /**
      * Constructs a new instance.
@@ -73,7 +73,7 @@ public class ListWithoutEmptyValuesBuilder<T> {
      * @since 2.0.0
      */
     public List<T> build() {
-        return new ArrayList<T>(values);
+        return new ArrayList<>(values);
     }
 
     /**

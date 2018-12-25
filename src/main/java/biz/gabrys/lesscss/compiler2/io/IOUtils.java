@@ -43,9 +43,7 @@ public final class IOUtils {
             throw new IllegalArgumentException("Input cannot be null");
         }
 
-        ByteArrayOutputStream outputStream = null;
-        try {
-            outputStream = new ByteArrayOutputStream();
+        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];
             for (int readBytes = inputStream.read(buffer); readBytes != END_OF_FILE; readBytes = inputStream.read(buffer)) {
                 outputStream.write(buffer, 0, readBytes);
@@ -54,7 +52,6 @@ public final class IOUtils {
             return outputStream.toByteArray();
         } finally {
             closeQuietly(inputStream);
-            closeQuietly(outputStream);
         }
     }
 

@@ -263,7 +263,7 @@ public class LessOptionsBuilder {
      */
     public LessOptionsBuilder includePaths(final Collection<? extends CharSequence> includePaths) {
         if (includePaths != null) {
-            final List<String> paths = new ArrayList<String>(includePaths.size());
+            final List<String> paths = new ArrayList<>(includePaths.size());
             for (final CharSequence path : includePaths) {
                 paths.add(StringUtils.toStringIfNotNull(path));
             }

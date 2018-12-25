@@ -2,6 +2,7 @@
 
 ## 2.0.0
 Features:
+* Set compatibility with Java 8+
 * Added support for `HTTP`, `HTTPS`, `FTP` and `classpath` protocols
 * Added support for custom protocols (file systems)
 * Added support for Source Maps

@@ -13,8 +13,9 @@
 package biz.gabrys.lesscss.compiler2.filesystem;
 
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.Map;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
@@ -78,6 +79,6 @@ public class LocalFileSystem implements FileSystem {
 
     @Override
     public FileData fetch(final String path) throws IOException {
-        return new FileData(IOUtils.toByteArray(new FileInputStream(path)));
+        return new FileData(IOUtils.toByteArray(Files.newInputStream(Paths.get(path))));
     }
 }
