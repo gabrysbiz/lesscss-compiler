@@ -4,6 +4,7 @@ import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.fail;
 
 import java.io.File;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -212,5 +213,19 @@ public final class NativeLessCompilerTest {
         assertThat(code).isNotEmpty();
         // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: block;\n}");
+    }
+
+    @Test
+    public void execute_includePathsIsSet_success() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/include-paths.less").getPath());
+        final List<String> includePaths = Arrays.asList(source.getParentFile().getAbsolutePath() + "/subdir/");
+        final Collection<String> options = builder.includePaths(includePaths).inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        // trim removes empty lines at the end
+        assertThat(code.trim()).isEqualTo(".basic {\n  display: inline;\n}");
     }
 }

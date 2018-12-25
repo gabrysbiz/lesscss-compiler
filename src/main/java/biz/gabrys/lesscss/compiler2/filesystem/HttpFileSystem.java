@@ -14,7 +14,6 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 
 import java.io.IOException;
 import java.net.HttpURLConnection;
-import java.net.MalformedURLException;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
@@ -22,8 +21,11 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
-import java.util.HashSet;
+import java.util.Collections;
 import java.util.List;
+import java.util.Locale;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
@@ -37,6 +39,7 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * <li>301 Moved Permanently</li>
  * <li>302 Temporary Redirect</li>
  * <li>303 See Other</li>
+ * <li>404 Not Found</li>
  * </ul>
  * <p>
  * Example paths:
@@ -49,8 +52,20 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  */
 public class HttpFileSystem implements FileSystem {
 
-    private static final Collection<Integer> REDIRECT_CODES = new HashSet<Integer>(
+    private static final Collection<Integer> OK_NOTFOUND_CODES = Collections
+            .unmodifiableCollection(Arrays.asList(HttpURLConnection.HTTP_OK, HttpURLConnection.HTTP_NOT_FOUND));
+    private static final Collection<Integer> REDIRECT_CODES = Collections.unmodifiableCollection(
             Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));
+    private static final Collection<Integer> OK_NOTFOUND_REDIRECT_CODES;
+
+    static {
+        final Collection<Integer> codes = new ArrayList<Integer>(5);
+        codes.addAll(OK_NOTFOUND_CODES);
+        codes.addAll(REDIRECT_CODES);
+        OK_NOTFOUND_REDIRECT_CODES = Collections.unmodifiableCollection(codes);
+    }
+
+    private static final Pattern CHARSET_PATTERN = Pattern.compile("(?i)\\bcharset=\\s*\"?([^\\s;\"]*)");
 
     /**
      * Constructs a new instance.
@@ -72,58 +87,84 @@ public class HttpFileSystem implements FileSystem {
 
     @Override
     public String expandRedirection(final String path) throws IOException, URISyntaxException {
-        final HttpURLConnection connection = makeConnection(new URL(path), false);
-        final String expandedUrl = connection.getURL().toURI().normalize().toString();
-        connection.disconnect();
-        return expandedUrl;
+        HttpURLConnection connection = null;
+        String redirectedPath;
+        try {
+            connection = makeConnection(new URL(path), false, OK_NOTFOUND_REDIRECT_CODES);
+            if (OK_NOTFOUND_CODES.contains(connection.getResponseCode())) {
+                return path;
+            }
+            final String location = connection.getHeaderField("Location");
+            redirectedPath = connection.getURL().toURI().resolve(location).toString();
+        } finally {
+            disconnect(connection);
+        }
+        return expandRedirection(redirectedPath);
+    }
+
+    @Override
+    public boolean exists(final String path) throws IOException {
+        HttpURLConnection connection = null;
+        try {
+            connection = makeConnection(new URL(path), false, OK_NOTFOUND_CODES);
+            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+        } finally {
+            disconnect(connection);
+        }
     }
 
     @Override
     public FileData fetch(final String path) throws IOException {
-        final HttpURLConnection connection = makeConnection(new URL(path), true);
-        final String responseEncoding = getEncodingFromContentType(connection.getContentType());
-        FileData fileData;
+        HttpURLConnection connection = null;
         try {
-            fileData = new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);
-        } catch (final IOException e) {
-            throw new IOException("cannot read file's content", e);
+            connection = makeConnection(new URL(path), true, Arrays.asList(HttpURLConnection.HTTP_OK));
+            final String responseEncoding = getEncodingFromContentType(connection.getContentType());
+            try {
+                return new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);
+            } catch (final IOException e) {
+                throw new IOException("cannot download file", e);
+            }
         } finally {
-            connection.disconnect();
+            disconnect(connection);
         }
-        return fileData;
     }
 
-    private static HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody) throws IOException {
-        HttpURLConnection connection;
-        int responseCode;
-        URL resourceUrl = url;
-        while (true) {
-            connection = (HttpURLConnection) resourceUrl.openConnection();
-            connection.setRequestMethod(fetchResponseBody ? "GET" : "HEAD");
-            responseCode = connection.getResponseCode();
-            if (!REDIRECT_CODES.contains(responseCode)) {
-                break;
-            }
-            final String location = connection.getHeaderField("Location");
-            try {
-                resourceUrl = new URL(location);
-            } catch (final MalformedURLException e) {
-                throw new IOException(String.format("invalid \"Location\" header: %s", location), e);
-            }
-        }
-        if (responseCode != HttpURLConnection.HTTP_OK) {
-            final List<Integer> supportedCodes = new ArrayList<Integer>(REDIRECT_CODES);
-            supportedCodes.add(0, HttpURLConnection.HTTP_OK);
-            throw new IllegalArgumentException(String.format("response HTTP status code %s is not allowed (supports only: %s)",
-                    responseCode, supportedCodes.toString().replaceAll("\\[|\\]", "")));
+    HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody, final Collection<Integer> validCodes)
+            throws IOException {
+        final HttpURLConnection connection = openConnection(url);
+        connection.setInstanceFollowRedirects(false);
+        connection.setRequestMethod(fetchResponseBody ? "GET" : "HEAD");
+        if (!validCodes.contains(connection.getResponseCode())) {
+            final List<Integer> supportedCodes = new ArrayList<Integer>(validCodes);
+            Collections.sort(supportedCodes);
+            throw new IOException(String.format("response HTTP status code %s is not allowed (supports only: %s)",
+                    connection.getResponseCode(), supportedCodes.toString().replaceAll("\\[|\\]", "")));
         }
         return connection;
     }
 
-    private static String getEncodingFromContentType(final String contentType) {
-        if (contentType == null || !contentType.contains("charset=")) {
-            return Charset.defaultCharset().toString();
+    HttpURLConnection openConnection(final URL url) throws IOException {
+        return (HttpURLConnection) url.openConnection();
+    }
+
+    String getEncodingFromContentType(final String contentType) {
+        if (contentType != null) {
+            final Matcher matcher = CHARSET_PATTERN.matcher(contentType);
+            if (matcher.find()) {
+                return matcher.group(1).trim().toUpperCase(Locale.ENGLISH);
+            }
         }
-        return contentType.substring(contentType.lastIndexOf('=') + 1);
+        return Charset.defaultCharset().toString();
+    }
+
+    void disconnect(final HttpURLConnection connection) {
+        if (connection == null) {
+            return;
+        }
+        try {
+            connection.disconnect();
+        } catch (final Exception e) {
+            // do nothing
+        }
     }
 }

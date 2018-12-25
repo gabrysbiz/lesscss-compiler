@@ -60,14 +60,24 @@ public class ClassPathFileSystem implements FileSystem {
     }
 
     @Override
-    public FileData fetch(final String path) throws Exception {
+    public boolean exists(final String path) {
         final String name = path.substring(PROTOCOL_PREFIX.length());
-        final ClassLoader classLoader = Thread.currentThread().getContextClassLoader();
-        final InputStream stream = classLoader.getResourceAsStream(name);
+        final ClassLoader classLoader = getClassLoader();
+        return classLoader.getResource(name) != null;
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+        final String name = path.substring(PROTOCOL_PREFIX.length());
+        final InputStream stream = getClassLoader().getResourceAsStream(name);
         if (stream == null) {
             throw new IOException(String.format("cannot find resource \"%s\" in classpath", name));
         }
         final byte[] content = IOUtils.toByteArray(stream);
         return new FileData(content);
+    }
+
+    ClassLoader getClassLoader() {
+        return Thread.currentThread().getContextClassLoader();
     }
 }

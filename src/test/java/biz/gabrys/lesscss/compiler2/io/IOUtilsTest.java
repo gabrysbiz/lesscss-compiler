@@ -37,10 +37,13 @@ public final class IOUtilsTest {
                         bytes[0] = 'b';
                         bytes[1] = 'y';
                         bytes[2] = 't';
-                        bytes[3] = 'e';
-                        bytes[4] = 's';
                         ++call;
-                        return 5;
+                        return 3;
+                    case 1:
+                        bytes[0] = 'e';
+                        bytes[1] = 's';
+                        ++call;
+                        return 2;
                     default:
                         return -1;
                 }
@@ -71,7 +74,7 @@ public final class IOUtilsTest {
     }
 
     @Test
-    public void closeQuietly_objectIsNull_success() {
+    public void closeQuietly_objectIsNull_doesNothing() {
         IOUtils.closeQuietly(null);
     }
 
@@ -86,9 +89,20 @@ public final class IOUtilsTest {
     }
 
     @Test
-    public void closeQuietly_objectIsNotNullAndThrowException_objectIsClosed() throws IOException {
+    public void closeQuietly_objectIsNotNullAndThrowCheckedException_objectIsClosed() throws IOException {
         final Closeable closeable = mock(Closeable.class);
         doThrow(IOException.class).when(closeable).close();
+
+        IOUtils.closeQuietly(closeable);
+
+        verify(closeable).close();
+        verifyNoMoreInteractions(closeable);
+    }
+
+    @Test
+    public void closeQuietly_objectIsNotNullAndThrowUncheckedException_objectIsClosed() throws IOException {
+        final Closeable closeable = mock(Closeable.class);
+        doThrow(RuntimeException.class).when(closeable).close();
 
         IOUtils.closeQuietly(closeable);
 

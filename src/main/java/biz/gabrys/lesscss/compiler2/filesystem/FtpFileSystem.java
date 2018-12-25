@@ -14,12 +14,14 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
@@ -84,6 +86,30 @@ public class FtpFileSystem implements FileSystem {
     }
 
     @Override
+    public boolean exists(final String path) throws IOException {
+        final URL url = new URL(path);
+        FTPClient connection = null;
+        try {
+            connection = makeConnection(url);
+            return isFileExist(connection, url);
+        } catch (final IOException e) {
+            throw new IOException(String.format("cannot access source \"%s\" file", url), e);
+        } finally {
+            disconnect(connection);
+        }
+    }
+
+    boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
+        InputStream inputStream = null;
+        try {
+            inputStream = connection.retrieveFileStream(url.getPath());
+            return inputStream != null && connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;
+        } finally {
+            IOUtils.closeQuietly(inputStream);
+        }
+    }
+
+    @Override
     public FileData fetch(final String path) throws IOException {
         final URL url = new URL(path);
         FTPClient connection = null;
@@ -97,21 +123,25 @@ public class FtpFileSystem implements FileSystem {
         }
     }
 
-    private static FTPClient makeConnection(final URL url) throws IOException {
-        final FTPClient connection = new FTPClient();
+    FTPClient makeConnection(final URL url) throws IOException {
+        final FTPClient connection = createFtpClient();
         connection.setAutodetectUTF8(true);
         final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;
         connection.connect(url.getHost(), port);
         connection.enterLocalActiveMode();
-        if (!connection.login("anonymous", "gabrys.biz LessCSS Compiler")) {
-            throw new IOException(String.format("cannot login as anonymous user, reason %s", connection.getReplyString()));
+        if (!connection.login("anonymous", "anonymous")) {
+            throw new IOException(String.format("cannot login as anonymous user, reason: %s", connection.getReplyString()));
         }
         connection.enterLocalPassiveMode();
         connection.setFileType(FTP.BINARY_FILE_TYPE);
         return connection;
     }
 
-    private static byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
+    FTPClient createFtpClient() {
+        return new FTPClient();
+    }
+
+    byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
         final ByteArrayOutputStream outputStream = new ByteArrayOutputStream();
         try {
             if (!connection.retrieveFile(url.getPath(), outputStream)) {
@@ -123,13 +153,13 @@ public class FtpFileSystem implements FileSystem {
         }
     }
 
-    private static void disconnect(final FTPClient connection) {
+    void disconnect(final FTPClient connection) {
         if (connection == null) {
             return;
         }
         try {
             connection.disconnect();
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             // do nothing
         }
     }

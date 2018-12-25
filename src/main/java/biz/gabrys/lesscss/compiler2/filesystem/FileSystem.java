@@ -13,14 +13,24 @@
 package biz.gabrys.lesscss.compiler2.filesystem;
 
 /**
- * Responsible for performing operations on paths pointing to files and files located on the file system. The files
- * system is responsible for:
+ * Responsible for performing operations on paths pointing to files located on the file system. The files system is
+ * responsible for:
  * <ul>
  * <li>{@link #normalize(String) normalizing file paths} - converting relative paths to absolute and canonical
  * paths</li>
- * <li>{@link #expandRedirection(String) expanding file paths redirections} - resolving direct path to files</li>
- * <li>{@link #fetch(String) fetching file data} - reading data of the file stored in the file system</li>
+ * <li>{@link #expandRedirection(String) expanding file paths redirections} - resolving direct normalized file
+ * paths</li>
+ * <li>{@link #exists(String) checking if files specified by paths exist}</li>
+ * <li>{@link #fetch(String) fetching file data} - reading data of the files stored in the file system</li>
  * </ul>
+ * Methods are always called in order:
+ * <ol>
+ * <li>{@link #isSupported(String)}</li>
+ * <li>{@link #normalize(String)}</li>
+ * <li>{@link #expandRedirection(String)}</li>
+ * <li>{@link #exists(String)}</li>
+ * <li>{@link #fetch(String)}</li>
+ * </ol>
  * @since 2.0.0
  */
 public interface FileSystem {
@@ -31,9 +41,10 @@ public interface FileSystem {
      * <ul>
      * <li>{@link #normalize(String) normalize file paths}</li>
      * <li>{@link #expandRedirection(String) expand file paths redirections}</li>
+     * <li>{@link #exists(String) checking if files specified by paths exist}</li>
      * <li>{@link #fetch(String) fetch files data}</li>
      * </ul>
-     * @param path the path to verify.
+     * @param path the path to verify (never {@code null}).
      * @return {@code true} whether the file path is supported, otherwise {@code false}.
      * @since 2.0.0
      */
@@ -51,10 +62,11 @@ public interface FileSystem {
      * <li>/home/user/less/style.less</li>
      * <li>http://www.example.org/style.less</li>
      * </ul>
-     * @param path the path to normalize.
+     * @param path the path to normalize (never {@code null}).
      * @return the normalized path (never {@code null}).
      * @throws Exception if any error occurs.
      * @since 2.0.0
+     * @see #isSupported(String)
      */
     String normalize(String path) throws Exception;
 
@@ -62,20 +74,32 @@ public interface FileSystem {
      * Returns a direct and {@link #normalize(String) normalized} path to a resource. Example: if a path is equal to
      * "http://example.org/style.less", but this URL forwards to "/static/style.less", then the method will return
      * "http://example.org/static/style.less".
-     * @param path the file path.
-     * @return the direct path to the resource (never {@code null}). If the path is already a direct path, it should
-     *         return that path.
+     * @param path the normalized file path (never {@code null}).
+     * @return the direct normalized path to the resource (never {@code null}). If the path is already a direct path, it
+     *         should return that path.
      * @throws Exception if any error occurs.
      * @since 2.0.0
+     * @see #normalize(String)
      */
     String expandRedirection(String path) throws Exception;
 
     /**
+     * Tests whether a direct normalized file path point to an exiting file.
+     * @param path the direct normalized file path (never {@code null}).
+     * @return {@code true} whether the direct file path point to an exiting file, otherwise {@code false}.
+     * @throws Exception if any error occurs.
+     * @since 2.0.0
+     * @see #expandRedirection(String)
+     */
+    boolean exists(String path) throws Exception;
+
+    /**
      * Returns a data of the file specified by a path.
-     * @param path the file path.
+     * @param path the direct normalized file path (never {@code null}).
      * @return the file data (never {@code null}).
      * @throws Exception if any error occurs.
      * @since 2.0.0
+     * @see #exists(String)
      */
     FileData fetch(String path) throws Exception;
 }

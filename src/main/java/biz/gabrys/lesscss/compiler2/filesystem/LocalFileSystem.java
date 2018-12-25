@@ -44,9 +44,15 @@ public class LocalFileSystem implements FileSystem {
         // do nothing
     }
 
+    /**
+     * Always returns {@code true}.
+     * @param path an ignored parameter.
+     * @return always {@code true}.
+     * @since 2.0.0
+     */
     @Override
     public boolean isSupported(final String path) {
-        return new File(path).exists();
+        return true;
     }
 
     @Override
@@ -56,11 +62,16 @@ public class LocalFileSystem implements FileSystem {
 
     @Override
     public String expandRedirection(final String path) throws IOException {
-        return new File(path).getCanonicalPath();
+        return path;
     }
 
     @Override
-    public FileData fetch(final String file) throws IOException {
-        return new FileData(IOUtils.toByteArray(new FileInputStream(file)));
+    public boolean exists(final String path) {
+        return new File(path).exists();
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+        return new FileData(IOUtils.toByteArray(new FileInputStream(path)));
     }
 }

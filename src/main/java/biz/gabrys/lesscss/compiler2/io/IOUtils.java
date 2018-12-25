@@ -69,7 +69,7 @@ public final class IOUtils {
         }
         try {
             closeable.close();
-        } catch (final IOException e) {
+        } catch (final Exception e) {
             // do nothing
         }
     }

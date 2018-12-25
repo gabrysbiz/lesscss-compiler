@@ -9,23 +9,38 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     var filePath = file;
     var absolute = true;
 
+    var includePaths = [''];
     if (currentFileInfo != null && currentFileInfo.currentDirectory != null) {
         if (!/^(?:[a-z-]+:|\/)/.test(file)) {
             absolute = false;
-            filePath = currentFileInfo.currentDirectory + file;
+            includePaths[0] = currentFileInfo.currentDirectory;
         }
     }
+    includePaths = gabrysLessCompiler.removeDuplications(includePaths.concat(gabrysLessCompiler.includePaths));
 
     var fileSystem;
     try {
-        var expandedPath = expandRedirection(filePath);
-        if (expandedPath != filePath) {
-            filePath = expandedPath;
-            absolute = true;
-        }
-        fileSystem = gabrysLessCompiler.getFileSystem(filePath);
-        if (!absolute) {
-            filePath = fileSystem.normalizePath(filePath);
+        for (var i = 0; i < includePaths.length; ++i) {
+            if (i > 1) {
+                absolute = true;
+            }
+            filePath = includePaths[i] + file;
+            fileSystem = gabrysLessCompiler.getFileSystem(filePath);
+            filePath = fileSystem.normalize(filePath);
+            var expandedPath = fileSystem.expandRedirection(filePath);
+            var tmpPath = filePath;
+            while (expandedPath !== tmpPath) {
+                tmpPath = expandedPath;
+                fileSystem = gabrysLessCompiler.getFileSystem(tmpPath);
+                expandedPath = fileSystem.expandRedirection(tmpPath);
+            }
+            if (fileSystem.exists(expandedPath)) {
+                if (filePath !== expandedPath) {
+                    filePath = expandedPath;
+                    absolute = true;
+                }
+                break;
+            }
         }
     } catch (e) {
         callback(convertException(e, file));
@@ -85,19 +100,6 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
             message: exception.message + ": '" + file + "'"
         };
     }
-
-    function expandRedirection(path) {
-        var expanded = path;
-        while (true) {
-            var fileSystem = gabrysLessCompiler.getFileSystem(expanded);
-            var result = fileSystem.expandRedirection(expanded);
-            if (result == expanded) {
-                break;
-            }
-            expanded = result;
-        }
-        return expanded;
-    }
 };
 
 gabrysLessCompiler.getFileSystem = function(path) {
@@ -113,6 +115,25 @@ gabrysLessCompiler.getFileSystem = function(path) {
 gabrysLessCompiler.readFile = function(path) {
     var fileSystem = this.getFileSystem(path);
     return fileSystem.fetch(path);
+};
+
+gabrysLessCompiler.removeDuplications = function(array) {
+    var filtered = [array[0]];
+    for (var i = 1; i < array.length; ++i) {
+        if (!contains(filtered, array[i])) {
+            filtered[filtered.length] = array[i];
+        }
+    }
+    return filtered;
+
+    function contains(array, element) {
+        for (var i = 0; i < array.lenght; ++i) {
+            if (array[i] === element) {
+                return true;
+            }
+        }
+        return false;
+    }
 };
 
 (function(args) {
@@ -169,11 +190,11 @@ gabrysLessCompiler.readFile = function(path) {
                 break;
             case 'include-path':
                 validateArgument(arg, match[2]);
-                options.paths = match[2].split('gabrys-lesscss-compiler-path-separator').map(function(p) {
-                    if (p) {
-                        return p;
-                    }
-                });
+                gabrysLessCompiler.includePaths = gabrysLessCompiler.removeDuplications(
+                    match[2].split('' + Packages.biz.gabrys.lesscss.compiler2.NativeLessCompiler.INCLUDE_PATHS_SEPARATOR).map(function(line) {
+                        return line;
+                    })
+                );
                 break;
             case 'line-numbers':
                 validateArgument(arg, match[2]);
@@ -325,10 +346,18 @@ gabrysLessCompiler.readFile = function(path) {
                 }
             };
 
-            this.normalizePath = function(path) {
+            this.normalize = function(path) {
                 try {
                     // convert java.lang.String to JavaScript string
                     return '' + fileSystem.normalize(path);
+                } catch (e) {
+                    throw convertFileSystemException(e);
+                }
+            };
+
+            this.exists = function(path) {
+                try {
+                    return fileSystem.exists(path);
                 } catch (e) {
                     throw convertFileSystemException(e);
                 }

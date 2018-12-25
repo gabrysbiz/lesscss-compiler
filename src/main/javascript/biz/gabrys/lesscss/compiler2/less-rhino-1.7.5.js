@@ -7,7 +7,8 @@
 //
 var gabrysLessCompiler = {
     encoding: null,
-    fileSystems: []
+    fileSystems: [],
+    includePaths: []
 };
 
 function require(arg) {
