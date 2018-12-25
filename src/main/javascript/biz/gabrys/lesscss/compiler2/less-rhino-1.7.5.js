@@ -494,21 +494,33 @@ less.Parser = function Parser(env) {
         imports: imports,
         //
         // Parse an input string into an abstract syntax tree,
-        // @param str A string containing 'less' markup
+        // @param str a string containing 'less' markup
         // @param callback call `callback` when done.
-        // @param [additionalData] An optional map which can contains vars - a map (key, value) of variables to apply
+        // @param [additionalData] an optional map which can contains vars - a map (key, value) of variables to apply
         //
         parse: function(str, callback, additionalData) {
-            var root, line, lines, error = null,
-                globalVars, modifyVars, preText = "";
+            var root, line, lines, error = null;
+            var preText = '';
 
             i = j = currentPos = furthest = 0;
 
-            globalVars = (additionalData && additionalData.globalVars) ? less.Parser.serializeVars(additionalData.globalVars) + '\n' : '';
-            modifyVars = (additionalData && additionalData.modifyVars) ? '\n' + less.Parser.serializeVars(additionalData.modifyVars) : '';
+            var banner = '';
+            var globalVars = '';
+            var modifyVars = '';
+            if (typeof additionalData !== 'undefined') {
+                if (typeof additionalData.banner === 'string') {
+                    banner = additionalData.banner;
+                }
+                if (Array.isArray(additionalData.globalVars) && additionalData.globalVars.length !== 0) {
+                    globalVars = less.Parser.serializeVars(additionalData.globalVars) + '\n';
+                }
+                if (Array.isArray(additionalData.modifyVars) && additionalData.modifyVars.length !== 0) {
+                    modifyVars = '\n' + less.Parser.serializeVars(additionalData.modifyVars);
+                }
+            }
 
-            if (globalVars || (additionalData && additionalData.banner)) {
-                preText = ((additionalData && additionalData.banner) ? additionalData.banner : "") + globalVars;
+            if (globalVars !== '' || banner !== '') {
+                preText = banner + globalVars;
                 parser.imports.contentsIgnoredChars[env.currentFileInfo.filename] = preText.length;
             }
 
@@ -2397,18 +2409,19 @@ less.Parser = function Parser(env) {
     return parser;
 };
 
-less.Parser.serializeVars = function(vars) {
-    var s = '';
+less.Parser.serializeVars = function(variables) {
+    var text = '';
+    for (var i = 0; i < variables.length; ++i) {
+        var name = variables[i].name;
+        var value = variables[i].value;
 
-    for (var name in vars) {
-        if (Object.hasOwnProperty.call(vars, name)) {
-            var value = vars[name];
-            s += ((name[0] === '@') ? '' : '@') + name + ': ' + value +
-                ((('' + value).slice(-1) === ';') ? '' : ';');
-        }
+        text += name[0] === '@' ? '' : '@';
+        text += name;
+        text += ': ';
+        text += value;
+        text += value.slice(-1) === ';' ? '' : ';';
     }
-
-    return s;
+    return text;
 };
 
 (function(tree) {

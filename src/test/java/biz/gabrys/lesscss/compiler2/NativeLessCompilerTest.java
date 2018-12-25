@@ -241,4 +241,30 @@ public final class NativeLessCompilerTest {
             assertThat(e.getMessage()).isEqualTo("Encoding \"- invalid -\" is unsupported");
         }
     }
+
+    @Test
+    public void execute_useGlobalVariables_success() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/variables.less").getPath());
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("width", "100px"), new LessVariable("height", "80px"));
+        final Collection<String> options = builder.globalVariables(variables).inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        assertThat(code.trim()).isEqualTo("body {\n  width: 100px;\n  height: 20px;\n}");
+    }
+
+    @Test
+    public void execute_useModifyVariables_success() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/variables.less").getPath());
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("width", "100px"), new LessVariable("height", "80px"));
+        final Collection<String> options = builder.modifyVariables(variables).inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        assertThat(code.trim()).isEqualTo("body {\n  width: 100px;\n  height: 80px;\n}");
+    }
 }

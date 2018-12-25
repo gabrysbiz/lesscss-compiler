@@ -21,14 +21,13 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
 
 /**
  * <p>
- * Represents <a href="http://lesscss.org/usage/index.html#command-line-usage-options">Less compiler options</a>
- * responsible for controlling the {@link LessCompiler} compilation process.
+ * Represents <a href="http://lesscss.org/usage/index.html#less-options">Less compiler options</a> responsible for
+ * controlling the {@link LessCompiler} compilation process.
  * </p>
  * <p>
  * Base options:
  * </p>
  * <ul>
- * <li>{@link #getBanner() banner} - a banner which will be inserted to a source file before the compilation</li>
  * <li>{@link #isCompress() compress} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #isIeCompatibility() IE compatibility} - whether a CSS code should be compatible with Internet Explorer
  * browser (default: {@code true})</li>
@@ -61,6 +60,14 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
  * the Source Map and also to the path to the map file specified in your output CSS (default: {@code null})</li>
  * <li>{@link #getSourceMapUrl() URL} - a path which will overwrite the URL in the CSS that points at the Source Map
  * file (default: {@code null})</li>
+ * </ul>
+ * <p>
+ * Additional options:
+ * </p>
+ * <ul>
+ * <li>{@link #getBanner() banner} - a banner which will be inserted to a source file before the compilation</li>
+ * <li>{@link #getGlobalVariables() globalVariables} - variables that can be referenced by the files</li>
+ * <li>{@link #getModifyVariables() modifyVariables} - variables that can overwrite variables defined in the files</li>
  * </ul>
  * <p>
  * Non-standard options:
@@ -102,10 +109,12 @@ public class LessOptions {
     private boolean sourceMapLessInline;
     private String sourceMapUrl;
 
+    private String banner;
+    private List<LessVariable> globalVariables;
+    private List<LessVariable> modifyVariables;
+
     private String encoding;
     private List<String> fileSystems;
-
-    private String banner;
 
     /**
      * Constructs a new instance.
@@ -116,6 +125,10 @@ public class LessOptions {
         javaScript = true;
         includePaths = Collections.emptyList();
         lineNumbers = LineNumbersValue.OFF;
+
+        globalVariables = Collections.emptyList();
+        modifyVariables = Collections.emptyList();
+
         fileSystems = DEFAULT_FILE_SYSTEMS;
     }
 
@@ -146,10 +159,12 @@ public class LessOptions {
         sourceMapLessInline = options.sourceMapLessInline;
         sourceMapUrl = options.sourceMapUrl;
 
+        banner = options.banner;
+        globalVariables = new ArrayList<LessVariable>(options.globalVariables);
+        modifyVariables = new ArrayList<LessVariable>(options.modifyVariables);
+
         encoding = options.encoding;
         fileSystems = new ArrayList<String>(options.fileSystems);
-
-        banner = options.banner;
     }
 
     /**
@@ -763,5 +778,56 @@ public class LessOptions {
      */
     public void setBanner(final String banner) {
         this.banner = banner;
+    }
+
+    /**
+     * Returns global variables that can be referenced by the files (default: {@code []}. Effectively the declarations
+     * are put at the top of your base Less file, meaning those variables can be used, but they also can be overridden
+     * if variables with the same names are defined in the file.
+     * @return the global variables (never {@code null}).
+     */
+    public List<LessVariable> getGlobalVariables() {
+        return new ArrayList<LessVariable>(globalVariables);
+    }
+
+    /**
+     * Sets global variables that can be referenced by the files (default: {@code []}. Effectively the declarations are
+     * put at the top of your base Less file, meaning those variables can be used, but they also can be overridden if
+     * variables with the same names are defined in the file.
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @since 2.0.0
+     */
+    public void setGlobalVariables(final List<LessVariable> globalVariables) {
+        if (globalVariables == null) {
+            this.globalVariables = Collections.emptyList();
+        } else {
+            this.globalVariables = new ArrayList<LessVariable>(globalVariables);
+        }
+    }
+
+    /**
+     * Returns modify variables that can overwrite variables defined in the files (default: {@code []}. Effectively the
+     * declarations are put at the bottom of your base Less file, meaning they will override anything defined in your
+     * Less file.
+     * @return the modify variables (never {@code null}).
+     * @since 2.0.0
+     */
+    public List<LessVariable> getModifyVariables() {
+        return new ArrayList<LessVariable>(modifyVariables);
+    }
+
+    /**
+     * Sets modify variables that can overwrite variables defined in the files (default: {@code []}. Effectively the
+     * declarations are put at the bottom of your base Less file, meaning they will override anything defined in your
+     * Less file.
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @since 2.0.0
+     */
+    public void setModifyVariables(final List<LessVariable> modifyVariables) {
+        if (modifyVariables == null) {
+            this.modifyVariables = Collections.emptyList();
+        } else {
+            this.modifyVariables = new ArrayList<LessVariable>(modifyVariables);
+        }
     }
 }

@@ -130,7 +130,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
     return filtered;
 
     function contains(array, element) {
-        for (var i = 0; i < array.lenght; ++i) {
+        for (var i = 0; i < array.length; ++i) {
             if (array[i] === element) {
                 return true;
             }
@@ -157,7 +157,11 @@ gabrysLessCompiler.removeDuplications = function(array) {
     var sourceMapInline = false;
     var fileSystemsClassNames = [ 'biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem' ];
 
-    var additionalData = {};
+    var additionalData = {
+        banner: '',
+        globalVars: [],
+        modifyVars: []
+    };
 
     args = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
@@ -195,9 +199,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
                 break;
             case 'include-path':
                 validateArgument(arg, match[2]);
-                gabrysLessCompiler.includePaths = gabrysLessCompiler.removeDuplications(
-                    match[2].split('' + Packages.biz.gabrys.lesscss.compiler2.NativeLessCompiler.INCLUDE_PATHS_SEPARATOR)
-                );
+                gabrysLessCompiler.includePaths[gabrysLessCompiler.includePaths.length] = match[2];
                 break;
             case 'line-numbers':
                 validateArgument(arg, match[2]);
@@ -260,11 +262,20 @@ gabrysLessCompiler.removeDuplications = function(array) {
                 validateArgument(arg, match[2]);
                 additionalData.banner = match[2];
                 break;
+            case 'global-var':
+                validateArgument(arg, match[2]);
+                additionalData.globalVars[additionalData.globalVars.length] = parseVariable(match[2]);
+                break;
+            case 'modify-var':
+                validateArgument(arg, match[2]);
+                additionalData.modifyVars[additionalData.modifyVars.length] = parseVariable(match[2]);
+                break;
             default:
                 throwConfigurationError('Invalid option "' + arg + '"');
         }
     });
 
+    gabrysLessCompiler.includePaths = gabrysLessCompiler.removeDuplications(gabrysLessCompiler.includePaths);
     if (gabrysLessCompiler.encoding == null) {
         gabrysLessCompiler.encoding = java.nio.charset.Charset.defaultCharset().name();
     }
@@ -439,6 +450,14 @@ gabrysLessCompiler.removeDuplications = function(array) {
         if (!charsetSupported) {
             throwConfigurationError('Encoding "' + encoding + '" is unsupported');
         }
+    }
+
+    function parseVariable(variable) {
+        var index = variable.indexOf('=');
+        return {
+          name: variable.substring(0, index),
+          value: variable.substr(index + 1)
+        };
     }
 
     function writeFile(path, content) {

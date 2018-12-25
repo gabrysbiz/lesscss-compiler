@@ -44,6 +44,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * 
  * @since 2.0.0
  * @see FileSystemsOptionBuilder
+ * @see LessVariablesOptionBuilder
  */
 public class LessOptionsBuilder {
 
@@ -702,6 +703,98 @@ public class LessOptionsBuilder {
      */
     public LessOptionsBuilder bannerOff() {
         return banner(null);
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(LessVariable...)
+     * @see #globalVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder globalVariables(final Collection<? extends LessVariable> globalVariables) {
+        if (globalVariables != null) {
+            getOptions().setGlobalVariables(new ArrayList<LessVariable>(globalVariables));
+        } else {
+            getOptions().setGlobalVariables(null);
+        }
+        return this;
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder globalVariables(final LessVariable... globalVariables) {
+        if (globalVariables != null) {
+            return globalVariables(Arrays.asList(globalVariables));
+        } else {
+            return globalVariables((Collection<LessVariable>) null);
+        }
+    }
+
+    /**
+     * Clears global variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariables(LessVariable...)
+     */
+    public LessOptionsBuilder globalVariablesOff() {
+        return globalVariables((Collection<LessVariable>) null);
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(LessVariable...)
+     * @see #modifyVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder modifyVariables(final Collection<? extends LessVariable> modifyVariables) {
+        if (modifyVariables != null) {
+            getOptions().setModifyVariables(new ArrayList<LessVariable>(modifyVariables));
+        } else {
+            getOptions().setModifyVariables(null);
+        }
+        return this;
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariablesOff()
+     * @see LessVariablesOptionBuilder
+     */
+    public LessOptionsBuilder modifyVariables(final LessVariable... modifyVariables) {
+        if (modifyVariables != null) {
+            return modifyVariables(Arrays.asList(modifyVariables));
+        } else {
+            return modifyVariables((Collection<LessVariable>) null);
+        }
+    }
+
+    /**
+     * Clears modify variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariables(LessVariable...)
+     */
+    public LessOptionsBuilder modifyVariablesOff() {
+        return modifyVariables((Collection<LessVariable>) null);
     }
 
     /**

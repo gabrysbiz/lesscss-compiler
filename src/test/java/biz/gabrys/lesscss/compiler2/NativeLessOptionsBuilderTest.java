@@ -11,6 +11,7 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.List;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -114,34 +115,38 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getIncludePathsOption_pathsAreNull_returnsEmptyText() {
-        final String option = builder.includePaths(null).getIncludePathsOption();
-        assertThat(option).isEmpty();
+    public void getIncludePathsOptions_pathsAreNull_returnsEmptyArray() {
+        final String[] options = builder.includePaths(null).getIncludePathsOptions();
+        assertThat(options).isEmpty();
     }
 
     @Test
-    public void getIncludePathsOption_pathsAreEmpty_returnsEmptyText() {
-        final String option = builder.includePaths(Collections.<String>emptyList()).getIncludePathsOption();
-        assertThat(option).isEmpty();
+    public void getIncludePathsOptions_pathsAreEmpty_returnsEmptyArray() {
+        final String[] options = builder.includePaths(Collections.<String>emptyList()).getIncludePathsOptions();
+        assertThat(options).isEmpty();
     }
 
     @Test
-    public void getIncludePathsOption_pathsContaintOneElement_returnsOption() {
-        final String option = builder.includePaths(Arrays.asList("url1")).getIncludePathsOption();
-        assertThat(option).isEqualTo("--include-path=url1");
+    public void getIncludePathsOption_pathsContainOneElement_returnsOptions() {
+        final String[] options = builder.includePaths(Arrays.asList("url1")).getIncludePathsOptions();
+        assertThat(options).hasSize(1);
+        assertThat(options[0]).isEqualTo("--include-path=url1");
     }
 
     @Test
-    public void getIncludePathsOption_pathsContainTwoElements_returnsOption() {
-        final String option = builder.includePaths(Arrays.asList("url1", "url2")).getIncludePathsOption();
-        assertThat(option).isEqualTo("--include-path=url1gabrys-lesscss-compiler-path-separatorurl2");
+    public void getIncludePathsOptions_pathsContainTwoElements_returnsOptions() {
+        final String[] options = builder.includePaths(Arrays.asList("url1", "url2")).getIncludePathsOptions();
+        assertThat(options).hasSize(2);
+        assertThat(options[0]).isEqualTo("--include-path=url1");
+        assertThat(options[1]).isEqualTo("--include-path=url2");
     }
 
     @Test
-    public void getIncludePathsOption_pathsContainThreeElements_returnsOption() {
-        final String option = builder.includePaths(Arrays.asList("url1", "url2", "url3")).getIncludePathsOption();
-        assertThat(option)
-                .isEqualTo("--include-path=url1gabrys-lesscss-compiler-path-separatorurl2gabrys-lesscss-compiler-path-separatorurl3");
+    public void getIncludePathsOption_pathsContainThreeElementsWhereOneIsBlank_returnsOption() {
+        final String[] options = builder.includePaths(Arrays.asList("url1", "   ", "url3")).getIncludePathsOptions();
+        assertThat(options).hasSize(2);
+        assertThat(options[0]).isEqualTo("--include-path=url1");
+        assertThat(options[1]).isEqualTo("--include-path=url3");
     }
 
     @Test
@@ -403,7 +408,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getFileSystemsOption_fileSystemsContaintOneElement_returnsOption() {
+    public void getFileSystemsOption_fileSystemsContainOneElement_returnsOption() {
         final String option = builder.fileSystems(Arrays.asList("system")).getFileSystemsOption();
         assertThat(option).isEqualTo("--file-systems=system");
     }
@@ -445,6 +450,64 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
+    public void getGlobalVariablesOptions_variablesAreNull_returnsEmptyArray() {
+        final String[] option = builder.globalVariables(null).getGlobalVariablesOptions();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getGlobalVariablesOptions_variablesAreEmpty_returnsEmptyArray() {
+        final String[] option = builder.globalVariables(Collections.<LessVariable>emptyList()).getGlobalVariablesOptions();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getGlobalVariablesOptions_variablesContainOneElement_returnsOptions() {
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("name", "value"));
+        final String[] options = builder.globalVariables(variables).getGlobalVariablesOptions();
+        assertThat(options).hasSize(1);
+        assertThat(options[0]).isEqualTo("--global-var=name=value");
+    }
+
+    @Test
+    public void getGlobalVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsOptions() {
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("name1", "value1"), null, new LessVariable("name2", "value2"));
+        final String[] options = builder.globalVariables(variables).getGlobalVariablesOptions();
+        assertThat(options).hasSize(2);
+        assertThat(options[0]).isEqualTo("--global-var=name1=value1");
+        assertThat(options[1]).isEqualTo("--global-var=name2=value2");
+    }
+
+    @Test
+    public void getModifyVariablesOptions_variablesAreNull_returnsEmptyArray() {
+        final String[] option = builder.modifyVariables(null).getModifyVariablesOptions();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getModifyVariablesOptions_variablesAreEmpty_returnsEmptyArray() {
+        final String[] option = builder.modifyVariables(Collections.<LessVariable>emptyList()).getModifyVariablesOptions();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getModifyVariablesOptions_variablesContainOneElement_returnsOptions() {
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("name", "value"));
+        final String[] options = builder.modifyVariables(variables).getModifyVariablesOptions();
+        assertThat(options).hasSize(1);
+        assertThat(options[0]).isEqualTo("--modify-var=name=value");
+    }
+
+    @Test
+    public void getModifyVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsOptions() {
+        final List<LessVariable> variables = Arrays.asList(new LessVariable("name1", "value1"), null, new LessVariable("name2", "value2"));
+        final String[] options = builder.modifyVariables(variables).getModifyVariablesOptions();
+        assertThat(options).hasSize(2);
+        assertThat(options[0]).isEqualTo("--modify-var=name1=value1");
+        assertThat(options[1]).isEqualTo("--modify-var=name2=value2");
+    }
+
+    @Test
     public void build_defaultValues_returnsDefaultOptions() {
         final Collection<String> options = builder.build();
         assertThat(options).isEmpty();
@@ -455,7 +518,7 @@ public final class NativeLessOptionsBuilderTest {
         verify(builder).getCompressOption();
         verify(builder).getIeCompatibilityOption();
         verify(builder).getJavaScriptOption();
-        verify(builder).getIncludePathsOption();
+        verify(builder).getIncludePathsOptions();
         verify(builder).getLineNumbersOption();
         verify(builder).getSourceMapDefaultOption();
         verify(builder).getSourceMapFileOption();
@@ -468,9 +531,11 @@ public final class NativeLessOptionsBuilderTest {
         verify(builder).getRelativeUrlsOption();
         verify(builder).getStrictMathOption();
         verify(builder).getStrictUnitsOption();
+        verify(builder).getBannerOption();
+        verify(builder).getGlobalVariablesOptions();
+        verify(builder).getModifyVariablesOptions();
         verify(builder).getEncodingOption();
         verify(builder).getFileSystemsOption();
-        verify(builder).getBannerOption();
         verify(builder).getInputFileOption();
         verify(builder).getOutputFileOption();
         verifyNoMoreInteractions(builder);

@@ -70,12 +70,6 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  */
 public class NativeLessCompiler {
 
-    /**
-     * Separator used to extract paths from {@code --include-path} option.
-     * @since 2.0.0
-     */
-    public static final String INCLUDE_PATHS_SEPARATOR = "gabrys-lesscss-compiler-path-separator";
-
     private static final String CHARSET = "UTF-8";
 
     private final Object mutex = new Object();
@@ -93,11 +87,10 @@ public class NativeLessCompiler {
     }
 
     /**
-     * Executes the compiler. You can use standard
-     * <a href="http://lesscss.org/usage/index.html#command-line-usage-options">Less command line options</a> with some
-     * exceptions:
+     * Executes the compiler. You can use standard <a href="http://lesscss.org/usage/index.html#less-options">Less
+     * command line options</a> with some exceptions:
      * <ul>
-     * <li>use {@link #INCLUDE_PATHS_SEPARATOR} to separate paths in {@code --include-path} option instead of ';'
+     * <li>use multiple {@code --include-path} options to declare multiple paths instead of the using separator ';'
      * character on Windows and ':' character on Unix/Linux machines</li>
      * <li>does not support options:
      * <ul>

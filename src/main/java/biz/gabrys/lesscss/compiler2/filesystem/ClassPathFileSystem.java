@@ -73,8 +73,7 @@ public class ClassPathFileSystem implements FileSystem {
         if (stream == null) {
             throw new IOException(String.format("cannot find resource \"%s\" in classpath", name));
         }
-        final byte[] content = IOUtils.toByteArray(stream);
-        return new FileData(content);
+        return new FileData(IOUtils.toByteArray(stream));
     }
 
     ClassLoader getClassLoader() {

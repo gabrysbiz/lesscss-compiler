@@ -13,6 +13,7 @@
 package biz.gabrys.lesscss.compiler2;
 
 import java.io.File;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
 
@@ -22,14 +23,13 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 
 /**
  * <p>
- * Responsible for creating <a href="http://lesscss.org/usage/index.html#command-line-usage-options">options</a> that
- * control the {@link NativeLessCompiler} compilation process.
+ * Responsible for creating <a href="http://lesscss.org/usage/index.html#less-options">options</a> that control the
+ * {@link NativeLessCompiler} compilation process.
  * </p>
  * <p>
  * Base options:
  * </p>
  * <ul>
- * <li>{@link #banner(String) banner} - a banner which will be inserted to a source file before the compilation</li>
  * <li>{@link #compress(boolean) compression} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #ieCompatibility(boolean) IE compatibility} - whether a CSS code should be compatible with Internet
  * Explorer browser (default: {@code true})</li>
@@ -74,6 +74,14 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * inside the Source Map and also to the path to the map file specified in your output CSS (default: {@code null})</li>
  * <li>{@link #sourceMapUrl(String) URL} - a path which will overwrite the URL in the CSS that points at the Source Map
  * file (default: {@code null})</li>
+ * </ul>
+ * <p>
+ * Additional options:
+ * </p>
+ * <ul>
+ * <li>{@link #banner(String) banner} - a banner which will be inserted to a source file before the compilation</li>
+ * <li>{@link #globalVariables(List) globalVariables} - variables that can be referenced by the files</li>
+ * <li>{@link #modifyVariables(List) modifyVariables} - variables that can overwrite variables defined in the files</li>
  * </ul>
  * <p>
  * Non-standard options:
@@ -132,10 +140,12 @@ public class NativeLessOptionsBuilder {
      * <li>{@link #compress(boolean)}</li>
      * <li>{@link #encoding(String)}</li>
      * <li>{@link #fileSystems(List)}</li>
+     * <li>{@link #globalVariables(List)}</li>
      * <li>{@link #ieCompatibility(boolean)}</li>
      * <li>{@link #includePaths(List)}</li>
      * <li>{@link #javaScript(boolean)}</li>
      * <li>{@link #lineNumbers(LineNumbersValue)}</li>
+     * <li>{@link #modifyVariables(List)}</li>
      * <li>{@link #relativeUrls(boolean)}</li>
      * <li>{@link #rootPath(String)}</li>
      * <li>{@link #silent(boolean)}</li>
@@ -355,27 +365,20 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Returns a command line option representation of the available include paths.
-     * @return the command line option (never {@code null}).
+     * Returns command line options representation of the available include paths.
+     * @return the command line options (never {@code null}).
      * @since 2.0.0
      * @see #includePaths(List)
      */
-    protected String getIncludePathsOption() {
-        final Collection<String> includePaths = options.getIncludePaths();
-        if (includePaths.isEmpty()) {
-            return "";
-        }
-        final StringBuilder paths = new StringBuilder();
-        for (final String path : includePaths) {
-            if (StringUtils.isNotBlank(path)) {
-                final boolean separatorRequired = paths.length() != 0;
-                if (separatorRequired) {
-                    paths.append(NativeLessCompiler.INCLUDE_PATHS_SEPARATOR);
-                }
-                paths.append(path.trim());
+    protected String[] getIncludePathsOptions() {
+        final List<String> includePaths = options.getIncludePaths();
+        final List<String> commandLineOptions = new ArrayList<String>(includePaths.size());
+        for (final String includePath : includePaths) {
+            if (StringUtils.isNotBlank(includePath)) {
+                commandLineOptions.add("--include-path=" + includePath);
             }
         }
-        return "--include-path=" + paths.toString();
+        return commandLineOptions.toArray(new String[0]);
     }
 
     /**
@@ -497,7 +500,7 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Returns a command line options which enables/disables generating a Source Map which will be put to CSS code.
+     * Returns command line options which enable/disable generating a Source Map which will be put to CSS code.
      * @return the command line options (never {@code null}).
      * @since 2.0.0
      * @see #sourceMapInline(boolean)
@@ -937,6 +940,66 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
+     * Sets global variables that can be referenced by the files (default: {@code []}. Effectively the declarations are
+     * put at the top of your base Less file, meaning those variables can be used, but they also can be overridden if
+     * variables with the same names are defined in the file.
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessOptionsBuilder globalVariables(final List<LessVariable> globalVariables) {
+        options.setGlobalVariables(globalVariables);
+        return this;
+    }
+
+    /**
+     * Returns command line options which defines global variables.
+     * @return the command line options (never {@code null}).
+     * @since 2.0.0
+     * @see #globalVariables(List)
+     */
+    protected String[] getGlobalVariablesOptions() {
+        final List<LessVariable> variables = options.getGlobalVariables();
+        final List<String> commandLineOptions = new ArrayList<String>(variables.size());
+        for (final LessVariable variable : variables) {
+            if (variable != null) {
+                commandLineOptions.add("--global-var=" + variable);
+            }
+        }
+        return commandLineOptions.toArray(new String[0]);
+    }
+
+    /**
+     * Sets modify variables that can overwrite variables defined in the files (default: {@code []}. Effectively the
+     * declarations are put at the bottom of your base Less file, meaning they will override anything defined in your
+     * Less file.
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessOptionsBuilder modifyVariables(final List<LessVariable> modifyVariables) {
+        options.setModifyVariables(modifyVariables);
+        return this;
+    }
+
+    /**
+     * Returns command line options which defines modify variables.
+     * @return the command line options (never {@code null}).
+     * @since 2.0.0
+     * @see #modifyVariables(List)
+     */
+    protected String[] getModifyVariablesOptions() {
+        final List<LessVariable> variables = options.getModifyVariables();
+        final List<String> commandLineOptions = new ArrayList<String>(variables.size());
+        for (final LessVariable variable : variables) {
+            if (variable != null) {
+                commandLineOptions.add("--modify-var=" + variable);
+            }
+        }
+        return commandLineOptions.toArray(new String[0]);
+    }
+
+    /**
      * Builds a collection with configuration options for the {@link NativeLessCompiler} compilation process.
      * @return the collection with configuration options.
      * @throws BuilderCreationException if you set an output file without setting an input file.
@@ -955,7 +1018,7 @@ public class NativeLessOptionsBuilder {
         configurationOptions.append(getCompressOption());
         configurationOptions.append(getIeCompatibilityOption());
         configurationOptions.append(getJavaScriptOption());
-        configurationOptions.append(getIncludePathsOption());
+        configurationOptions.append(getIncludePathsOptions());
         configurationOptions.append(getLineNumbersOption());
 
         configurationOptions.append(getSourceMapDefaultOption());
@@ -971,10 +1034,12 @@ public class NativeLessOptionsBuilder {
         configurationOptions.append(getStrictMathOption());
         configurationOptions.append(getStrictUnitsOption());
 
+        configurationOptions.append(getBannerOption());
+        configurationOptions.append(getGlobalVariablesOptions());
+        configurationOptions.append(getModifyVariablesOptions());
+
         configurationOptions.append(getEncodingOption());
         configurationOptions.append(getFileSystemsOption());
-
-        configurationOptions.append(getBannerOption());
 
         final String inputPath = getInputFileOption();
         configurationOptions.append(inputPath);
