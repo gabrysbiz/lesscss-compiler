@@ -75,6 +75,13 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * file (default: {@code null})</li>
  * </ul>
  * <p>
+ * Non-standard options:
+ * </p>
+ * <ul>
+ * <li>{@link #encoding(String) encoding} - an encoding used to read source files and save generated code (default:
+ * {@code null} - means platform default encoding)</li>
+ * </ul>
+ * <p>
  * Example code:
  * </p>
  * 
@@ -118,6 +125,7 @@ public class NativeLessOptionsBuilder {
      * Sets compiler options. This method overwrites values set by:
      * <ul>
      * <li>{@link #compress(boolean)}</li>
+     * <li>{@link #encoding(String)}</li>
      * <li>{@link #ieCompatibility(boolean)}</li>
      * <li>{@link #includePaths(List)}</li>
      * <li>{@link #javaScript(boolean)}</li>
@@ -836,6 +844,32 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
+     * Sets an encoding used to read source files and save generated code.
+     * @param encoding the encoding.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessOptionsBuilder encoding(final String encoding) {
+        options.setEncoding(encoding);
+        return this;
+    }
+
+    /**
+     * Returns a command line option which defines sources and output files encoding.
+     * @return the command line option (never {@code null}).
+     * @since 2.0.0
+     * @see #encoding(String)
+     */
+    protected String getEncodingOption() {
+        final String encoding = options.getEncoding();
+        if (encoding != null) {
+            return "--encoding=" + encoding;
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Builds a collection with configuration options for the {@link NativeLessCompiler} compilation process.
      * @return the collection with configuration options.
      * @throws BuilderCreationException if you set an output file without setting an input file.
@@ -869,6 +903,8 @@ public class NativeLessOptionsBuilder {
         configurationOptions.append(getRelativeUrlsOption());
         configurationOptions.append(getStrictMathOption());
         configurationOptions.append(getStrictUnitsOption());
+
+        configurationOptions.append(getEncodingOption());
 
         final String inputPath = getInputFileOption();
         configurationOptions.append(inputPath);

@@ -165,7 +165,7 @@
                 </plugin>
                 <plugin>
                     <artifactId>maven-surefire-plugin</artifactId>
-                    <version>2.19.1</version>
+                    <version>2.20</version>
                 </plugin>
                 <plugin>
                     <groupId>com.mycila</groupId>
@@ -262,13 +262,13 @@
                 <artifactId>maven-antrun-plugin</artifactId>
                 <executions>
                     <execution>
-                        <phase>site</phase>
+                        <phase>pre-site</phase>
                         <goals>
                             <goal>run</goal>
                         </goals>
                         <configuration>
                             <target>
-                                <copy todir="${project.build.directory}/site/files">
+                                <copy todir="src/site/resources/files">
                                     <fileset dir="${project.build.directory}">
                                         <include name="${project.artifactId}-${project.version}.jar" />
                                         <include name="${project.artifactId}-${project.version}-javadoc.jar" />
@@ -295,9 +295,9 @@
                             <report>dependency-info</report>
                             <report>issue-tracking</report>
                             <report>license</report>
+                            <report>scm</report>
                             <report>summary</report>
                             <report>project-team</report>
-                            <report>scm</report>
                         </reports>
                     </reportSet>
                 </reportSets>

@@ -12,6 +12,7 @@
  */
 package biz.gabrys.lesscss.compiler2;
 
+import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -38,7 +39,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * 
  * // use existing options object to create a new one
  * boolean compression = false;
- * options =  new {@link #LessOptionsBuilder(LessOptions) LessOptionsBuilder}(options).{@link #compress(boolean) compress}(compression).{@link #build() build}();
+ * options = new {@link #LessOptionsBuilder(LessOptions) LessOptionsBuilder}(options).{@link #compress(boolean) compress}(compression).{@link #build() build}();
  * </pre>
  * 
  * @since 2.0.0
@@ -597,6 +598,46 @@ public class LessOptionsBuilder {
      */
     public LessOptionsBuilder sourceMapUrlOff() {
         return sourceMapUrl(null);
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(Charset)
+     * @see #encodingPlatformDefault()
+     */
+    public LessOptionsBuilder encoding(final CharSequence encoding) {
+        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));
+        return this;
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(CharSequence)
+     * @see #encodingPlatformDefault()
+     */
+    public LessOptionsBuilder encoding(final Charset encoding) {
+        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));
+        return this;
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code to platform default (default:
+     * {@code platform default encoding}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(CharSequence)
+     * @see #encoding(Charset)
+     */
+    public LessOptionsBuilder encodingPlatformDefault() {
+        return encoding((CharSequence) null);
     }
 
     /**

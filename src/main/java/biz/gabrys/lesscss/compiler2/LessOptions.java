@@ -58,6 +58,13 @@ import java.util.List;
  * <li>{@link #getSourceMapUrl() URL} - a path which will overwrite the URL in the CSS that points at the Source Map
  * file (default: {@code null})</li>
  * </ul>
+ * <p>
+ * Non-standard options:
+ * </p>
+ * <ul>
+ * <li>{@link #getEncoding() encoding} - an encoding used to read source files and save generated code (default:
+ * {@code null} - means platform default encoding)</li>
+ * </ul>
  * @since 2.0.0
  * @see LessOptionsBuilder
  */
@@ -79,6 +86,8 @@ public class LessOptions {
     private String sourceMapBasePath;
     private boolean sourceMapLessInline;
     private String sourceMapUrl;
+
+    private String encoding;
 
     /**
      * Constructs a new instance.
@@ -117,6 +126,8 @@ public class LessOptions {
         sourceMapBasePath = options.sourceMapBasePath;
         sourceMapLessInline = options.sourceMapLessInline;
         sourceMapUrl = options.sourceMapUrl;
+
+        encoding = options.encoding;
     }
 
     /**
@@ -670,5 +681,25 @@ public class LessOptions {
      */
     public void setSourceMapUrl(final String sourceMapUrl) {
         this.sourceMapUrl = sourceMapUrl;
+    }
+
+    /**
+     * Returns an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @return the encoding.
+     * @since 2.0.0
+     */
+    public String getEncoding() {
+        return encoding;
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @since 2.0.0
+     */
+    public void setEncoding(final String encoding) {
+        this.encoding = encoding;
     }
 }

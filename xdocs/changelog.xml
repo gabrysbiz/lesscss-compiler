@@ -12,6 +12,7 @@
             <ul>
                 <li>Added support for <code>HTTP</code>, <code>HTTPS</code>, <code>FTP</code> and <code>classpath</code> protocols</li>
                 <li>Added support for Source Maps</li>
+                <li>Added support for custom encodings</li>
             </ul>
         </section>
         <section id="release-1.2.2" name="Release 1.2.2">

@@ -4,6 +4,7 @@
 Features:
 * Added support for `HTTP`, `HTTPS`, `FTP` and `classpath` protocols
 * Added support for Source Maps
+* Added support for custom encodings
 
 [See documentation](http://lesscss-compiler.projects.gabrys.biz/2.0.0/)
 

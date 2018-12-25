@@ -63,4 +63,15 @@ public final class StringUtils {
         }
         return null;
     }
+
+    /**
+     * Returns a text if it is not equal to {@code null}, otherwise returns a default text.
+     * @param text the tested text.
+     * @param defaultText the fallback text.
+     * @return the text or the default text.
+     * @since 2.0.0
+     */
+    public static String defaultString(final String text, final String defaultText) {
+        return text != null ? text : defaultText;
+    }
 }

@@ -13,10 +13,7 @@
 package biz.gabrys.lesscss.compiler2.io;
 
 import java.io.Closeable;
-import java.io.File;
 import java.io.IOException;
-import java.io.PrintWriter;
-import java.io.Writer;
 
 /**
  * Provides tools for working with I/O operations.
@@ -41,31 +38,6 @@ public final class IOUtils {
             closeable.close();
         } catch (final IOException e) {
             // do nothing
-        }
-    }
-
-    /**
-     * Writes a content to a file.
-     * @param file the file (cannot be {@code null}).
-     * @param content the content (cannot be {@code null}).
-     * @throws IllegalArgumentException if the file or the content is {@code null}.
-     * @throws IOException if an I/O error occurs.
-     * @since 2.0.0
-     */
-    public static void write(final File file, final CharSequence content) throws IOException {
-        if (file == null) {
-            throw new IllegalArgumentException("File cannot be null");
-        }
-        if (content == null) {
-            throw new IllegalArgumentException("Content cannot be null");
-        }
-
-        Writer writer = null;
-        try {
-            writer = new PrintWriter(file, "UTF-8");
-            writer.write(content.toString());
-        } finally {
-            closeQuietly(writer);
         }
     }
 }

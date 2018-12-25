@@ -76,4 +76,21 @@ public final class StringUtilsTest {
         final String result = StringUtils.toStringIfNotNull(null);
         Assertions.assertThat(result).isNull();
     }
+
+    @Test
+    public void defaultText_textIsNotNull_returnsText() {
+        final String text = "text";
+        final String defaultText = "defaultText";
+
+        final String result = StringUtils.defaultString(text, defaultText);
+        Assertions.assertThat(result).isSameAs(text);
+    }
+
+    @Test
+    public void defaultText_textIsNull_returnsDefaultText() {
+        final String defaultText = "defaultText";
+
+        final String result = StringUtils.defaultString(null, defaultText);
+        Assertions.assertThat(result).isSameAs(defaultText);
+    }
 }

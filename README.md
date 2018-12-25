@@ -25,15 +25,15 @@ or using various [dependency management tools](http://lesscss-compiler.projects.
 
 # Concept
 The library contains two compilers:
-* `NativeLessCompiler` a compiler with a shell-type API
-* `LessCompiler` a facade for the `NativeLessCompiler` with a developer-friendly API
+* `NativeLessCompiler` is a compiler with a shell-type API
+* `LessCompiler` is a facade for the `NativeLessCompiler` with a developer-friendly API
 
 The idea for the `NativeLessCompiler` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)
 library by [Marcel Overdijk](https://github.com/marceloverdijk).
 
 # Usage
-The `LessCompiler` contains 14 methods. Below is an example of how to use some of them:
-```
+The `LessCompiler` contains 18 methods. Below is an example of how to use some of them:
+```java
 String cssCode = null;
 LessOptions options = null;
 
@@ -55,6 +55,9 @@ compiler.compile(new File("source.less"), new File("output.css"));
 
 // compile source file and compress CSS code
 cssCode = compiler.compileAndCompress(new File("source.less"));
+
+// compile source file and compress CSS code using custom encoding
+cssCode = compiler.compileAndCompress(new File("source.less"), Charset.forName("UTF-8"));
 
 // compile source code and generate inline source map
 cssCode = compiler.compileWithInlineSourceMap(".basic { display: block; }", new LessOptions());

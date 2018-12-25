@@ -5,14 +5,22 @@ import java.util.Collection;
 import java.util.Collections;
 
 import org.assertj.core.api.Assertions;
+import org.junit.Before;
 import org.junit.Test;
 
 public final class NativeLessCompilerTest {
 
+    private NativeLessOptionsBuilder builder;
+
+    @Before
+    public void setup() {
+        builder = new NativeLessOptionsBuilder().encoding("UTF-8");
+    }
+
     @Test
     public void execute_basicFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/basic.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -24,7 +32,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void executeWithCompression_basicFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/basic.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).compress(true).build();
+        final Collection<String> options = builder.inputFile(source).compress(true).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -36,7 +44,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_styleFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/style.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -48,7 +56,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void executeWithCompression_styleFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/style.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).compress(true).build();
+        final Collection<String> options = builder.inputFile(source).compress(true).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -60,7 +68,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_referenceFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/reference.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -72,7 +80,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void executeWithCompression_referenceFile_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/reference.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).compress(true).build();
+        final Collection<String> options = builder.inputFile(source).compress(true).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -84,7 +92,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void executeMultipleFiles_basicAndStyleFiles_success() {
         File source = new File(NativeLessCompilerTest.class.getResource("/less/basic.less").getPath());
-        Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).compress(true).build();
+        Collection<String> options = builder.inputFile(source).compress(true).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         String code = compiler.execute(options);
@@ -92,7 +100,7 @@ public final class NativeLessCompilerTest {
         Assertions.assertThat(code.trim()).isEqualTo(".basic{display:block}");
 
         source = new File(NativeLessCompilerTest.class.getResource("/less/style.less").getPath());
-        options = new NativeLessOptionsBuilder().inputFile(source).compress(true).build();
+        options = builder.inputFile(source).compress(true).build();
 
         code = compiler.execute(options);
         // trim removes empty lines at the end
@@ -102,7 +110,7 @@ public final class NativeLessCompilerTest {
     @Test(expected = SyntaxException.class)
     public void execute_fileWithSyntaxError_throwsSyntaxException() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/syntax.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         compiler.execute(options);
@@ -130,7 +138,7 @@ public final class NativeLessCompilerTest {
     @Test(expected = ReadFileException.class)
     public void execute_fileWithNetworkImport_throwsReadFileException() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/import-from-network.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         compiler.execute(options);
@@ -139,7 +147,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_fileWithNonExistentFileImport_throwsReadFileExceptionWithFilePath() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/import-non-existent-file.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         try {
@@ -153,7 +161,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_nonExistentFile_throwsReadFileExceptionWithFilePath() {
         final File source = new File("gabrys/non-existent-path-for-tests.less");
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         try {
@@ -167,7 +175,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_datauri_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/datauri.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().inputFile(source).build();
+        final Collection<String> options = builder.inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);
@@ -180,7 +188,7 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_sourceMapInline_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/less/source-map-inline.less").getPath());
-        final Collection<String> options = new NativeLessOptionsBuilder().sourceMapInline(true).inputFile(source).build();
+        final Collection<String> options = builder.sourceMapInline(true).inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
         final String code = compiler.execute(options);

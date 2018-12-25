@@ -1,5 +1,6 @@
 package biz.gabrys.lesscss.compiler2;
 
+import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
@@ -698,6 +699,45 @@ public final class LessOptionsBuilderTest {
         Assertions.assertThat(builder2).isSameAs(builder);
         Mockito.verify(builder).sourceMapUrlOff();
         Mockito.verify(builder).sourceMapUrl(null);
+        Mockito.verifyNoMoreInteractions(builder);
+        Mockito.verifyZeroInteractions(options);
+    }
+
+    @Test
+    public void encoding_charsequence() {
+        final String encoding = "encoding";
+
+        final LessOptionsBuilder builder2 = builder.encoding(encoding);
+
+        Assertions.assertThat(builder2).isSameAs(builder);
+        Mockito.verify(builder).encoding(encoding);
+        Mockito.verify(builder).getOptions();
+        Mockito.verify(options).setEncoding(encoding);
+        Mockito.verifyNoMoreInteractions(builder, options);
+    }
+
+    @Test
+    public void encoding_charset() {
+        final Charset encoding = Charset.forName("UTF-8");
+
+        final LessOptionsBuilder builder2 = builder.encoding(encoding);
+
+        Assertions.assertThat(builder2).isSameAs(builder);
+        Mockito.verify(builder).encoding(encoding);
+        Mockito.verify(builder).getOptions();
+        Mockito.verify(options).setEncoding("UTF-8");
+        Mockito.verifyNoMoreInteractions(builder, options);
+    }
+
+    @Test
+    public void encodingPlatformDefault() {
+        Mockito.doReturn(builder).when(builder).encoding(ArgumentMatchers.<CharSequence>any());
+
+        final LessOptionsBuilder builder2 = builder.encodingPlatformDefault();
+
+        Assertions.assertThat(builder2).isSameAs(builder);
+        Mockito.verify(builder).encodingPlatformDefault();
+        Mockito.verify(builder).encoding((CharSequence) null);
         Mockito.verifyNoMoreInteractions(builder);
         Mockito.verifyZeroInteractions(options);
     }

@@ -364,6 +364,30 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
+    public void getEncodingOption_encodingIsNull_returnsEmptyText() {
+        final String option = builder.encoding(null).getEncodingOption();
+        Assertions.assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getEncodingOption_encodingIsEmpty_returnsOption() {
+        final String option = builder.encoding("").getEncodingOption();
+        Assertions.assertThat(option).isEqualTo("--encoding=");
+    }
+
+    @Test
+    public void getEncodingOption_encodingIsBlank_returnsOption() {
+        final String option = builder.encoding(" \t\r\n").getEncodingOption();
+        Assertions.assertThat(option).isEqualTo("--encoding= \t\r\n");
+    }
+
+    @Test
+    public void getEncodingOption_encodingIsNotEmpty_returnsOption() {
+        final String option = builder.encoding("UTF-8").getEncodingOption();
+        Assertions.assertThat(option).isEqualTo("--encoding=UTF-8");
+    }
+
+    @Test
     public void build_defaultValues_returnsDefaultOptions() {
         final Collection<String> options = builder.build();
         Assertions.assertThat(options).isEmpty();
@@ -387,6 +411,7 @@ public final class NativeLessOptionsBuilderTest {
         Mockito.verify(builder).getRelativeUrlsOption();
         Mockito.verify(builder).getStrictMathOption();
         Mockito.verify(builder).getStrictUnitsOption();
+        Mockito.verify(builder).getEncodingOption();
         Mockito.verify(builder).getInputFileOption();
         Mockito.verify(builder).getOutputFileOption();
         Mockito.verifyNoMoreInteractions(builder);

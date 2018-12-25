@@ -5,7 +5,11 @@
 
 /*global name:true, less, loadStyleSheet, os */
 
-function formatError(ctx, options) {
+var lessCompilerGlobals = {
+    encoding: java.nio.charset.Charset.defaultCharset().toString()
+};
+
+function formatError(ctx) {
     var message = "";
     var extract = ctx.extract;
     var error = [];
@@ -51,10 +55,8 @@ function formatError(ctx, options) {
     return message;
 }
 
-function writeError(ctx, options) {
-    options = options || {};
-    var message = formatError(ctx, options);
-    throw new Error(message);
+function writeError(ctx) {
+    throw new Error(formatError(ctx));
 }
 
 less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
@@ -112,11 +114,14 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     }
 };
 
+function readFile(filename) {
+    var content = Packages.biz.gabrys.lesscss.compiler2.io.FileUtils.read(new java.io.File(filename), lessCompilerGlobals.encoding);
+    // convert java.lang.String to JavaScript string
+    return '' + content;
+}
+
 function writeFile(filename, content) {
-    var fstream = new java.io.FileWriter(filename);
-    var out = new java.io.BufferedWriter(fstream);
-    out.write(content);
-    out.close();
+    Packages.biz.gabrys.lesscss.compiler2.io.FileUtils.write(new java.io.File(filename), content, lessCompilerGlobals.encoding);
 }
 
 // Command line integration via Rhino
@@ -232,19 +237,23 @@ function writeFile(filename, content) {
                 validateArgument(arg, match[2]);
                 options.rootpath = match[2].replace(/\\/g, '/');
                 break;
-            case "ru":
-            case "relative-urls":
+            case 'ru':
+            case 'relative-urls':
                 options.relativeUrls = true;
                 break;
-            case "sm":
-            case "strict-math":
+            case 'sm':
+            case 'strict-math':
                 validateArgument(arg, match[2]);
                 options.strictMath = convertToBoolean(arg, match[2]);
                 break;
-            case "su":
-            case "strict-units":
+            case 'su':
+            case 'strict-units':
                 validateArgument(arg, match[2]);
                 options.strictUnits = convertToBoolean(arg, match[2]);
+                break;
+            case 'encoding':
+                validateArgument(arg, match[2]);
+                lessCompilerGlobals.encoding = match[2];
                 break;
             default:
                 throwConfigurationError('Invalid option "' + arg + '"');
@@ -278,7 +287,7 @@ function writeFile(filename, content) {
 
     var input = null;
     try {
-        input = readFile(source, 'utf-8');
+        input = readFile(source);
     } catch (e) {
         throw new Error('Couldn\'t open file ' + source);
     }
@@ -289,7 +298,7 @@ function writeFile(filename, content) {
         var parser = new less.Parser(options);
         parser.parse(input, function(e, root) {
             if (e) {
-                writeError(e, options);
+                writeError(e);
             }
             result = root.toCSS(options);
             if (output != null) {
@@ -300,6 +309,6 @@ function writeFile(filename, content) {
             quit(0);
         });
     } catch (e) {
-        writeError(e, options);
+        writeError(e);
     }
 }(arguments));

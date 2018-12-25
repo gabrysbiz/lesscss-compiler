@@ -48,11 +48,11 @@
             <ul>
                 <li>
                     <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
-                    a compiler with a shell-type API
+                    is a compiler with a shell-type API
                 </li>
                 <li>
                     <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>
-                    a facade for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
+                    is a facade for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
                     with a developer-friendly API
                 </li>
             </ul>
@@ -64,7 +64,7 @@
         </section>
         <section name="Usage">
             <p>
-                The <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a> contains 14 methods.
+                The <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a> contains 18 methods.
                 Below is an example of how to use some of them:
             </p>
             <pre>String cssCode = null;
@@ -88,6 +88,9 @@ compiler.compile(new File("source.less"), new File("output.css"));
 
 // compile source file and compress CSS code
 cssCode = compiler.compileAndCompress(new File("source.less"));
+
+// compile source file and compress CSS code using custom encoding
+cssCode = compiler.compileAndCompress(new File("source.less"), Charset.forName("UTF-8"));
 
 // compile source code and generate inline source map
 cssCode = compiler.compileWithInlineSourceMap(".basic { display: block; }", new LessOptions());
