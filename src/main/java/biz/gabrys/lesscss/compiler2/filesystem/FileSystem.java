@@ -31,7 +31,7 @@ import java.util.Map;
  * <li>{@link #isSupported(String)}</li>
  * <li>{@link #normalize(String)}</li>
  * <li>{@link #expandRedirection(String)}</li>
- * <li>{@link #exists(String)}</li>
+ * <li>{@link #exists(String)} (sometimes it can be omitted)</li>
  * <li>{@link #fetch(String)}</li>
  * </ol>
  * @since 2.0.0
@@ -82,7 +82,7 @@ public interface FileSystem {
     String normalize(String path) throws Exception;
 
     /**
-     * Returns a direct and {@link #normalize(String) normalized} path to a resource. Example: if a path is equal to
+     * Returns a direct {@link #normalize(String) normalized} path to a resource. Example: if a path is equal to
      * "http://example.org/style.less", but this URL forwards to "/static/style.less", then the method will return
      * "http://example.org/static/style.less".
      * @param path the normalized file path (never {@code null}).

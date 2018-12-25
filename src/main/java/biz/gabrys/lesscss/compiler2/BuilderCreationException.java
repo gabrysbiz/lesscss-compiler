@@ -13,7 +13,7 @@
 package biz.gabrys.lesscss.compiler2;
 
 /**
- * Thrown to indicate that an error occurred during build compiler options.
+ * Thrown to indicate that an error occurred during build a new object.
  * @since 2.0.0
  */
 public class BuilderCreationException extends RuntimeException {

@@ -173,10 +173,8 @@ public class NativeLessCompiler {
                     final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {
                 compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);
             }
-
         } catch (final Exception e) {
             throw new InitializationException("Failed to initialize native Less compiler", e);
-
         } finally {
             Context.exit();
         }

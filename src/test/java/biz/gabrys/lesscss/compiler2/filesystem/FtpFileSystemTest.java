@@ -249,7 +249,7 @@ public final class FtpFileSystemTest {
     }
 
     @Test
-    public void fetchContent_retrieveFileSuccessfully_returnsCotent() throws IOException {
+    public void fetchContent_retrieveFileSuccessfully_returnsContent() throws IOException {
         final FTPClient connection = mock(FTPClient.class);
         final URL url = new URL("ftp://example.org/file.less");
         final byte[] content = new byte[] { 'l', 'e', 's', 's' };

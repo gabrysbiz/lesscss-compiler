@@ -53,4 +53,20 @@ public enum LineNumbersValue {
     public String getValue() {
         return value;
     }
+
+    /**
+     * Returns an instance associated with a value.
+     * @param value the value.
+     * @return the instance associated with the value.
+     * @throws IllegalArgumentException if the value is not associated with any instance.
+     * @since 2.0.0
+     */
+    public static LineNumbersValue toLineNumbersValue(final String value) {
+        for (final LineNumbersValue option : values()) {
+            if (option.value.equals(value)) {
+                return option;
+            }
+        }
+        throw new IllegalArgumentException(String.format("Value \"%s\" is unsupported", value));
+    }
 }

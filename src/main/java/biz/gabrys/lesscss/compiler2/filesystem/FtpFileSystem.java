@@ -103,7 +103,15 @@ public class FtpFileSystem implements FileSystem {
         }
     }
 
-    boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
+    /**
+     * Tests whether a file specified by the URL exists.
+     * @param connection the opened connection to the server (cannot be {@code null}).
+     * @param url the file URL (cannot be {@code null}).
+     * @return {@code true} whether the file specified by the URL exists, otherwise {@code false}.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
         try (final InputStream inputStream = connection.retrieveFileStream(url.getPath())) {
             return inputStream != null && connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;
         }
@@ -123,7 +131,15 @@ public class FtpFileSystem implements FileSystem {
         }
     }
 
-    FTPClient makeConnection(final URL url) throws IOException {
+    /**
+     * Opens and configures a new {@link FTPClient} instance that represents a connection to the remote server referred
+     * to by the URL.
+     * @param url the URL (cannot be {@code null}).
+     * @return the new configured {@link FTPClient} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected FTPClient makeConnection(final URL url) throws IOException {
         final FTPClient connection = createFtpClient();
         connection.setAutodetectUTF8(true);
         final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;
@@ -137,11 +153,24 @@ public class FtpFileSystem implements FileSystem {
         return connection;
     }
 
-    FTPClient createFtpClient() {
+    /**
+     * Creates a new {@link FTPClient} instance. The reason why this method has been extracted is allow stubbing and
+     * mocking FTP client objects in tests.
+     * @return the new {@link FTPClient} instance.
+     * @since 2.0.0
+     */
+    protected FTPClient createFtpClient() {
         return new FTPClient();
     }
 
-    byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
+    /**
+     * Returns a data of the file specified by the URL.
+     * @param connection the opened connection to the server (cannot be {@code null}).
+     * @param url the file URL (cannot be {@code null}).
+     * @return the data of the file.
+     * @throws IOException if an I/O exception occurs.
+     */
+    protected byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
         try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {
             if (!connection.retrieveFile(url.getPath(), outputStream)) {
                 throw new IOException(String.format("cannot retrieve file, reason: %s", connection.getReplyString()));
@@ -150,7 +179,12 @@ public class FtpFileSystem implements FileSystem {
         }
     }
 
-    void disconnect(final FTPClient connection) {
+    /**
+     * Disconnects a connection unconditionally.
+     * @param connection the connection to close (can be {@code null} or already closed).
+     * @since 2.0.0
+     */
+    protected void disconnect(final FTPClient connection) {
         if (connection == null) {
             return;
         }

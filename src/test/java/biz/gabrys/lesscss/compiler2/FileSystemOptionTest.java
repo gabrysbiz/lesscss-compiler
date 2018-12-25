@@ -121,7 +121,7 @@ public class FileSystemOptionTest {
     }
 
     @Test
-    public void hashCode_optionsAreTheSame_returnsTrue() {
+    public void equals_optionsAreTheSame_returnsTrue() {
         final String className = "className";
         final Map<String, String> parameters = new HashMap<>();
         parameters.put("name", "value");

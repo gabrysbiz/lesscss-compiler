@@ -82,7 +82,13 @@ public class ClassPathFileSystem implements FileSystem {
         return new FileData(IOUtils.toByteArray(stream));
     }
 
-    ClassLoader getClassLoader() {
+    /**
+     * Returns the context {@link ClassLoader} for the currently executing thread object. The reason why this method has
+     * been extracted is allow stubbing and mocking class loader objects in tests.
+     * @return the context {@link ClassLoader}.
+     * @since 2.0.0
+     */
+    protected ClassLoader getClassLoader() {
         return Thread.currentThread().getContextClassLoader();
     }
 }

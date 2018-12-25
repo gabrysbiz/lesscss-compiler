@@ -571,7 +571,7 @@ public class LessOptions {
 
     /**
      * Returns a path that will be prepended to each of the Less file paths inside the Source Map and also to the path
-     * to the map file specified in your output CSS.
+     * to the map file specified in your output CSS (default: {@code null}).
      * <p>
      * Use it if for instance you have a CSS file generated in the root on your web server but have your source
      * less/css/map files in a different folder.

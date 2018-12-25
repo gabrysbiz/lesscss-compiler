@@ -12,11 +12,16 @@
  */
 package biz.gabrys.lesscss.compiler2.filesystem;
 
+import java.io.Serializable;
+import java.util.Arrays;
+
 /**
  * Represents a file data returned by an instance of the {@link FileSystem}.
  * @since 2.0.0
  */
-public class FileData {
+public class FileData implements Serializable {
+
+    private static final long serialVersionUID = -9078800439439146580L;
 
     private final byte[] content;
     private final String encoding;
@@ -62,5 +67,60 @@ public class FileData {
      */
     public String getEncoding() {
         return encoding;
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public int hashCode() {
+        final int prime = 31;
+        final int result = prime + Arrays.hashCode(content);
+        return prime * result + (encoding == null ? 0 : encoding.hashCode());
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public boolean equals(final Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null || getClass() != obj.getClass()) {
+            return false;
+        }
+        final FileData other = (FileData) obj;
+        if (!Arrays.equals(content, other.content)) {
+            return false;
+        }
+        if (encoding == null) {
+            return other.encoding == null;
+        }
+        return encoding.equals(other.encoding);
+    }
+
+    /**
+     * Returns a string representation of this object in JSON format.
+     * @since 2.0.0
+     */
+    @Override
+    public String toString() {
+        final StringBuilder text = new StringBuilder();
+        text.append("{\n");
+        text.append("  \"encoding\": ");
+        if (encoding == null) {
+            text.append("null");
+        } else {
+            text.append('"');
+            text.append(encoding);
+            text.append('"');
+        }
+        text.append(",\n  \"content\": ");
+        text.append(Arrays.toString(content));
+        text.append("\n}");
+        return text.toString();
     }
 }

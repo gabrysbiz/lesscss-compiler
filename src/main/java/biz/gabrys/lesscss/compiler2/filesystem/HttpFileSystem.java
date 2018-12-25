@@ -17,7 +17,6 @@ import java.net.HttpURLConnection;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
-import java.nio.charset.Charset;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -53,11 +52,36 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  */
 public class HttpFileSystem implements FileSystem {
 
-    private static final Collection<Integer> OK_NOTFOUND_CODES = Collections
+    /**
+     * Stores HTTP {@code OK} (200) and {@code NOT FOUND} (404) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_OK
+     * @see HttpURLConnection#HTTP_NOT_FOUND
+     */
+    protected static final Collection<Integer> OK_NOTFOUND_CODES = Collections
             .unmodifiableCollection(Arrays.asList(HttpURLConnection.HTTP_OK, HttpURLConnection.HTTP_NOT_FOUND));
-    private static final Collection<Integer> REDIRECT_CODES = Collections.unmodifiableCollection(
+
+    /**
+     * Stores HTTP {@code MOVED PERMANENTLY} (301), {@code MOVED TEMPORARILY} (302), and {@code SEE OTHER} (303) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_MOVED_PERM
+     * @see HttpURLConnection#HTTP_MOVED_TEMP
+     * @see HttpURLConnection#HTTP_SEE_OTHER
+     */
+    protected static final Collection<Integer> REDIRECT_CODES = Collections.unmodifiableCollection(
             Arrays.asList(HttpURLConnection.HTTP_MOVED_PERM, HttpURLConnection.HTTP_MOVED_TEMP, HttpURLConnection.HTTP_SEE_OTHER));
-    private static final Collection<Integer> OK_NOTFOUND_REDIRECT_CODES;
+
+    /**
+     * Stores HTTP {@code OK} (200), {@code NOT FOUND} (404), {@code MOVED PERMANENTLY} (301), {@code MOVED TEMPORARILY}
+     * (302), and {@code SEE OTHER} (303) codes.
+     * @since 2.0.0
+     * @see HttpURLConnection#HTTP_OK
+     * @see HttpURLConnection#HTTP_NOT_FOUND
+     * @see HttpURLConnection#HTTP_MOVED_PERM
+     * @see HttpURLConnection#HTTP_MOVED_TEMP
+     * @see HttpURLConnection#HTTP_SEE_OTHER
+     */
+    protected static final Collection<Integer> OK_NOTFOUND_REDIRECT_CODES;
 
     static {
         final Collection<Integer> codes = new ArrayList<>(5);
@@ -96,8 +120,10 @@ public class HttpFileSystem implements FileSystem {
         HttpURLConnection connection = null;
         String redirectedPath;
         try {
-            connection = makeConnection(new URL(path), false, OK_NOTFOUND_REDIRECT_CODES);
-            if (OK_NOTFOUND_CODES.contains(connection.getResponseCode())) {
+            connection = makeConnection(new URL(path), false);
+            final int responseCode = connection.getResponseCode();
+            validateResponseCode(responseCode, OK_NOTFOUND_REDIRECT_CODES);
+            if (OK_NOTFOUND_CODES.contains(responseCode)) {
                 return path;
             }
             final String location = connection.getHeaderField("Location");
@@ -112,8 +138,10 @@ public class HttpFileSystem implements FileSystem {
     public boolean exists(final String path) throws IOException {
         HttpURLConnection connection = null;
         try {
-            connection = makeConnection(new URL(path), false, OK_NOTFOUND_CODES);
-            return connection.getResponseCode() == HttpURLConnection.HTTP_OK;
+            connection = makeConnection(new URL(path), false);
+            final int responseCode = connection.getResponseCode();
+            validateResponseCode(responseCode, OK_NOTFOUND_CODES);
+            return responseCode == HttpURLConnection.HTTP_OK;
         } finally {
             disconnect(connection);
         }
@@ -123,8 +151,9 @@ public class HttpFileSystem implements FileSystem {
     public FileData fetch(final String path) throws IOException {
         HttpURLConnection connection = null;
         try {
-            connection = makeConnection(new URL(path), true, Arrays.asList(HttpURLConnection.HTTP_OK));
-            final String responseEncoding = getEncodingFromContentType(connection.getContentType());
+            connection = makeConnection(new URL(path), true);
+            validateResponseCode(connection.getResponseCode(), Arrays.asList(HttpURLConnection.HTTP_OK));
+            final String responseEncoding = readEncoding(connection);
             try {
                 return new FileData(IOUtils.toByteArray(connection.getInputStream()), responseEncoding);
             } catch (final IOException e) {
@@ -135,35 +164,74 @@ public class HttpFileSystem implements FileSystem {
         }
     }
 
-    HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody, final Collection<Integer> validCodes)
-            throws IOException {
+    /**
+     * Opens and configures a new {@link HttpURLConnection} instance that represents a connection to the remote object
+     * referred to by the URL.
+     * @param url the URL (cannot be {@code null}).
+     * @param fetchResponseBody whether the connection should fetch response body ({@code GET} request) or not
+     *            ({@code HEAD} request).
+     * @return the new configured {@link HttpURLConnection} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected HttpURLConnection makeConnection(final URL url, final boolean fetchResponseBody) throws IOException {
         final HttpURLConnection connection = openConnection(url);
         connection.setInstanceFollowRedirects(false);
         connection.setRequestMethod(fetchResponseBody ? "GET" : "HEAD");
-        if (!validCodes.contains(connection.getResponseCode())) {
-            final List<Integer> supportedCodes = new ArrayList<>(validCodes);
-            Collections.sort(supportedCodes);
-            throw new IOException(String.format("response HTTP status code %s is not allowed (supports only: %s)",
-                    connection.getResponseCode(), supportedCodes.toString().replaceAll("\\[|\\]", "")));
-        }
         return connection;
     }
 
-    HttpURLConnection openConnection(final URL url) throws IOException {
+    /**
+     * Creates a new {@link HttpURLConnection} instance that represents a connection to the remote object referred to by
+     * the URL. The reason why this method has been extracted is allow stubbing and mocking connection objects in tests.
+     * @param url the URL (cannot be {@code null}).
+     * @return the new {@link HttpURLConnection} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected HttpURLConnection openConnection(final URL url) throws IOException {
         return (HttpURLConnection) url.openConnection();
     }
 
-    String getEncodingFromContentType(final String contentType) {
+    /**
+     * Validates if a response code is in an allowed set.
+     * @param responseCode the tested response code.
+     * @param validCodes the collection with allowed response codes (cannot be {@code null}).
+     * @throws IOException if the response code is not in the allowed set.
+     * @since 2.0.0
+     */
+    protected void validateResponseCode(final int responseCode, final Collection<Integer> validCodes) throws IOException {
+        if (!validCodes.contains(responseCode)) {
+            final List<Integer> supportedCodes = new ArrayList<>(validCodes);
+            Collections.sort(supportedCodes);
+            throw new IOException(String.format("response HTTP status code %s is not allowed (supports only: %s)", responseCode,
+                    supportedCodes.toString().replaceAll("\\[|\\]", "")));
+        }
+    }
+
+    /**
+     * Returns a connection encoding or {@code null} if the {@code content-type} header has incorrect format.
+     * @param connection the connection (cannot be {@code null}).
+     * @return the connection encoding or {@code null} if the {@code content-type} header has incorrect format.
+     * @since 2.0.0
+     */
+    protected String readEncoding(final HttpURLConnection connection) {
+        final String contentType = connection.getContentType();
         if (contentType != null) {
             final Matcher matcher = CHARSET_PATTERN.matcher(contentType);
             if (matcher.find()) {
-                return matcher.group(1).trim().toUpperCase(Locale.ENGLISH);
+                return matcher.group(1).trim().toUpperCase(Locale.ROOT);
             }
         }
-        return Charset.defaultCharset().toString();
+        return null;
     }
 
-    void disconnect(final HttpURLConnection connection) {
+    /**
+     * Disconnects a connection unconditionally.
+     * @param connection the connection to close (can be {@code null} or already closed).
+     * @since 2.0.0
+     */
+    protected void disconnect(final HttpURLConnection connection) {
         if (connection == null) {
             return;
         }

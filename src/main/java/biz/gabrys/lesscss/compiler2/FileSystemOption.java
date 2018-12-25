@@ -46,12 +46,12 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 public class FileSystemOption {
 
     private static final String UNDERSCORE_SIGN = "_";
-    private static final String COMMA_SIGN = ",";
-    private static final String EQUAL_SIGN = "=";
+    private static final char COMMA_SIGN = ',';
+    private static final char EQUAL_SIGN = '=';
 
     private static final Pattern UNDERSCORE_PATTERN = Pattern.compile(UNDERSCORE_SIGN);
-    private static final Pattern COMMA_PATTERN = Pattern.compile(COMMA_SIGN);
-    private static final Pattern EQUAL_PATTERN = Pattern.compile(EQUAL_SIGN);
+    private static final Pattern COMMA_PATTERN = Pattern.compile("" + COMMA_SIGN);
+    private static final Pattern EQUAL_PATTERN = Pattern.compile("" + EQUAL_SIGN);
 
     private final String className;
     private final Map<String, String> parameters = new LinkedHashMap<>();
@@ -130,6 +130,10 @@ public class FileSystemOption {
         return new LinkedHashMap<>(parameters);
     }
 
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
     @Override
     public int hashCode() {
         final int prime = 31;
@@ -137,6 +141,10 @@ public class FileSystemOption {
         return prime * result + parameters.hashCode();
     }
 
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
     @Override
     public boolean equals(final Object obj) {
         if (this == obj) {

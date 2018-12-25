@@ -47,6 +47,11 @@ public final class FileUtils {
             throw new IllegalArgumentException("Encoding cannot be null");
         }
 
+        final File parent = file.getParentFile();
+        if (parent != null && !parent.exists() && !parent.mkdirs()) {
+            throw new IOException("Cannot create parent directories for the file: " + file);
+        }
+
         try (final Writer writer = new PrintWriter(file, encoding)) {
             writer.write(content.toString());
         }
