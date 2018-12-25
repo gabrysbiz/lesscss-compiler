@@ -161,6 +161,27 @@ public final class NativeLessCompilerTest {
     }
 
     @Test
+    public void execute_importedFilesDoNotHaveExtensionsSpecified_addsLessExtensionToAllFiles() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/default-less-extension.less").getPath());
+
+        final StringBuilder expectedCode = new StringBuilder();
+        expectedCode.append(".none {\n  content: \"none\";\n}\n");
+        expectedCode.append(".reference {\n  content: \"reference\";\n}\n");
+        expectedCode.append(".less {\n  content: \"less\";\n}\n");
+        expectedCode.append(".once {\n  content: \"once\";\n}\n");
+        expectedCode.append(".multiple {\n  content: \"multiple\";\n}\n");
+        expectedCode.append(".multiple {\n  content: \"multiple\";\n}");
+
+        final Collection<String> options = builder.inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        assertThat(code.trim()).isEqualTo(expectedCode.toString());
+    }
+
+    @Test
     public void execute_nonExistentFile_throwsReadFileExceptionWithFilePath() {
         final File source = new File("gabrys/non-existent-path-for-tests.less");
         final Collection<String> options = builder.inputFile(source.getAbsolutePath()).build();

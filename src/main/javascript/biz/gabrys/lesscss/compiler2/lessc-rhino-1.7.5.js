@@ -119,6 +119,10 @@ gabrysLessCompiler.readFile = function(path) {
 };
 
 gabrysLessCompiler.removeDuplications = function(array) {
+    if (array.length === 0) {
+        return [];
+    }
+
     var filtered = [array[0]];
     for (var i = 1; i < array.length; ++i) {
         if (!contains(filtered, array[i])) {
