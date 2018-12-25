@@ -96,6 +96,7 @@ public class LessCompilerImpl implements LessCompiler {
      * @throws SyntaxException if a syntax error occurred during source file compilation.
      * @since 1.0
      */
+    @Override
     public String compile(final File source) throws CompilerException {
         return compile(source, new CompilerOptions());
     }
@@ -107,6 +108,7 @@ public class LessCompilerImpl implements LessCompiler {
      * @throws SyntaxException if a syntax error occurred during source file compilation.
      * @since 1.0
      */
+    @Override
     public String compile(final File input, final CompilerOptions options) throws CompilerException {
         synchronized (mutex) {
             if (compiler == null) {
@@ -149,8 +151,8 @@ public class LessCompilerImpl implements LessCompiler {
             console = new ByteArrayOutputStream();
             global.setOut(new PrintStream(console, false, CHARSET));
 
-            final URL lessFile = LessCompilerImpl.class.getResource("/less/less-rhino-1.7.5.js");
-            final URL lesscFile = LessCompilerImpl.class.getResource("/less/lessc-rhino-1.7.5.js");
+            final URL lessFile = LessCompilerImpl.class.getResource("/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js");
+            final URL lesscFile = LessCompilerImpl.class.getResource("/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js");
 
             final Collection<InputStream> streams = new ArrayList<InputStream>();
             streams.add(lessFile.openConnection().getInputStream());

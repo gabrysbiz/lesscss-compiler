@@ -1,4 +1,7 @@
 /* Less.js v1.7.5 RHINO | Copyright (c) 2009-2014, Alexis Sellier <self@cloudhead.net> */
+/*
+ * Modified by Adam Gabryś
+ */
 
 /*global name:true, less, loadStyleSheet, os */
 
@@ -9,46 +12,42 @@ function formatError(ctx, options) {
     var extract = ctx.extract;
     var error = [];
 
-//    var stylize = options.color ? require('./lessc_helper').stylize : function (str) { return str; };
-    var stylize = function (str) { return str; };
-
     // only output a stack if it isn't a less error
-    if (ctx.stack && !ctx.type) { return stylize(ctx.stack, 'red'); }
+    if (ctx.stack && !ctx.type) {
+        return ctx.stack;
+    }
 
     if (!ctx.hasOwnProperty('index') || !extract) {
         return ctx.stack || ctx.message;
     }
 
-    if (typeof(extract[0]) === 'string') {
-        error.push(stylize((ctx.line - 1) + ' ' + extract[0], 'grey'));
+    if (typeof (extract[0]) === 'string') {
+        error.push((ctx.line - 1) + ' ' + extract[0]);
     }
 
-    if (typeof(extract[1]) === 'string') {
+    if (typeof (extract[1]) === 'string') {
         var errorTxt = ctx.line + ' ';
         if (extract[1]) {
-            errorTxt += extract[1].slice(0, ctx.column) +
-                    stylize(stylize(stylize(extract[1][ctx.column], 'bold') +
-                            extract[1].slice(ctx.column + 1), 'red'), 'inverse');
+            errorTxt += extract[1].slice(0, ctx.column) + extract[1][ctx.column] + extract[1].slice(ctx.column + 1);
         }
         error.push(errorTxt);
     }
 
-    if (typeof(extract[2]) === 'string') {
-        error.push(stylize((ctx.line + 1) + ' ' + extract[2], 'grey'));
+    if (typeof (extract[2]) === 'string') {
+        error.push((ctx.line + 1) + ' ' + extract[2]);
     }
-    error = error.join('\n') + stylize('', 'reset') + '\n';
+    error = error.join('\n') + '\n';
 
-    message += stylize(ctx.type + 'Error: ' + ctx.message, 'red');
+    message += ctx.type + 'Error: ' + ctx.message;
     if (ctx.filename) {
-     message += stylize(' in ', 'red') + ctx.filename +
-            stylize(' on line ' + ctx.line + ', column ' + (ctx.column + 1) + ':', 'grey');
+        message += ' in ' + ctx.filename + ' on line ' + ctx.line + ', column ' + (ctx.column + 1) + ':';
     }
 
     message += '\n' + error;
 
     if (ctx.callLine) {
-        message += stylize('from ', 'red') + (ctx.filename || '') + '/n';
-        message += stylize(ctx.callLine, 'grey') + ' ' + ctx.callExtract + '/n';
+        message += 'from ' + (ctx.filename || '') + '/n';
+        message += ctx.callLine + ' ' + ctx.callExtract + '/n';
     }
 
     return message;
@@ -56,38 +55,42 @@ function formatError(ctx, options) {
 
 function writeError(ctx, options) {
     options = options || {};
-    if (options.silent) { return; }
+    if (options.silent) {
+        return;
+    }
     var message = formatError(ctx, options);
     throw new Error(message);
 }
 
 function loadStyleSheet(sheet, callback, reload, remaining) {
-    var endOfPath = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\')),
-        sheetName = name.slice(0, endOfPath + 1) + sheet.href,
-        contents = sheet.contents || {},
-        input = readFile(sheetName);
+    var endOfPath = Math.max(name.lastIndexOf('/'), name.lastIndexOf('\\')), sheetName = name.slice(0, endOfPath + 1) + sheet.href, contents = sheet.contents
+            || {}, input = readFile(sheetName);
 
     input = input.replace(/^\xEF\xBB\xBF/, '');
-        
+
     contents[sheetName] = input;
-        
+
     var parser = new less.Parser({
-        paths: [sheet.href.replace(/[\w\.-]+$/, '')],
+        paths: [ sheet.href.replace(/[\w\.-]+$/, '') ],
         contents: contents
     });
-    parser.parse(input, function (e, root) {
+    parser.parse(input, function(e, root) {
         if (e) {
             return writeError(e);
         }
         try {
-            callback(e, root, input, sheet, { local: false, lastModified: 0, remaining: remaining }, sheetName);
-        } catch(e) {
+            callback(e, root, input, sheet, {
+                local: false,
+                lastModified: 0,
+                remaining: remaining
+            }, sheetName);
+        } catch (e) {
             writeError(e);
         }
     });
 }
 
-less.Parser.fileLoader = function (file, currentFileInfo, callback, env) {
+less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
 
     var href = file;
     if (currentFileInfo && currentFileInfo.currentDirectory && !/^\//.test(file)) {
@@ -114,9 +117,10 @@ less.Parser.fileLoader = function (file, currentFileInfo, callback, env) {
     }
 
     var j = file.lastIndexOf('/');
-    if(newFileInfo.relativeUrls && !/^(?:[a-z-]+:|\/)/.test(file) && j != -1) {
-        var relativeSubDirectory = file.slice(0, j+1);
-        newFileInfo.rootpath = newFileInfo.rootpath + relativeSubDirectory; // append (sub|sup) directory path of imported file
+    if (newFileInfo.relativeUrls && !/^(?:[a-z-]+:|\/)/.test(file) && j != -1) {
+        var relativeSubDirectory = file.slice(0, j + 1);
+        // append (sub|sup) directory path of imported file
+        newFileInfo.rootpath = newFileInfo.rootpath + relativeSubDirectory;
     }
     newFileInfo.currentDirectory = path;
     newFileInfo.filename = href;
@@ -125,17 +129,21 @@ less.Parser.fileLoader = function (file, currentFileInfo, callback, env) {
     try {
         data = readFile(href);
     } catch (e) {
-        callback({ type: 'File', message: "'" + less.modules.path.basename(href) + "' wasn't found" });
+        callback({
+            type: 'File',
+            message: "'" + less.modules.path.basename(href) + "' wasn't found"
+        });
         return;
     }
 
     try {
-        callback(null, data, href, newFileInfo, { lastModified: 0 });
+        callback(null, data, href, newFileInfo, {
+            lastModified: 0
+        });
     } catch (e) {
         callback(e, null, href);
     }
 };
-
 
 function writeFile(filename, content) {
     var fstream = new java.io.FileWriter(filename);
@@ -145,19 +153,14 @@ function writeFile(filename, content) {
 }
 
 // Command line integration via Rhino
-(function (args) {
+(function(args) {
 
     var options = {
         depends: false,
         compress: false,
-        cleancss: false,
-        max_line_len: -1,
         optimization: 1,
         silent: false,
-        verbose: false,
-        lint: false,
         paths: [],
-        color: true,
         strictImports: false,
         rootpath: '',
         relativeUrls: false,
@@ -165,8 +168,7 @@ function writeFile(filename, content) {
         strictMath: false,
         strictUnits: false
     };
-    var continueProcessing = true,
-            currentErrorcode;
+    var continueProcessing = true, currentErrorcode;
 
     var checkArgFunc = function(arg, option) {
         if (!option) {
@@ -180,7 +182,7 @@ function writeFile(filename, content) {
     var checkBooleanArg = function(arg) {
         var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(arg);
         if (!onOff) {
-            print(" unable to parse "+arg+" as a boolean. use one of on/t/true/y/yes/off/f/false/n/no");
+            print(" unable to parse " + arg + " as a boolean. use one of on/t/true/y/yes/off/f/false/n/no");
             continueProcessing = false;
             return false;
         }
@@ -190,43 +192,29 @@ function writeFile(filename, content) {
     var warningMessages = "";
     var sourceMapFileInline = false;
 
-    args = args.filter(function (arg) {
+    args = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
-        
+
         if (match) {
             options.paths.push(match[1]);
             return false;
         }
-        
+
         match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
-        if (match) { arg = match[1]; } // was (?:=([^\s]*)), check!
-        else { return arg; }
+        if (match) {
+            arg = match[1];
+        } else {
+            // was (?:=([^\s]*)), check!
+            return arg;
+        }
 
         switch (arg) {
-            case 'v':
-            case 'version':
-                console.log("lessc " + less.version.join('.') + " (Less Compiler) [JavaScript]");
-                continueProcessing = false;
-                break;
-            case 'verbose':
-                options.verbose = true;
-                break;
             case 's':
             case 'silent':
                 options.silent = true;
                 break;
-            case 'l':
-            case 'lint':
-                options.lint = true;
-                break;
             case 'strict-imports':
                 options.strictImports = true;
-                break;
-            case 'h':
-            case 'help':
-                    //TODO
-//                require('../lib/less/lessc_helper').printUsage();
-                continueProcessing = false;
                 break;
             case 'x':
             case 'compress':
@@ -236,24 +224,6 @@ function writeFile(filename, content) {
             case 'depends':
                 options.depends = true;
                 break;
-            case 'yui-compress':
-                warningMessages += "yui-compress option has been removed. assuming clean-css.";
-                options.cleancss = true;
-                break;
-            case 'clean-css':
-                options.cleancss = true;
-                break;
-            case 'max-line-len':
-                if (checkArgFunc(arg, match[2])) {
-                    options.maxLineLen = parseInt(match[2], 10);
-                    if (options.maxLineLen <= 0) {
-                        options.maxLineLen = -1;
-                    }
-                }
-                break;
-            case 'no-color':
-                options.color = false;
-                break;
             case 'no-ie-compat':
                 options.ieCompat = false;
                 break;
@@ -262,18 +232,13 @@ function writeFile(filename, content) {
                 break;
             case 'include-path':
                 if (checkArgFunc(arg, match[2])) {
-                    options.paths = match[2].split(os.type().match(/Windows/) ? ';' : ':')
-                            .map(function(p) {
-                                if (p) {
-//                                    return path.resolve(process.cwd(), p);
-                                    return p;
-                                }
-                            });
+                    options.paths = match[2].split(os.type().match(/Windows/) ? ';' : ':').map(function(p) {
+                        if (p) {
+                            return p;
+                        }
+                    });
                 }
                 break;
-            case 'O0': options.optimization = 0; break;
-            case 'O1': options.optimization = 1; break;
-            case 'O2': options.optimization = 2; break;
             case 'line-numbers':
                 if (checkArgFunc(arg, match[2])) {
                     options.dumpLineNumbers = match[2];
@@ -311,10 +276,10 @@ function writeFile(filename, content) {
             case 'source-map-output-map-file':
                 if (checkArgFunc(arg, match[2])) {
                     options.writeSourceMap = function(sourceMapContent) {
-                         writeFile(match[2], sourceMapContent);
+                        writeFile(match[2], sourceMapContent);
                     };
                 }
-            break;
+                break;
             case 'rp':
             case 'rootpath':
                 if (checkArgFunc(arg, match[2])) {
@@ -348,21 +313,14 @@ function writeFile(filename, content) {
     }
 
     var name = args[0];
-    if (name && name != '-') {
-//        name = path.resolve(process.cwd(), name);
-    }
     var output = args[1];
     var outputbase = args[1];
     if (output) {
         options.sourceMapOutputFilename = output;
-//        output = path.resolve(process.cwd(), output);
         if (warningMessages) {
             console.log(warningMessages);
         }
     }
-
-//  options.sourceMapBasepath = process.cwd();
-//    options.sourceMapBasepath = '';
 
     if (options.sourceMap === true) {
         console.log("output: " + output);
@@ -375,30 +333,13 @@ function writeFile(filename, content) {
     } else if (options.sourceMap) {
         options.sourceMapOutputFilename = options.sourceMap;
     }
-    
 
     if (!name) {
         console.log("lessc: no inout files");
         console.log("");
-        // TODO
-//        require('../lib/less/lessc_helper').printUsage();
         currentErrorcode = 1;
         return;
     }
-
-//    var ensureDirectory = function (filepath) {
-//        var dir = path.dirname(filepath),
-//                cmd,
-//                existsSync = fs.existsSync || path.existsSync;
-//        if (!existsSync(dir)) {
-//            if (mkdirp === undefined) {
-//                try {mkdirp = require('mkdirp');}
-//                catch(e) { mkdirp = null; }
-//            }
-//            cmd = mkdirp && mkdirp.sync || fs.mkdirSync;
-//            cmd(dir);
-//        }
-//    };
 
     if (options.depends) {
         if (!outputbase) {
@@ -426,7 +367,7 @@ function writeFile(filename, content) {
     var result;
     try {
         var parser = new less.Parser(options);
-        parser.parse(input, function (e, root) {
+        parser.parse(input, function(e, root) {
             if (e) {
                 writeError(e, options);
                 quit(1);
@@ -441,8 +382,7 @@ function writeFile(filename, content) {
                 quit(0);
             }
         });
-    }
-    catch(e) {
+    } catch (e) {
         writeError(e, options);
         quit(1);
     }

@@ -1,5 +1,12 @@
 # LessCSS Compiler Changelog
 
+## 2.0.0
+Features:
+* Added support for `HTTP`, `HTTPS`, `FTP` and `classpath` protocols
+* Added support for Source maps
+
+[See documentation](http://lesscss-compiler.projects.gabrys.biz/2.0.0/)
+
 ## 1.2.2
 Bugs:
 * Fixed support for `data-uri` function
