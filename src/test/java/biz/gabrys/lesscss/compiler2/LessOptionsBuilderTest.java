@@ -1,18 +1,23 @@
 package biz.gabrys.lesscss.compiler2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.any;
+import static org.mockito.ArgumentMatchers.anyBoolean;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.verifyZeroInteractions;
+
 import java.nio.charset.Charset;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mockito.ArgumentCaptor;
-import org.mockito.ArgumentMatchers;
 import org.mockito.Mock;
-import org.mockito.Mockito;
 import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
@@ -26,247 +31,247 @@ public final class LessOptionsBuilderTest {
 
     @Before
     public void setup() {
-        Mockito.doReturn(options).when(builder).getOptions();
+        doReturn(options).when(builder).getOptions();
     }
 
     @Test
     public void silent_true() {
         final LessOptionsBuilder builder2 = builder.silent(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).silent(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSilent(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).silent(true);
+        verify(builder).getOptions();
+        verify(options).setSilent(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void silent_false() {
         final LessOptionsBuilder builder2 = builder.silent(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).silent(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSilent(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).silent(false);
+        verify(builder).getOptions();
+        verify(options).setSilent(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void silentOn() {
-        Mockito.doReturn(builder).when(builder).silent(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).silent(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.silentOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).silentOn();
-        Mockito.verify(builder).silent(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).silentOn();
+        verify(builder).silent(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void silentOff() {
-        Mockito.doReturn(builder).when(builder).silent(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).silent(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.silentOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).silentOff();
-        Mockito.verify(builder).silent(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).silentOff();
+        verify(builder).silent(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictImports_true() {
         final LessOptionsBuilder builder2 = builder.strictImports(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictImports(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictImports(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictImports(true);
+        verify(builder).getOptions();
+        verify(options).setStrictImports(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictImports_false() {
         final LessOptionsBuilder builder2 = builder.strictImports(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictImports(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictImports(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictImports(false);
+        verify(builder).getOptions();
+        verify(options).setStrictImports(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictImportsOn() {
-        Mockito.doReturn(builder).when(builder).strictImports(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictImports(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictImportsOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictImportsOn();
-        Mockito.verify(builder).strictImports(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictImportsOn();
+        verify(builder).strictImports(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictImportsOff() {
-        Mockito.doReturn(builder).when(builder).strictImports(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictImports(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictImportsOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictImportsOff();
-        Mockito.verify(builder).strictImports(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictImportsOff();
+        verify(builder).strictImports(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void compress_true() {
         final LessOptionsBuilder builder2 = builder.compress(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).compress(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setCompress(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).compress(true);
+        verify(builder).getOptions();
+        verify(options).setCompress(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void compress_false() {
         final LessOptionsBuilder builder2 = builder.compress(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).compress(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setCompress(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).compress(false);
+        verify(builder).getOptions();
+        verify(options).setCompress(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void compressOn() {
-        Mockito.doReturn(builder).when(builder).compress(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).compress(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.compressOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).compressOn();
-        Mockito.verify(builder).compress(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).compressOn();
+        verify(builder).compress(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void compressOff() {
-        Mockito.doReturn(builder).when(builder).compress(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).compress(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.compressOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).compressOff();
-        Mockito.verify(builder).compress(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).compressOff();
+        verify(builder).compress(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void ieCompatibility_true() {
         final LessOptionsBuilder builder2 = builder.ieCompatibility(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).ieCompatibility(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setIeCompatibility(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).ieCompatibility(true);
+        verify(builder).getOptions();
+        verify(options).setIeCompatibility(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void ieCompatibility_false() {
         final LessOptionsBuilder builder2 = builder.ieCompatibility(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).ieCompatibility(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setIeCompatibility(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).ieCompatibility(false);
+        verify(builder).getOptions();
+        verify(options).setIeCompatibility(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void ieCompatibilityOn() {
-        Mockito.doReturn(builder).when(builder).ieCompatibility(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).ieCompatibility(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.ieCompatibilityOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).ieCompatibilityOn();
-        Mockito.verify(builder).ieCompatibility(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).ieCompatibilityOn();
+        verify(builder).ieCompatibility(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void ieCompatibilityOff() {
-        Mockito.doReturn(builder).when(builder).ieCompatibility(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).ieCompatibility(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.ieCompatibilityOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).ieCompatibilityOff();
-        Mockito.verify(builder).ieCompatibility(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).ieCompatibilityOff();
+        verify(builder).ieCompatibility(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void javaScript_true() {
         final LessOptionsBuilder builder2 = builder.javaScript(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).javaScript(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setJavaScript(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).javaScript(true);
+        verify(builder).getOptions();
+        verify(options).setJavaScript(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void javaScript_false() {
         final LessOptionsBuilder builder2 = builder.javaScript(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).javaScript(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setJavaScript(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).javaScript(false);
+        verify(builder).getOptions();
+        verify(options).setJavaScript(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void javaScriptOn() {
-        Mockito.doReturn(builder).when(builder).javaScript(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).javaScript(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.javaScriptOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).javaScriptOn();
-        Mockito.verify(builder).javaScript(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).javaScriptOn();
+        verify(builder).javaScript(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void javaScriptOff() {
-        Mockito.doReturn(builder).when(builder).javaScript(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).javaScript(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.javaScriptOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).javaScriptOff();
-        Mockito.verify(builder).javaScript(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).javaScriptOff();
+        verify(builder).javaScript(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -275,11 +280,11 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.includePaths(includePaths);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).includePaths(includePaths);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setIncludePaths(null);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).includePaths(includePaths);
+        verify(builder).getOptions();
+        verify(options).setIncludePaths(null);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
@@ -288,58 +293,60 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.includePaths(includePaths);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).includePaths(includePaths);
-        Mockito.verify(builder).getOptions();
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).includePaths(includePaths);
+        verify(builder).getOptions();
         @SuppressWarnings("unchecked")
         final ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
-        Mockito.verify(options).setIncludePaths(captor.capture());
-        Assertions.assertThat(captor.getValue()).containsExactly("value1", "value2");
-        Mockito.verifyNoMoreInteractions(builder);
+        verify(options).setIncludePaths(captor.capture());
+        assertThat(captor.getValue()).containsExactly("value1", "value2");
+        verifyNoMoreInteractions(builder);
     }
 
     @Test
     public void includePaths_nullArray() {
-        Mockito.doReturn(builder).when(builder).includePaths(ArgumentMatchers.<Collection<CharSequence>>any());
-        final String[] includePaths = null;
+        doReturn(builder).when(builder).includePaths((Collection<CharSequence>) null);
+        final CharSequence[] includePaths = null;
 
         final LessOptionsBuilder builder2 = builder.includePaths(includePaths);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).includePaths(includePaths);
-        Mockito.verify(builder).includePaths((Collection<CharSequence>) null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).includePaths(includePaths);
+        verify(builder).includePaths((Collection<CharSequence>) null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void includePaths_notNullArray() {
-        Mockito.doReturn(builder).when(builder).includePaths(ArgumentMatchers.<Collection<CharSequence>>any());
-        final String[] includePaths = new String[] { "val1", "val2" };
+        @SuppressWarnings("unchecked")
+        final Class<Collection<CharSequence>> collectionOfCharSequenceClass = (Class<Collection<CharSequence>>) (Class<?>) Collection.class;
+        doReturn(builder).when(builder).includePaths(any(collectionOfCharSequenceClass));
+        final CharSequence[] includePaths = new String[] { "val1", "val2" };
 
         final LessOptionsBuilder builder2 = builder.includePaths(includePaths);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).includePaths(includePaths);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).includePaths(includePaths);
         @SuppressWarnings("unchecked")
         final ArgumentCaptor<Collection<CharSequence>> captor = ArgumentCaptor.forClass(Collection.class);
-        Mockito.verify(builder).includePaths(captor.capture());
-        Assertions.assertThat(captor.getValue()).containsExactly("val1", "val2");
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        verify(builder).includePaths(captor.capture());
+        assertThat(captor.getValue()).containsExactly("val1", "val2");
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void includePathsOff() {
-        Mockito.doReturn(builder).when(builder).includePaths(ArgumentMatchers.<Collection<CharSequence>>any());
+        doReturn(builder).when(builder).includePaths((Collection<CharSequence>) null);
 
         final LessOptionsBuilder builder2 = builder.includePathsOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).includePathsOff();
-        Mockito.verify(builder).includePaths((Collection<CharSequence>) null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).includePathsOff();
+        verify(builder).includePaths((Collection<CharSequence>) null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -348,63 +355,63 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.lineNumbers(value);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).lineNumbers(value);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setLineNumbers(LineNumbersValue.COMMENTS);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).lineNumbers(value);
+        verify(builder).getOptions();
+        verify(options).setLineNumbers(LineNumbersValue.COMMENTS);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void lineNumbersOff() {
-        Mockito.doReturn(builder).when(builder).lineNumbers(ArgumentMatchers.<LineNumbersValue>any());
+        doReturn(builder).when(builder).lineNumbers(any(LineNumbersValue.class));
 
         final LessOptionsBuilder builder2 = builder.lineNumbersOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).lineNumbersOff();
-        Mockito.verify(builder).lineNumbers(LineNumbersValue.OFF);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).lineNumbersOff();
+        verify(builder).lineNumbers(LineNumbersValue.OFF);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void lineNumbersComments() {
-        Mockito.doReturn(builder).when(builder).lineNumbers(ArgumentMatchers.<LineNumbersValue>any());
+        doReturn(builder).when(builder).lineNumbers(any(LineNumbersValue.class));
 
         final LessOptionsBuilder builder2 = builder.lineNumbersComments();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).lineNumbersComments();
-        Mockito.verify(builder).lineNumbers(LineNumbersValue.COMMENTS);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).lineNumbersComments();
+        verify(builder).lineNumbers(LineNumbersValue.COMMENTS);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void lineNumbersMediaQuery() {
-        Mockito.doReturn(builder).when(builder).lineNumbers(ArgumentMatchers.<LineNumbersValue>any());
+        doReturn(builder).when(builder).lineNumbers(any(LineNumbersValue.class));
 
         final LessOptionsBuilder builder2 = builder.lineNumbersMediaQuery();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).lineNumbersMediaQuery();
-        Mockito.verify(builder).lineNumbers(LineNumbersValue.MEDIA_QUERY);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).lineNumbersMediaQuery();
+        verify(builder).lineNumbers(LineNumbersValue.MEDIA_QUERY);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void lineNumbersAll() {
-        Mockito.doReturn(builder).when(builder).lineNumbers(ArgumentMatchers.<LineNumbersValue>any());
+        doReturn(builder).when(builder).lineNumbers(any(LineNumbersValue.class));
 
         final LessOptionsBuilder builder2 = builder.lineNumbersAll();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).lineNumbersAll();
-        Mockito.verify(builder).lineNumbers(LineNumbersValue.ALL);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).lineNumbersAll();
+        verify(builder).lineNumbers(LineNumbersValue.ALL);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -413,168 +420,168 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.rootPath(rootPath);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).rootPath(rootPath);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setRootPath(rootPath);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).rootPath(rootPath);
+        verify(builder).getOptions();
+        verify(options).setRootPath(rootPath);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void rootPathOff() {
-        Mockito.doReturn(builder).when(builder).rootPath(ArgumentMatchers.<CharSequence>any());
+        doReturn(builder).when(builder).rootPath(null);
 
         final LessOptionsBuilder builder2 = builder.rootPathOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).rootPathOff();
-        Mockito.verify(builder).rootPath(null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).rootPathOff();
+        verify(builder).rootPath(null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void relativeUrls_true() {
         final LessOptionsBuilder builder2 = builder.relativeUrls(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).relativeUrls(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setRelativeUrls(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).relativeUrls(true);
+        verify(builder).getOptions();
+        verify(options).setRelativeUrls(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void relativeUrls_false() {
         final LessOptionsBuilder builder2 = builder.relativeUrls(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).relativeUrls(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setRelativeUrls(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).relativeUrls(false);
+        verify(builder).getOptions();
+        verify(options).setRelativeUrls(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void relativeUrlsOn() {
-        Mockito.doReturn(builder).when(builder).relativeUrls(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).relativeUrls(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.relativeUrlsOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).relativeUrlsOn();
-        Mockito.verify(builder).relativeUrls(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).relativeUrlsOn();
+        verify(builder).relativeUrls(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void relativeUrlsOff() {
-        Mockito.doReturn(builder).when(builder).relativeUrls(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).relativeUrls(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.relativeUrlsOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).relativeUrlsOff();
-        Mockito.verify(builder).relativeUrls(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).relativeUrlsOff();
+        verify(builder).relativeUrls(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictMath_true() {
         final LessOptionsBuilder builder2 = builder.strictMath(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictMath(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictMath(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictMath(true);
+        verify(builder).getOptions();
+        verify(options).setStrictMath(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictMath_false() {
         final LessOptionsBuilder builder2 = builder.strictMath(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictMath(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictMath(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictMath(false);
+        verify(builder).getOptions();
+        verify(options).setStrictMath(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictMathOn() {
-        Mockito.doReturn(builder).when(builder).strictMath(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictMath(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictMathOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictMathOn();
-        Mockito.verify(builder).strictMath(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictMathOn();
+        verify(builder).strictMath(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictMathOff() {
-        Mockito.doReturn(builder).when(builder).strictMath(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictMath(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictMathOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictMathOff();
-        Mockito.verify(builder).strictMath(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictMathOff();
+        verify(builder).strictMath(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictUnits_true() {
         final LessOptionsBuilder builder2 = builder.strictUnits(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictUnits(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictUnits(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictUnits(true);
+        verify(builder).getOptions();
+        verify(options).setStrictUnits(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictUnits_false() {
         final LessOptionsBuilder builder2 = builder.strictUnits(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictUnits(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setStrictUnits(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictUnits(false);
+        verify(builder).getOptions();
+        verify(options).setStrictUnits(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void strictUnitsOn() {
-        Mockito.doReturn(builder).when(builder).strictUnits(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictUnits(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictUnitsOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictUnitsOn();
-        Mockito.verify(builder).strictUnits(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictUnitsOn();
+        verify(builder).strictUnits(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void strictUnitsOff() {
-        Mockito.doReturn(builder).when(builder).strictUnits(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).strictUnits(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.strictUnitsOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).strictUnitsOff();
-        Mockito.verify(builder).strictUnits(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).strictUnitsOff();
+        verify(builder).strictUnits(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -583,24 +590,24 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.sourceMapRootPath(sourceMapRootPath);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapRootPath(sourceMapRootPath);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSourceMapRootPath(sourceMapRootPath);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapRootPath(sourceMapRootPath);
+        verify(builder).getOptions();
+        verify(options).setSourceMapRootPath(sourceMapRootPath);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void sourceMapRootPathOff() {
-        Mockito.doReturn(builder).when(builder).sourceMapRootPath(ArgumentMatchers.<CharSequence>any());
+        doReturn(builder).when(builder).sourceMapRootPath(null);
 
         final LessOptionsBuilder builder2 = builder.sourceMapRootPathOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapRootPathOff();
-        Mockito.verify(builder).sourceMapRootPath(null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapRootPathOff();
+        verify(builder).sourceMapRootPath(null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -609,72 +616,72 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.sourceMapBasePath(sourceMapBasePath);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapBasePath(sourceMapBasePath);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSourceMapBasePath(sourceMapBasePath);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapBasePath(sourceMapBasePath);
+        verify(builder).getOptions();
+        verify(options).setSourceMapBasePath(sourceMapBasePath);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void sourceMapBasePathOff() {
-        Mockito.doReturn(builder).when(builder).sourceMapBasePath(ArgumentMatchers.<CharSequence>any());
+        doReturn(builder).when(builder).sourceMapBasePath(null);
 
         final LessOptionsBuilder builder2 = builder.sourceMapBasePathOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapBasePathOff();
-        Mockito.verify(builder).sourceMapBasePath(null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapBasePathOff();
+        verify(builder).sourceMapBasePath(null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void sourceMapLessInline_true() {
         final LessOptionsBuilder builder2 = builder.sourceMapLessInline(true);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapLessInline(true);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSourceMapLessInline(true);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapLessInline(true);
+        verify(builder).getOptions();
+        verify(options).setSourceMapLessInline(true);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void sourceMapLessInline_false() {
         final LessOptionsBuilder builder2 = builder.sourceMapLessInline(false);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapLessInline(false);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSourceMapLessInline(false);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapLessInline(false);
+        verify(builder).getOptions();
+        verify(options).setSourceMapLessInline(false);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void sourceMapLessInlineOn() {
-        Mockito.doReturn(builder).when(builder).sourceMapLessInline(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).sourceMapLessInline(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.sourceMapLessInlineOn();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapLessInlineOn();
-        Mockito.verify(builder).sourceMapLessInline(true);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapLessInlineOn();
+        verify(builder).sourceMapLessInline(true);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
     public void sourceMapLessInlineOff() {
-        Mockito.doReturn(builder).when(builder).sourceMapLessInline(ArgumentMatchers.anyBoolean());
+        doReturn(builder).when(builder).sourceMapLessInline(anyBoolean());
 
         final LessOptionsBuilder builder2 = builder.sourceMapLessInlineOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapLessInlineOff();
-        Mockito.verify(builder).sourceMapLessInline(false);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapLessInlineOff();
+        verify(builder).sourceMapLessInline(false);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -683,24 +690,24 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.sourceMapUrl(sourceMapUrl);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapUrl(sourceMapUrl);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setSourceMapUrl(sourceMapUrl);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapUrl(sourceMapUrl);
+        verify(builder).getOptions();
+        verify(options).setSourceMapUrl(sourceMapUrl);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void sourceMapUrlOff() {
-        Mockito.doReturn(builder).when(builder).sourceMapUrl(ArgumentMatchers.<CharSequence>any());
+        doReturn(builder).when(builder).sourceMapUrl(null);
 
         final LessOptionsBuilder builder2 = builder.sourceMapUrlOff();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).sourceMapUrlOff();
-        Mockito.verify(builder).sourceMapUrl(null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).sourceMapUrlOff();
+        verify(builder).sourceMapUrl(null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 
     @Test
@@ -709,11 +716,11 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.encoding(encoding);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).encoding(encoding);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setEncoding(encoding);
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).encoding(encoding);
+        verify(builder).getOptions();
+        verify(options).setEncoding(encoding);
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
@@ -722,23 +729,85 @@ public final class LessOptionsBuilderTest {
 
         final LessOptionsBuilder builder2 = builder.encoding(encoding);
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).encoding(encoding);
-        Mockito.verify(builder).getOptions();
-        Mockito.verify(options).setEncoding("UTF-8");
-        Mockito.verifyNoMoreInteractions(builder, options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).encoding(encoding);
+        verify(builder).getOptions();
+        verify(options).setEncoding("UTF-8");
+        verifyNoMoreInteractions(builder, options);
     }
 
     @Test
     public void encodingPlatformDefault() {
-        Mockito.doReturn(builder).when(builder).encoding(ArgumentMatchers.<CharSequence>any());
+        doReturn(builder).when(builder).encoding((CharSequence) null);
 
         final LessOptionsBuilder builder2 = builder.encodingPlatformDefault();
 
-        Assertions.assertThat(builder2).isSameAs(builder);
-        Mockito.verify(builder).encodingPlatformDefault();
-        Mockito.verify(builder).encoding((CharSequence) null);
-        Mockito.verifyNoMoreInteractions(builder);
-        Mockito.verifyZeroInteractions(options);
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).encodingPlatformDefault();
+        verify(builder).encoding((CharSequence) null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
+    }
+
+    @Test
+    public void fileSystems_nullCollection() {
+        final Collection<CharSequence> fileSystems = null;
+
+        final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).fileSystems(fileSystems);
+        verify(builder).getOptions();
+        verify(options).setFileSystems(null);
+        verifyNoMoreInteractions(builder, options);
+    }
+
+    @Test
+    public void fileSystems_notNullCollection() {
+        final Collection<CharSequence> fileSystems = Arrays.<CharSequence>asList("fileSystem1", "fileSystem2");
+
+        final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).fileSystems(fileSystems);
+        verify(builder).getOptions();
+        @SuppressWarnings("unchecked")
+        final ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
+        verify(options).setFileSystems(captor.capture());
+        assertThat(captor.getValue()).containsExactly("fileSystem1", "fileSystem2");
+        verifyNoMoreInteractions(builder);
+    }
+
+    @Test
+    public void fileSystems_nullArray() {
+        doReturn(builder).when(builder).fileSystems((Collection<CharSequence>) null);
+        final CharSequence[] fileSystems = null;
+
+        final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).fileSystems(fileSystems);
+        verify(builder).fileSystems((Collection<CharSequence>) null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
+    }
+
+    @Test
+    public void fileSystems_notNullArray() {
+        @SuppressWarnings("unchecked")
+        final Class<Collection<CharSequence>> collectionOfCharSequenceClass = (Class<Collection<CharSequence>>) (Class<?>) Collection.class;
+        doReturn(builder).when(builder).fileSystems(any(collectionOfCharSequenceClass));
+        final CharSequence[] fileSystems = new String[] { "fl1", "fl2" };
+
+        final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).fileSystems(fileSystems);
+        @SuppressWarnings("unchecked")
+        final ArgumentCaptor<Collection<CharSequence>> captor = ArgumentCaptor.forClass(Collection.class);
+        verify(builder).fileSystems(captor.capture());
+        assertThat(captor.getValue()).containsExactly("fl1", "fl2");
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
     }
 }

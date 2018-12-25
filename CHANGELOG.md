@@ -3,6 +3,7 @@
 ## 2.0.0
 Features:
 * Added support for `HTTP`, `HTTPS`, `FTP` and `classpath` protocols
+* Added support for custom protocols (file systems)
 * Added support for Source Maps
 * Added support for custom encodings
 

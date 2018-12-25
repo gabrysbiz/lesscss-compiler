@@ -121,7 +121,7 @@ public class NativeLessCompiler {
      * @since 2.0.0
      * @see NativeLessOptionsBuilder
      */
-    public String execute(final Collection<? extends Object> options) {
+    public String execute(final Collection<?> options) {
         synchronized (mutex) {
             if (compiler == null) {
                 initialize();
@@ -190,8 +190,9 @@ public class NativeLessCompiler {
         if (value != null && ScriptableObject.hasProperty(value, "message")) {
             final String message = ScriptableObject.getProperty(value, "message").toString();
 
-            final Iterable<ExceptionConverter> converters = Arrays.asList(new ImportFileExceptionConverter(),
-                    new ConfigurationExceptionConverter(), new SourceFileExceptionConverter());
+            final Iterable<ExceptionConverter> converters = Arrays.asList(new ReadFileErrorExceptionConverter(),
+                    new NotSupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(),
+                    new SourceFileExceptionConverter());
 
             for (final ExceptionConverter converter : converters) {
                 final Matcher matcher = converter.getPattern().matcher(message);
@@ -211,22 +212,42 @@ public class NativeLessCompiler {
         CompilerException createException(Exception cause, Matcher matcher, String message);
     }
 
-    private static class ImportFileExceptionConverter implements ExceptionConverter {
+    private static class ReadFileErrorExceptionConverter implements ExceptionConverter {
+
+        private static final String MARKUP = "\\{gabrys-lesscss-compiler-filesystem-exception\\}";
+
+        private static final int ORIGINAL_EXCEPTION_MESSAGE = 1;
+        private static final int IMPORTED_FILENAME_GROUP_INDEX = 2;
+        private static final int SOURCE_FILEPATH_GROUP_INDEX = 3;
+
+        @Override
+        public Pattern getPattern() {
+            return Pattern.compile("^FileError:\\sFileSystemError:" + MARKUP + "[^:]+:\\s(.+)" + MARKUP + ":\\s+'(.+)'\\s+in\\s((?s).*)$");
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);
+            return new ReadFileException(String.format("Cannot read file \"%s\": %s.%nError in %s", importedFilename,
+                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);
+        }
+    }
+
+    private static class NotSupportedProtocolExceptionConverter implements ExceptionConverter {
 
         private static final int IMPORTED_FILENAME_GROUP_INDEX = 1;
         private static final int SOURCE_FILEPATH_GROUP_INDEX = 2;
 
         @Override
         public Pattern getPattern() {
-            return Pattern.compile("^FileError:\\s+'(.+)'\\s+does\\snot\\sexist\\sin\\s((?s).*)$");
+            return Pattern.compile("^FileError:\\sNotSupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$");
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
             final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);
-            return new ReadFileException(
-                    String.format("File \"%s\" does not exist. Error in %s", importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)),
-                    cause, importedFilename);
+            return new ReadFileException(String.format("Cannot read file \"%s\": the protocol is not supported.%nError in %s",
+                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);
         }
     }
 

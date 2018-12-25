@@ -5,6 +5,11 @@
 //
 // Stub out `require` in rhino
 //
+var gabrysLessCompiler = {
+    encoding: null,
+    fileSystems: []
+};
+
 function require(arg) {
     var split = arg.split('/');
     var resultModule = split.length == 1 ? less.modules[split[0]] : less[split[1]];
@@ -16,14 +21,11 @@ function require(arg) {
     return resultModule;
 }
 
-
-if (typeof(window) === 'undefined') {
-    less = {}
-} else {
-    less = window.less = {}
-}
-tree = less.tree = {};
-less.mode = 'rhino';
+var tree = {};
+var less = {
+    tree: tree,
+    mode: 'rhino'
+};
 
 (function() {
 
@@ -71,7 +73,7 @@ less.mode = 'rhino';
     less.modules.path = {
         join: function() {
             var parts = [];
-            for (i in arguments) {
+            for (var i in arguments) {
                 parts = parts.concat(arguments[i].split(/\/|\\/));
             }
             var result = [];
@@ -111,69 +113,30 @@ less.mode = 'rhino';
         }
     };
 
-    less.modules.fs = {
-        readFileSync: function(name) {
-            // read a file into a byte array
-            var file = new java.io.File(name);
-            var stream = new java.io.FileInputStream(file);
-            var buffer = [];
-            var c;
-            while ((c = stream.read()) != -1) {
-                buffer.push(c);
-            }
-            stream.close();
-            return {
-                length: buffer.length,
-                toString: function(enc) {
-                    if (enc === 'base64') {
-                        return encodeBase64Bytes(buffer);
-                    } else if (enc) {
-                        return java.lang.String["(byte[],java.lang.String)"](buffer, enc);
-                    } else {
-                        return java.lang.String["(byte[])"](buffer);
-                    }
-                }
-            };
-        }
-    };
-
     less.encoder = {
         encodeBase64: function(str) {
-            return encodeBase64String(str);
+            return this.encodeBase64Bytes(new java.lang.String(str).getBytes());
+        },
+        encodeBase64Bytes: function(bytes) {
+            var array = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, bytes.length);
+            for (var i = 0; i < bytes.length; ++i) {
+                var oneByte = bytes[i];
+                if (oneByte > 127) {
+                    oneByte -= 256;
+                }
+                array[i] = oneByte;
+            }
+
+            // requires at least a JRE 8
+            if (typeof java.util.Base64.getEncoder === 'function') {
+                return java.util.Base64.getEncoder().encodeToString(array);
+            }
+            // requires at least a JRE 6 (or JAXB 1.0 on the classpath)
+            return javax.xml.bind.DatatypeConverter.printBase64Binary(array);
         }
     };
-
-    // ---------------------------------------------------------------------------------------------
-    // private helper functions
-    // ---------------------------------------------------------------------------------------------
-
-    function encodeBase64Bytes(bytes) {
-        var array = java.lang.reflect.Array.newInstance(java.lang.Byte.TYPE, bytes.length);
-        for (var i = 0; i < bytes.length; ++i) {
-            var oneByte = bytes[i];
-            if (oneByte > 127) {
-                oneByte -= 256;
-            }
-            array[i] = oneByte;
-        }
-        // requires at least a JRE Platform 6 (or JAXB 1.0 on the classpath)
-        return javax.xml.bind.DatatypeConverter.printBase64Binary(array);
-    }
-
-    function encodeBase64String(str) {
-        return encodeBase64Bytes(new java.lang.String(str).getBytes());
-    }
-
 })();
 
-var less, tree;
-
-// Node.js does not have a header file added which defines less
-if (less === undefined) {
-    less = exports;
-    tree = require('./tree');
-    less.mode = 'node';
-}
 //
 // less.js - parser
 //
@@ -252,7 +215,7 @@ less.Parser = function Parser(env) {
                 callback(e, root, importedPreviously, fullPath);
             };
 
-            less.Parser.fileLoader(path, currentFileInfo, function(e, contents, fullPath, newFileInfo) {
+            less.Parser.fileLoader(path, currentFileInfo, function(e, contents, newFileInfo) {
                 if (e) {
                     fileParsedFunc(e);
                     return;
@@ -262,17 +225,17 @@ less.Parser = function Parser(env) {
 
                 newEnv.currentFileInfo = newFileInfo;
                 newEnv.processImports = false;
-                newEnv.contents[fullPath] = contents;
+                newEnv.contents[newFileInfo.filename] = contents;
 
                 if (currentFileInfo.reference || importOptions.reference) {
                     newFileInfo.reference = true;
                 }
 
                 if (importOptions.inline) {
-                    fileParsedFunc(null, contents, fullPath);
+                    fileParsedFunc(null, contents, newFileInfo.filename);
                 } else {
                     new(less.Parser)(newEnv).parse(contents, function(e, root) {
-                        fileParsedFunc(e, root, fullPath);
+                        fileParsedFunc(e, root, newFileInfo.filename);
                     });
                 }
             }, env);
@@ -1190,7 +1153,7 @@ less.Parser = function Parser(env) {
                 //
                 dimension: function() {
                     var value, c = input.charCodeAt(i);
-                    //Is the first char of the dimension 0-9, '.', '+' or '-'
+                    // Is the first char of the dimension 0-9, '.', '+' or '-'
                     if ((c > 57 || c < 43) || c === 47 || c == 44) {
                         return;
                     }
@@ -2397,7 +2360,7 @@ less.Parser = function Parser(env) {
                 }
 
                 function cutOutBlockComments() {
-                    //match block comments
+                    // match block comments
                     var a = /^\s*\/\*(?:[^*]|\*+[^\/*])*\*+\//.exec(c);
                     if (a) {
                         length += a[0].length;
@@ -2432,6 +2395,7 @@ less.Parser = function Parser(env) {
     };
     return parser;
 };
+
 less.Parser.serializeVars = function(vars) {
     var s = '';
 
@@ -2666,7 +2630,7 @@ less.Parser.serializeVars = function(vars) {
             if (typeof dark === 'undefined') {
                 dark = this.rgba(0, 0, 0, 1.0);
             }
-            //Figure out which is actually light and dark!
+            // Figure out which is actually light and dark!
             if (dark.luma() > light.luma()) {
                 var t = light;
                 light = dark;
@@ -2696,12 +2660,12 @@ less.Parser.serializeVars = function(vars) {
             result = result.replace(new RegExp(pattern.value, flags ? flags.value : ''), replacement.value);
             return new(tree.Quoted)(string.quote || '', result, string.escaped);
         },
-        '%': function(string /* arg, arg, ...*/ ) {
+        '%': function(string) {
             var args = Array.prototype.slice.call(arguments, 1),
                 result = string.value;
 
             for (var i = 0; i < args.length; i++) {
-                /*jshint loopfunc:true */
+                /* jshint loopfunc:true */
                 result = result.replace(/%[sda]/i, function(token) {
                     var value = token.match(/s/i) ? args[i].value : args[i].toCSS();
                     return token.match(/[A-Z]$/) ? encodeURIComponent(value) : value;
@@ -2897,16 +2861,8 @@ less.Parser.serializeVars = function(vars) {
 
         "data-uri": function(mimetypeNode, filePathNode) {
 
-            if (typeof window !== 'undefined') {
-                return new tree.URL(filePathNode || mimetypeNode, this.currentFileInfo).eval(this.env);
-            }
-
             var mimetype = mimetypeNode.value;
             var filePath = (filePathNode && filePathNode.value);
-
-            var fs = require('fs'),
-                path = require('path'),
-                useBase64 = false;
 
             if (arguments.length < 2) {
                 filePath = mimetype;
@@ -2921,12 +2877,13 @@ less.Parser.serializeVars = function(vars) {
 
             if (this.env.isPathRelative(filePath)) {
                 if (this.currentFileInfo.relativeUrls) {
-                    filePath = path.join(this.currentFileInfo.currentDirectory, filePath);
+                    filePath = this.currentFileInfo.currentDirectory + filePath;
                 } else {
-                    filePath = path.join(this.currentFileInfo.entryPath, filePath);
+                    filePath = this.currentFileInfo.entryPath + filePath;
                 }
             }
 
+            var useBase64 = false;
             // detect the mimetype if not given
             if (arguments.length < 2) {
                 var mime;
@@ -2948,14 +2905,13 @@ less.Parser.serializeVars = function(vars) {
                 useBase64 = /;base64$/.test(mimetype);
             }
 
-            var buf = fs.readFileSync(filePath);
+            var fileData = gabrysLessCompiler.readFile(filePath);
 
             // IE8 cannot handle a data-uri larger than 32KB. If this is exceeded
             // and the --ieCompat flag is enabled, return a normal url() instead.
-            var DATA_URI_MAX_KB = 32,
-                fileSizeInKB = parseInt((buf.length / 1024), 10);
+            var DATA_URI_MAX_KB = 32;
+            var fileSizeInKB = parseInt((fileData.getContent().length / 1024), 10);
             if (fileSizeInKB >= DATA_URI_MAX_KB) {
-
                 if (this.env.ieCompat !== false) {
                     if (!this.env.silent) {
                         console.warn("Skipped data-uri embedding of %s because its size (%dKB) exceeds IE8-safe %dKB!", filePath, fileSizeInKB,
@@ -2966,10 +2922,14 @@ less.Parser.serializeVars = function(vars) {
                 }
             }
 
-            buf = useBase64 ? buf.toString('base64') :
-                encodeURIComponent(buf);
+            var content;
+            if (useBase64) {
+                content = less.encoder.encodeBase64Bytes(fileData.getContent());
+            } else {
+                content = encodeURIComponent(fileData.getContentAsString());
+            }
 
-            var uri = "\"data:" + mimetype + ',' + buf + fragment + "\"";
+            var uri = "\"data:" + mimetype + ',' + content + fragment + "\"";
             return new(tree.URL)(new(tree.Anonymous)(uri));
         },
 
@@ -3073,9 +3033,9 @@ less.Parser.serializeVars = function(vars) {
             '.png': 'image/png'
         },
         lookup: function(filepath) {
-            var ext = require('path').extname(filepath),
-                type = tree._mime._types[ext];
-            if (type === undefined) {
+            var ext = Packages.biz.gabrys.lesscss.compiler2.io.FilenameUtils.getExtension(filepath);
+            var type = tree._mime._types['.' + ext];
+            if (typeof type === 'undefined') {
                 throw new Error('Optional dependency "mime" is required for ' + ext);
             }
             return type;
@@ -3091,7 +3051,7 @@ less.Parser.serializeVars = function(vars) {
     // Math
 
     var mathFunctions = {
-        // name,  unit
+        // name, unit
         ceil: null,
         floor: null,
         sqrt: null,
@@ -3267,7 +3227,7 @@ less.Parser.serializeVars = function(vars) {
 
     tree.fround = function(env, value) {
         var p = env && env.numPrecision;
-        //add "epsilon" to ensure numbers like 1.000000005 (represented as 1.000000004999....) are properly rounded...
+        // add "epsilon" to ensure numbers like 1.000000005 (represented as 1.000000004999....) are properly rounded...
         return (p == null) ? value : Number((value + 2e-16).toFixed(p));
     };
 
@@ -3566,7 +3526,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -3605,7 +3565,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -3635,7 +3595,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -3658,8 +3618,8 @@ less.Parser.serializeVars = function(vars) {
         //
         // When evaluating a function call,
         // we either find the function in `tree.functions` [1],
-        // in which case we call it, passing the  evaluated arguments,
-        // if this returns null or we cannot find the function, we 
+        // in which case we call it, passing the evaluated arguments,
+        // if this returns null or we cannot find the function, we
         // simply print it out as it appeared originally [2].
         //
         // The *functions.js* file contains the built-in functions.
@@ -3712,7 +3672,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
     //
@@ -3848,7 +3808,8 @@ less.Parser.serializeVars = function(vars) {
                 a: a
             };
         },
-        //Adapted from http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
+        // Adapted from
+        // http://mjijackson.com/2008/02/rgb-to-hsl-and-rgb-to-hsv-color-model-conversion-algorithms-in-javascript
         toHSV: function() {
             var r = this.rgb[0] / 255,
                 g = this.rgb[1] / 255,
@@ -3929,7 +3890,7 @@ less.Parser.serializeVars = function(vars) {
         return Math.min(Math.max(v, 0), max);
     }
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -3944,7 +3905,7 @@ less.Parser.serializeVars = function(vars) {
             if (this.debugInfo) {
                 output.add(tree.debugInfo(env, this), this.currentFileInfo, this.index);
             }
-            output.add(this.value.trim()); //TODO shouldn't need to trim, we shouldn't grab the \n
+            output.add(this.value.trim()); // TODO shouldn't need to trim, we shouldn't grab the \n
         },
         toCSS: tree.toCSS,
         isSilent: function(env) {
@@ -3960,7 +3921,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4016,7 +3977,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4037,7 +3998,7 @@ less.Parser.serializeVars = function(vars) {
             return this.ruleset.eval(this.frames ? new(tree.evalEnv)(env, this.frames.concat(env.frames)) : env);
         }
     };
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4096,7 +4057,7 @@ less.Parser.serializeVars = function(vars) {
         // we default to the first Dimension's unit,
         // so `1px + 2` will yield `3px`.
         operate: function(env, op, other) {
-            /*jshint noempty:false */
+            /* jshint noempty:false */
             var value = tree.operate(env, op, this.value, other.value),
                 unit = this.unit.clone();
 
@@ -4182,7 +4143,7 @@ less.Parser.serializeVars = function(vars) {
                 conversions = derivedConversions;
             }
             applyUnit = function(atomicUnit, denominator) {
-                /*jshint loopfunc:true */
+                /* jshint loopfunc:true */
                 if (group.hasOwnProperty(atomicUnit)) {
                     if (denominator) {
                         value = value / (group[atomicUnit] / group[targetUnit]);
@@ -4303,7 +4264,7 @@ less.Parser.serializeVars = function(vars) {
                 mapUnit;
 
             mapUnit = function(atomicUnit) {
-                /*jshint loopfunc:true */
+                /* jshint loopfunc:true */
                 if (group.hasOwnProperty(atomicUnit) && !result[groupName]) {
                     result[groupName] = atomicUnit;
                 }
@@ -4370,7 +4331,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4455,7 +4416,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4548,7 +4509,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4605,7 +4566,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4661,7 +4622,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
     //
@@ -4767,7 +4728,7 @@ less.Parser.serializeVars = function(vars) {
             }
 
             if (this.options.inline) {
-                //todo needs to reference css file not import
+                // todo needs to reference css file not import
                 var contents = new(tree.Anonymous)(this.root, 0, {
                     filename: this.importedFilename
                 }, true, true);
@@ -4788,7 +4749,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -4820,7 +4781,7 @@ less.Parser.serializeVars = function(vars) {
             var variables = env.frames[0].variables();
             for (var k in variables) {
                 if (variables.hasOwnProperty(k)) {
-                    /*jshint loopfunc:true */
+                    /* jshint loopfunc:true */
                     context[k.slice(1)] = {
                         value: variables[k].value,
                         toJS: function() {
@@ -4850,7 +4811,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 
 (function(tree) {
@@ -4885,7 +4846,7 @@ less.Parser.serializeVars = function(vars) {
     tree.True = new(tree.Keyword)('true');
     tree.False = new(tree.Keyword)('false');
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5048,7 +5009,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5273,7 +5234,7 @@ less.Parser.serializeVars = function(vars) {
         },
 
         evalParams: function(env, mixinEnv, args, evaldArguments) {
-            /*jshint boss:true */
+            /* jshint boss:true */
             var frame = new(tree.Ruleset)(null, null),
                 varargs, arg,
                 params = this.params.slice(0),
@@ -5417,7 +5378,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5442,7 +5403,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5506,7 +5467,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 
 (function(tree) {
@@ -5530,7 +5491,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5587,7 +5548,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5689,7 +5650,7 @@ less.Parser.serializeVars = function(vars) {
         return value;
     }
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5705,7 +5666,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -5799,7 +5760,7 @@ less.Parser.serializeVars = function(vars) {
             // Evaluate mixin calls.
             for (i = 0; i < rsRuleCnt; i++) {
                 if (rsRules[i] instanceof tree.mixin.Call) {
-                    /*jshint loopfunc:true */
+                    /* jshint loopfunc:true */
                     rules = rsRules[i].eval(env).filter(function(r) {
                         if ((r instanceof tree.Rule) && r.variable) {
                             // do not pollute the scope if the variable is
@@ -5814,7 +5775,7 @@ less.Parser.serializeVars = function(vars) {
                     i += rules.length - 1;
                     ruleset.resetCache();
                 } else if (rsRules[i] instanceof tree.RulesetCall) {
-                    /*jshint loopfunc:true */
+                    /* jshint loopfunc:true */
                     rules = rsRules[i].eval(env).rules.filter(function(r) {
                         if ((r instanceof tree.Rule) && r.variable) {
                             // do not pollute the scope at all
@@ -6025,7 +5986,7 @@ less.Parser.serializeVars = function(vars) {
                     return rule.isRulesetLike();
                 }
 
-                //anything else is assumed to be a rule
+                // anything else is assumed to be a rule
                 return false;
             }
 
@@ -6034,7 +5995,7 @@ less.Parser.serializeVars = function(vars) {
                 if (isRulesetLikeNode(rule, this.root)) {
                     rulesetNodes.push(rule);
                 } else {
-                    //charsets should float on top of everything
+                    // charsets should float on top of everything
                     if (rule.isCharset && rule.isCharset()) {
                         charsetRuleNodes.push(rule);
                     } else {
@@ -6177,8 +6138,8 @@ less.Parser.serializeVars = function(vars) {
             // The inner list is a list of inheritance seperated selectors
             // e.g.
             // .a, .b {
-            //   .c {
-            //   }
+            // .c {
+            // }
             // }
             // == [[.a] [.c]] [[.b] [.c]]
             //
@@ -6233,7 +6194,7 @@ less.Parser.serializeVars = function(vars) {
                                 afterParentJoin = [];
                                 newJoinedSelectorEmpty = true;
 
-                                //construct the joined selector - if & is the first thing this will be empty,
+                                // construct the joined selector - if & is the first thing this will be empty,
                                 // if not newJoinedSelector will be the last set of elements in the selector
                                 if (sel.length > 0) {
                                     newSelectorPath = sel.slice(0);
@@ -6244,7 +6205,7 @@ less.Parser.serializeVars = function(vars) {
                                     newJoinedSelector = selector.createDerived([]);
                                 }
 
-                                //put together the parent selectors after the join
+                                // put together the parent selectors after the join
                                 if (parentSel.length > 1) {
                                     afterParentJoin = afterParentJoin.concat(parentSel.slice(1));
                                 }
@@ -6310,7 +6271,7 @@ less.Parser.serializeVars = function(vars) {
             }
         }
     };
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6427,7 +6388,7 @@ less.Parser.serializeVars = function(vars) {
                 output.add(' ', this.currentFileInfo, this.index);
             }
             if (!this._css) {
-                //TODO caching? speed comparison?
+                // TODO caching? speed comparison?
                 for (i = 0; i < this.elements.length; i++) {
                     element = this.elements[i];
                     element.genCSS(env, output);
@@ -6446,7 +6407,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6464,7 +6425,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6520,7 +6481,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6555,7 +6516,7 @@ less.Parser.serializeVars = function(vars) {
         toCSS: tree.toCSS
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6604,7 +6565,7 @@ less.Parser.serializeVars = function(vars) {
         }
     };
 
-})(require('../tree'));
+})(require('./tree'));
 
 (function(tree) {
 
@@ -6733,9 +6694,9 @@ less.Parser.serializeVars = function(vars) {
         return path.join("/");
     };
 
-    //todo - do the same for the toCSS env
-    //tree.toCSSEnv = function (options) {
-    //};
+    // todo - do the same for the toCSS env
+    // tree.toCSSEnv = function (options) {
+    // };
 
     var copyFromOriginal = function(original, destination, propertiesToCopy) {
         if (!original) {
@@ -6900,6 +6861,7 @@ less.Parser.serializeVars = function(vars) {
     };
 
 })(require('./tree'));
+
 (function(tree) {
     tree.importVisitor = function(importer, finish, evalEnv, onceFileDetectionMap, recursionDetector) {
         this._visitor = new tree.visitor(this);
@@ -7049,6 +7011,7 @@ less.Parser.serializeVars = function(vars) {
     };
 
 })(require('./tree'));
+
 (function(tree) {
     tree.joinSelectorVisitor = function() {
         this.contexts = [
@@ -7102,6 +7065,7 @@ less.Parser.serializeVars = function(vars) {
     };
 
 })(require('./tree'));
+
 (function(tree) {
     tree.toCSSVisitor = function(env) {
         this._visitor = new tree.visitor(this);
@@ -7354,8 +7318,9 @@ less.Parser.serializeVars = function(vars) {
     };
 
 })(require('./tree'));
+
 (function(tree) {
-    /*jshint loopfunc:true */
+    /* jshint loopfunc:true */
 
     tree.extendFinderVisitor = function() {
         this._visitor = new tree.visitor(this);
@@ -7464,12 +7429,15 @@ less.Parser.serializeVars = function(vars) {
         },
         doExtendChaining: function(extendsList, extendsListTarget, iterationCount) {
             //
-            // chaining is different from normal extension.. if we extend an extend then we are not just copying, altering and pasting
+            // chaining is different from normal extension.. if we extend an extend then we are not just copying,
+            // altering and pasting
             // the selector we would do normally, but we are also adding an extend with the same target selector
             // this means this new extend can then go and alter other extends
             //
-            // this method deals with all the chaining work - without it, extend is flat and doesn't work on other extend selectors
-            // this is also the most expensive.. and a match on one selector can cause an extension of a selector we had already processed if
+            // this method deals with all the chaining work - without it, extend is flat and doesn't work on other
+            // extend selectors
+            // this is also the most expensive.. and a match on one selector can cause an extension of a selector we had
+            // already processed if
             // we look at each selector at a time, as is done in visitRuleset
 
             var extendIndex, targetExtendIndex, matches, extendsToAdd = [],
@@ -7478,9 +7446,9 @@ less.Parser.serializeVars = function(vars) {
 
             iterationCount = iterationCount || 0;
 
-            //loop through comparing every extend with every target extend.
+            // loop through comparing every extend with every target extend.
             // a target extend is the one on the ruleset we are looking at copy/edit/pasting in place
-            // e.g.  .a:extend(.b) {}  and .b:extend(.c) {} then the first extend extends the second one
+            // e.g. .a:extend(.b) {} and .b:extend(.c) {} then the first extend extends the second one
             // and the second is the target.
             // the seperation into two lists allows us to process a subset of chains with a bigger set, as is the
             // case when processing media queries
@@ -7518,7 +7486,7 @@ less.Parser.serializeVars = function(vars) {
                             extendsToAdd.push(newExtend);
                             newExtend.ruleset = targetExtend.ruleset;
 
-                            //remember its parents for circular references
+                            // remember its parents for circular references
                             newExtend.parent_ids = newExtend.parent_ids.concat(targetExtend.parent_ids, extend.parent_ids);
 
                             // only process the selector once.. if we have :extend(.a,.b) then multiple
@@ -7550,7 +7518,8 @@ less.Parser.serializeVars = function(vars) {
                     };
                 }
 
-                // now process the new extends on the existing rules so that we can handle a extending b extending c ectending d extending e...
+                // now process the new extends on the existing rules so that we can handle a extending b extending c
+                // ectending d extending e...
                 return extendsToAdd.concat(extendVisitor.doExtendChaining(extendsToAdd, extendsListTarget, iterationCount + 1));
             } else {
                 return extendsToAdd;
@@ -7717,7 +7686,7 @@ less.Parser.serializeVars = function(vars) {
         },
         extendSelector: function(matches, selectorPath, replacementSelector) {
 
-            //for a set of matches, replace each match with the replacement selector
+            // for a set of matches, replace each match with the replacement selector
 
             var currentSelectorPathIndex = 0,
                 currentSelectorPathElementIndex = 0,
@@ -7839,7 +7808,7 @@ less.Parser.serializeVars = function(vars) {
 
     tree.sourceMapOutput.prototype.add = function(chunk, fileInfo, index, mapLines) {
 
-        //ignore adding empty strings
+        // ignore adding empty strings
         if (!chunk) {
             return;
         }
@@ -8152,7 +8121,6 @@ less.Parser.serializeVars = function(vars) {
 
                 /**
                  * Creates a new SourceMapGenerator based on a SourceMapConsumer
-                 *
                  * @param aSourceMapConsumer The SourceMap.
                  */
                 SourceMapGenerator.fromSourceMap =
@@ -9888,7 +9856,6 @@ less.Parser.serializeVars = function(vars) {
 
         });
         /* -*- Mode: js; js-indent-level: 2; -*- */
-        ///////////////////////////////////////////////////////////////////////////////
 
         this.sourceMap = {
             SourceMapConsumer: require('source-map/source-map-consumer').SourceMapConsumer,

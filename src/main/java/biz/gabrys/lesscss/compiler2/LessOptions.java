@@ -13,8 +13,11 @@
 package biz.gabrys.lesscss.compiler2;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
+
+import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
 
 /**
  * <p>
@@ -28,7 +31,7 @@ import java.util.List;
  * <li>{@link #isCompress() compress} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #isIeCompatibility() IE compatibility} - whether a CSS code should be compatible with Internet Explorer
  * browser (default: {@code true})</li>
- * <li>{@link #getIncludePaths() included paths} - available include paths (default: {@code empty collection})</li>
+ * <li>{@link #getIncludePaths() included paths} - available include paths (default: {@code []})</li>
  * <li>{@link #isJavaScript() JavaScript} - whether a compiler should allow usage of JavaScript language (default:
  * {@code true})</li>
  * <li>{@link #getLineNumbers() line numbers} - whether a compiler should generate inline source-mapping (default:
@@ -64,11 +67,22 @@ import java.util.List;
  * <ul>
  * <li>{@link #getEncoding() encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)</li>
+ * <li>{@link #getFileSystems() file systems} - a list with class names of the
+ * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * <code>["biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}"]</code>)</li>
  * </ul>
  * @since 2.0.0
  * @see LessOptionsBuilder
+ * @see FileSystemsOptionBuilder
  */
 public class LessOptions {
+
+    /**
+     * Stores a default value of the file systems option
+     * (<code>["biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}"]</code>).
+     * @since 2.0.0
+     */
+    public static final List<String> DEFAULT_FILE_SYSTEMS = Collections.unmodifiableList(Arrays.asList(LocalFileSystem.class.getName()));
 
     private boolean silent;
     private boolean strictImports;
@@ -88,6 +102,7 @@ public class LessOptions {
     private String sourceMapUrl;
 
     private String encoding;
+    private List<String> fileSystems;
 
     /**
      * Constructs a new instance.
@@ -98,10 +113,11 @@ public class LessOptions {
         javaScript = true;
         includePaths = Collections.emptyList();
         lineNumbers = LineNumbersValue.OFF;
+        fileSystems = DEFAULT_FILE_SYSTEMS;
     }
 
     /**
-     * Constructs a new instance as a copy of an another options object.
+     * Constructs a new instance as a copy of the another options object.
      * @param options the another options object (cannot be {@code null}).
      * @throws IllegalArgumentException if options is {@code null}.
      * @since 2.0.0
@@ -128,6 +144,7 @@ public class LessOptions {
         sourceMapUrl = options.sourceMapUrl;
 
         encoding = options.encoding;
+        fileSystems = new ArrayList<String>(options.fileSystems);
     }
 
     /**
@@ -230,10 +247,9 @@ public class LessOptions {
     }
 
     /**
-     * Returns available include paths (default: {@code empty collection}). If the file in an &#64;import rule does not
-     * exist at that exact location, a compiler will look for it at the location(s) passed to this option. You might use
-     * this for instance to specify a path to a library which you want to be referenced simply and relatively in the
-     * less files.
+     * Returns available include paths (default: {@code []}). If the file in an &#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @return the available include paths (never {@code null}).
      * @since 2.0.0
      */
@@ -242,10 +258,9 @@ public class LessOptions {
     }
 
     /**
-     * Sets available include paths (default: {@code empty collection}). If the file in an &#64;import rule does not
-     * exist at that exact location, a compiler will look for it at the location(s) passed to this option. You might use
-     * this for instance to specify a path to a library which you want to be referenced simply and relatively in the
-     * less files.
+     * Sets available include paths (default: {@code []}). If the file in an &#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @param includePaths the available include paths ({@code null} is treated as an empty collection).
      * @since 2.0.0
      */
@@ -701,5 +716,29 @@ public class LessOptions {
      */
     public void setEncoding(final String encoding) {
         this.encoding = encoding;
+    }
+
+    /**
+     * Returns {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the
+     * source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @return the file systems (never {@code null}).
+     * @since 2.0.0
+     */
+    public List<String> getFileSystems() {
+        return new ArrayList<String>(fileSystems);
+    }
+
+    /**
+     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
+     * files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
+     * @since 2.0.0
+     */
+    public void setFileSystems(final List<String> fileSystems) {
+        if (fileSystems == null) {
+            this.fileSystems = DEFAULT_FILE_SYSTEMS;
+        } else {
+            this.fileSystems = new ArrayList<String>(fileSystems);
+        }
     }
 }

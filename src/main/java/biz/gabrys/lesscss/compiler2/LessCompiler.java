@@ -42,7 +42,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * using custom encoding</li>
  * <li>{@link #compile(File, File, LessOptions)} - compiles a Less source file with custom configuration options and
  * saves result in an output file</li>
- * <li>{@link #compileAndCompress(CharSequence)} - compiles a Less source file to a compressed CSS code</li>
+ * <li>{@link #compileAndCompress(CharSequence)} - compiles a Less source code to a compressed CSS code</li>
  * <li>{@link #compileAndCompress(File)} - compiles a Less source file to a compressed CSS code</li>
  * <li>{@link #compileAndCompress(File, Charset)} - compiles a Less source file to a compressed CSS code using custom
  * encoding</li>
@@ -172,7 +172,32 @@ public class LessCompiler {
         final String encoding = getDefaultPlatformEncoding();
         final File sourceFile = createTemporaryFileWithCode(source, encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(sourceFile).encoding(encoding);
+        builder.inputFile(sourceFile.getAbsolutePath()).encoding(encoding);
+        final String css = compiler.execute(builder.build());
+        deleteFile(sourceFile);
+        return css;
+    }
+
+    /**
+     * Compiles a Less source code with custom configuration options to a CSS code.
+     * @param source the Less code (cannot be {@code null}).
+     * @param options the configuration options (can be {@code null}).
+     * @return the CSS code.
+     * @throws IllegalArgumentException if any parameter is invalid.
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if any &#64;import operation point to non-existent file.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     */
+    public String compile(final CharSequence source, final LessOptions options) {
+        validateSourceCode(source);
+        validateOptions(options);
+        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());
+        final File sourceFile = createTemporaryFileWithCode(source, encoding);
+        final NativeLessOptionsBuilder builder = createOptionsBuilder();
+        builder.inputFile(sourceFile.getAbsolutePath()).options(options).encoding(encoding);
         final String css = compiler.execute(builder.build());
         deleteFile(sourceFile);
         return css;
@@ -194,7 +219,7 @@ public class LessCompiler {
     public String compile(final File source) {
         validateSourceFile(source);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source);
+        builder.inputFile(source.getAbsolutePath());
         return compiler.execute(builder.build());
     }
 
@@ -216,7 +241,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateEncoding(encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).encoding(encoding.name());
+        builder.inputFile(source.getAbsolutePath()).encoding(encoding.name());
         return compiler.execute(builder.build());
     }
 
@@ -237,7 +262,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateOutputFile(output);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output);
         compiler.execute(builder.build());
     }
 
@@ -260,33 +285,8 @@ public class LessCompiler {
         validateOutputFile(output);
         validateEncoding(encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).encoding(encoding.name());
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).encoding(encoding.name());
         compiler.execute(builder.build());
-    }
-
-    /**
-     * Compiles a Less source code with custom configuration options to a CSS code.
-     * @param source the Less code (cannot be {@code null}).
-     * @param options the configuration options (can be {@code null}).
-     * @return the CSS code.
-     * @throws IllegalArgumentException if any parameter is invalid.
-     * @throws InitializationException if an error occurred during compiler initialization.
-     * @throws ConfigurationException if the compiler is configured incorrectly.
-     * @throws ReadFileException if any &#64;import operation point to non-existent file.
-     * @throws SyntaxException if a syntax error occurred during source file compilation.
-     * @throws CompilerException if an other error occurred during execution.
-     * @since 2.0.0
-     */
-    public String compile(final CharSequence source, final LessOptions options) {
-        validateSourceCode(source);
-        validateOptions(options);
-        final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());
-        final File sourceFile = createTemporaryFileWithCode(source, encoding);
-        final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(sourceFile).options(options).encoding(encoding);
-        final String css = compiler.execute(builder.build());
-        deleteFile(sourceFile);
-        return css;
     }
 
     /**
@@ -307,7 +307,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).options(options);
+        builder.inputFile(source.getAbsolutePath()).options(options);
         return compiler.execute(builder.build());
     }
 
@@ -330,12 +330,12 @@ public class LessCompiler {
         validateOutputFile(output);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).options(options);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).options(options);
         compiler.execute(builder.build());
     }
 
     /**
-     * Compiles a Less source file to a compressed CSS code.
+     * Compiles a Less source code to a compressed CSS code.
      * @param source the Less code (cannot be {@code null}).
      * @return the compressed CSS code.
      * @throws IllegalArgumentException if the Less code is {@code null}.
@@ -351,7 +351,7 @@ public class LessCompiler {
         final String encoding = getDefaultPlatformEncoding();
         final File sourceFile = createTemporaryFileWithCode(source, encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(sourceFile).compress(true).encoding(encoding);
+        builder.inputFile(sourceFile.getAbsolutePath()).compress(true).encoding(encoding);
         final String css = compiler.execute(builder.build());
         deleteFile(sourceFile);
         return css;
@@ -373,7 +373,7 @@ public class LessCompiler {
     public String compileAndCompress(final File source) {
         validateSourceFile(source);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).compress(true);
+        builder.inputFile(source.getAbsolutePath()).compress(true);
         return compiler.execute(builder.build());
     }
 
@@ -395,7 +395,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateEncoding(encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).encoding(encoding.name()).compress(true);
+        builder.inputFile(source.getAbsolutePath()).encoding(encoding.name()).compress(true);
         return compiler.execute(builder.build());
     }
 
@@ -416,7 +416,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateOutputFile(output);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).compress(true);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).compress(true);
         compiler.execute(builder.build());
     }
 
@@ -439,7 +439,7 @@ public class LessCompiler {
         validateOutputFile(output);
         validateEncoding(encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).encoding(encoding.name()).compress(true);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).encoding(encoding.name()).compress(true);
         compiler.execute(builder.build());
     }
 
@@ -462,7 +462,7 @@ public class LessCompiler {
         final String encoding = StringUtils.defaultString(options.getEncoding(), getDefaultPlatformEncoding());
         final File sourceFile = createTemporaryFileWithCode(source, encoding);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(sourceFile).sourceMapInline(true).options(options).encoding(encoding);
+        builder.inputFile(sourceFile.getAbsolutePath()).sourceMapInline(true).options(options).encoding(encoding);
         final String css = compiler.execute(builder.build());
         deleteFile(sourceFile);
         return css;
@@ -486,7 +486,7 @@ public class LessCompiler {
         validateSourceFile(source);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).sourceMapInline(true).options(options);
+        builder.inputFile(source.getAbsolutePath()).sourceMapInline(true).options(options);
         return compiler.execute(builder.build());
     }
 
@@ -510,7 +510,7 @@ public class LessCompiler {
         validateOutputFile(output);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).sourceMapInline(true).options(options);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).sourceMapInline(true).options(options);
         compiler.execute(builder.build());
     }
 
@@ -535,7 +535,7 @@ public class LessCompiler {
         validateOutputFile(output);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).sourceMapDefault(true).options(options);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).sourceMapDefault(true).options(options);
         compiler.execute(builder.build());
     }
 
@@ -561,22 +561,22 @@ public class LessCompiler {
         validateOutputSourceMapFile(outputSourceMap);
         validateOptions(options);
         final NativeLessOptionsBuilder builder = createOptionsBuilder();
-        builder.inputFile(source).outputFile(output).sourceMapFile(outputSourceMap).options(options);
+        builder.inputFile(source.getAbsolutePath()).outputFile(output).sourceMapFile(outputSourceMap).options(options);
         compiler.execute(builder.build());
     }
 
-    void validateSourceCode(final CharSequence source) {
-        if (source == null) {
+    void validateSourceCode(final CharSequence code) {
+        if (code == null) {
             throw new IllegalArgumentException("Source code cannot be null");
         }
     }
 
-    void validateSourceFile(final File source) {
-        if (source == null) {
+    void validateSourceFile(final File file) {
+        if (file == null) {
             throw new IllegalArgumentException("Source file cannot be null");
         }
-        if (!source.exists()) {
-            throw new IllegalArgumentException("Source file does not exist: " + source.getAbsolutePath());
+        if (!file.exists()) {
+            throw new IllegalArgumentException("Source file does not exist: " + file.getAbsolutePath());
         }
     }
 

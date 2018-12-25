@@ -12,12 +12,8 @@
  */
 package biz.gabrys.lesscss.compiler2.io;
 
-import java.io.BufferedReader;
 import java.io.File;
-import java.io.FileInputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.io.PrintWriter;
 import java.io.Writer;
 
@@ -58,39 +54,5 @@ public final class FileUtils {
         } finally {
             IOUtils.closeQuietly(writer);
         }
-    }
-
-    /**
-     * Reads a content of a file.
-     * @param file the file (cannot be {@code null}).
-     * @param encoding the encoding to use (cannot be {@code null}).
-     * @return the file content.
-     * @throws IllegalArgumentException if the file or encoding is {@code null}.
-     * @throws IOException if an I/O error occurs.
-     * @since 2.0.0
-     */
-    public static String read(final File file, final String encoding) throws IOException {
-        if (file == null) {
-            throw new IllegalArgumentException("File cannot be null");
-        }
-        if (encoding == null) {
-            throw new IllegalArgumentException("Encoding cannot be null");
-        }
-
-        InputStream inputStream = null;
-        BufferedReader reader = null;
-        final StringBuilder content = new StringBuilder();
-        try {
-            inputStream = new FileInputStream(file);
-            reader = new BufferedReader(new InputStreamReader(inputStream, encoding));
-            for (String line = reader.readLine(); line != null; line = reader.readLine()) {
-                content.append(line);
-                content.append('\n');
-            }
-        } finally {
-            IOUtils.closeQuietly(reader);
-            IOUtils.closeQuietly(inputStream);
-        }
-        return content.toString();
     }
 }

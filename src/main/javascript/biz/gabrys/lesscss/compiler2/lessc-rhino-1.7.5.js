@@ -5,131 +5,117 @@
 
 /*global name:true, less, loadStyleSheet, os */
 
-var lessCompilerGlobals = {
-    encoding: java.nio.charset.Charset.defaultCharset().toString()
-};
-
-function formatError(ctx) {
-    var message = "";
-    var extract = ctx.extract;
-    var error = [];
-
-    // only output a stack if it isn't a less error
-    if (ctx.stack && !ctx.type) {
-        return ctx.stack;
-    }
-
-    if (!ctx.hasOwnProperty('index') || !extract) {
-        return ctx.stack || ctx.message;
-    }
-
-    if (typeof (extract[0]) === 'string') {
-        error.push((ctx.line - 1) + ' ' + extract[0]);
-    }
-
-    if (typeof (extract[1]) === 'string') {
-        var errorTxt = ctx.line + ' ';
-        if (extract[1]) {
-            errorTxt += extract[1].slice(0, ctx.column) + extract[1][ctx.column] + extract[1].slice(ctx.column + 1);
-        }
-        error.push(errorTxt);
-    }
-
-    if (typeof (extract[2]) === 'string') {
-        error.push((ctx.line + 1) + ' ' + extract[2]);
-    }
-    error = error.join('\n') + '\n';
-
-    message += ctx.type + 'Error: ' + ctx.message;
-    if (ctx.filename) {
-        message += ' in ' + ctx.filename + ' on line ' + ctx.line + ', column ' + (ctx.column + 1) + ':';
-    }
-
-    message += '\n' + error;
-
-    if (ctx.callLine) {
-        message += 'from ' + (ctx.filename || '') + '/n';
-        message += ctx.callLine + ' ' + ctx.callExtract + '/n';
-    }
-
-    return message;
-}
-
-function writeError(ctx) {
-    throw new Error(formatError(ctx));
-}
-
 less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
+    var filePath = file;
+    var absolute = true;
 
-    var href = file;
-    if (currentFileInfo && currentFileInfo.currentDirectory && !/^\//.test(file)) {
-        href = less.modules.path.join(currentFileInfo.currentDirectory, file);
+    if (currentFileInfo != null && currentFileInfo.currentDirectory != null) {
+        if (!/^(?:[a-z-]+:|\/)/.test(file)) {
+            absolute = false;
+            filePath = currentFileInfo.currentDirectory + file;
+        }
     }
 
-    var path = less.modules.path.dirname(href);
+    var fileSystem;
+    try {
+        var expandedPath = expandRedirection(filePath);
+        if (expandedPath != filePath) {
+            filePath = expandedPath;
+            absolute = true;
+        }
+        fileSystem = gabrysLessCompiler.getFileSystem(filePath);
+        if (!absolute) {
+            filePath = fileSystem.normalizePath(filePath);
+        }
+    } catch (e) {
+        callback(convertException(e, file));
+        return;
+    }
+
+    var name = Packages.biz.gabrys.lesscss.compiler2.io.FilenameUtils.getName(filePath);
+    var directory = filePath.substring(0, filePath.length - name.length());
 
     var newFileInfo = {
-        currentDirectory: path + '/',
-        filename: href
+        currentDirectory: directory,
+        filename: filePath
     };
 
-    if (currentFileInfo) {
-        newFileInfo.entryPath = currentFileInfo.entryPath;
-        newFileInfo.rootpath = currentFileInfo.rootpath;
+    if (currentFileInfo != null) {
+        if (absolute) {
+            newFileInfo.entryPath = directory;
+            newFileInfo.rootpath = directory;
+        } else {
+            newFileInfo.entryPath = currentFileInfo.entryPath;
+            newFileInfo.rootpath = currentFileInfo.rootpath;
+        }
         newFileInfo.rootFilename = currentFileInfo.rootFilename;
         newFileInfo.relativeUrls = currentFileInfo.relativeUrls;
     } else {
-        newFileInfo.entryPath = path;
-        newFileInfo.rootpath = less.rootpath || path;
-        newFileInfo.rootFilename = href;
+        newFileInfo.entryPath = directory;
+        newFileInfo.rootpath = less.rootpath || directory;
+        newFileInfo.rootFilename = filePath;
         newFileInfo.relativeUrls = env.relativeUrls;
     }
 
     var j = file.lastIndexOf('/');
-    if (newFileInfo.relativeUrls && !/^(?:[a-z-]+:|\/)/.test(file) && j != -1) {
+    if (newFileInfo.relativeUrls && !absolute && j != -1) {
         var relativeSubDirectory = file.slice(0, j + 1);
         // append (sub|sup) directory path of imported file
         newFileInfo.rootpath = newFileInfo.rootpath + relativeSubDirectory;
     }
-    newFileInfo.currentDirectory = path;
-    newFileInfo.filename = href;
 
-    var data = null;
+    var content;
     try {
-        data = readFile(href);
+        var fileData = fileSystem.fetch(filePath);
+        content = fileData.getContentAsString();
     } catch (e) {
-        callback({
-            type: 'File',
-            message: "'" + less.modules.path.basename(href) + "' does not exist"
-        });
+        callback(convertException(e, file));
         return;
     }
 
     try {
-        callback(null, data, href, newFileInfo, {
-            lastModified: 0
-        });
+        callback(null, content, newFileInfo);
     } catch (e) {
-        callback(e, null, href);
+        callback(e);
+    }
+
+    function convertException(exception, file) {
+        return {
+            type: 'File',
+            message: exception.message + ": '" + file + "'"
+        };
+    }
+
+    function expandRedirection(path) {
+        var expanded = path;
+        while (true) {
+            var fileSystem = gabrysLessCompiler.getFileSystem(expanded);
+            var result = fileSystem.expandRedirection(expanded);
+            if (result == expanded) {
+                break;
+            }
+            expanded = result;
+        }
+        return expanded;
     }
 };
 
-function readFile(filename) {
-    var content = Packages.biz.gabrys.lesscss.compiler2.io.FileUtils.read(new java.io.File(filename), lessCompilerGlobals.encoding);
-    // convert java.lang.String to JavaScript string
-    return '' + content;
-}
-
-function writeFile(filename, content) {
-    Packages.biz.gabrys.lesscss.compiler2.io.FileUtils.write(new java.io.File(filename), content, lessCompilerGlobals.encoding);
-}
-
-// Command line integration via Rhino
-(function(args) {
-
-    function throwConfigurationError(message) {
-        throw new Error('Configuration problem: ' + message);
+gabrysLessCompiler.getFileSystem = function(path) {
+    for (var i = 0; i < this.fileSystems.length; ++i) {
+        var fileSystem = this.fileSystems[i];
+        if (fileSystem.isSupported(path)) {
+            return fileSystem;
+        }
     }
+    throw new Error('NotSupportedProtocol');
+};
+
+gabrysLessCompiler.readFile = function(path) {
+    var fileSystem = this.getFileSystem(path);
+    return fileSystem.fetch(path);
+};
+
+(function(args) {
 
     var options = {
         compress: false,
@@ -143,23 +129,9 @@ function writeFile(filename, content) {
         strictUnits: false
     };
 
-    var validateArgument = function(arg, option) {
-        if (!option) {
-            throwConfigurationError('"' + arg + '" option requires a parameter');
-        }
-    };
-
-    var convertToBoolean = function(arg, option) {
-        var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(option);
-        if (!onOff) {
-            throwConfigurationError('Unable to parse "' + option + '" for ' + arg
-                    + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
-        }
-        return Boolean(onOff[2]);
-    };
-
     var sourceMapFilePath;
     var sourceMapInline = false;
+    var fileSystemsClassNames = [ 'biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem' ];
 
     args = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
@@ -253,12 +225,21 @@ function writeFile(filename, content) {
                 break;
             case 'encoding':
                 validateArgument(arg, match[2]);
-                lessCompilerGlobals.encoding = match[2];
+                gabrysLessCompiler.encoding = match[2];
+                break;
+            case 'file-systems':
+                validateArgument(arg, match[2]);
+                fileSystemsClassNames = match[2].split(',');
                 break;
             default:
                 throwConfigurationError('Invalid option "' + arg + '"');
         }
     });
+
+    if (gabrysLessCompiler.encoding == null) {
+        gabrysLessCompiler.encoding = java.nio.charset.Charset.defaultCharset().name();
+    }
+    gabrysLessCompiler.fileSystems = createFileSystems(fileSystemsClassNames);
 
     var source = args[0];
     if (source == null) {
@@ -287,7 +268,8 @@ function writeFile(filename, content) {
 
     var input = null;
     try {
-        input = readFile(source);
+        var fileData = gabrysLessCompiler.readFile(source);
+        input = fileData.getContentAsString();
     } catch (e) {
         throw new Error('Couldn\'t open file ' + source);
     }
@@ -298,7 +280,7 @@ function writeFile(filename, content) {
         var parser = new less.Parser(options);
         parser.parse(input, function(e, root) {
             if (e) {
-                writeError(e);
+                throw new Error(formatError(e));
             }
             result = root.toCSS(options);
             if (output != null) {
@@ -309,6 +291,154 @@ function writeFile(filename, content) {
             quit(0);
         });
     } catch (e) {
-        writeError(e);
+        throw new Error(formatError(e));
+    }
+
+    function throwConfigurationError(message) {
+        throw new Error('Configuration problem: ' + message);
+    }
+
+    function createFileSystems(classNames) {
+        var fileSystems = [];
+        for (var i = 0; i < classNames.length; ++i) {
+            var className = classNames[i].trim();
+            var clazz;
+            try {
+                clazz = java.lang.Class.forName(className);
+            } catch (e) {
+                throwConfigurationError('Cannot load a file system class: ' + className);
+            }
+            try {
+                fileSystems[fileSystems.length] = new FileSystem(clazz.newInstance());
+            } catch (e) {
+                throwConfigurationError('Cannot create a new instance of the file system: ' + className);
+            }
+        }
+        return fileSystems;
+
+        function FileSystem(fileSystem) {
+            this.isSupported = function(path) {
+                try {
+                    return fileSystem.isSupported(path);
+                } catch (e) {
+                    throw convertFileSystemException(e);
+                }
+            };
+
+            this.normalizePath = function(path) {
+                try {
+                    // convert java.lang.String to JavaScript string
+                    return '' + fileSystem.normalize(path);
+                } catch (e) {
+                    throw convertFileSystemException(e);
+                }
+            };
+
+            this.expandRedirection = function(path) {
+                try {
+                    // convert java.lang.String to JavaScript string
+                    return '' + fileSystem.expandRedirection(path);
+                } catch (e) {
+                    throw convertFileSystemException(e);
+                }
+            };
+
+            this.fetch = function(path) {
+                var fileData = null;
+                try {
+                    fileData = fileSystem.fetch(path);
+                } catch (e) {
+                    throw convertFileSystemException(e);
+                }
+                if (fileData == null) {
+                    return null;
+                }
+                return {
+                    getEncoding: function() {
+                        return fileData.getEncoding();
+                    },
+                    getContent: function() {
+                        return fileData.getContent();
+                    },
+                    getContentAsString: function() {
+                        var encoding = this.getEncoding();
+                        if (encoding == null) {
+                            encoding = gabrysLessCompiler.encoding;
+                        }
+                        // convert java.lang.String to JavaScript string
+                        return '' + new java.lang.String(fileData.getContent(), encoding);
+                    }
+                };
+            };
+
+            function convertFileSystemException(exception) {
+                var markup = '{gabrys-lesscss-compiler-filesystem-exception}';
+                return new Error('FileSystemError:' + markup + exception.message + markup);
+            }
+        }
+    }
+
+    function validateArgument(arg, option) {
+        if (!option) {
+            throwConfigurationError('"' + arg + '" option requires a parameter');
+        }
+    }
+
+    function convertToBoolean(arg, option) {
+        var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(option);
+        if (!onOff) {
+            throwConfigurationError('Unable to parse "' + option + '" for ' + arg
+                    + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
+        }
+        return Boolean(onOff[2]);
+    }
+
+    function writeFile(path, content) {
+        Packages.biz.gabrys.lesscss.compiler2.io.FileUtils.write(new java.io.File(path), content, gabrysLessCompiler.encoding);
+    }
+
+    function formatError(ctx) {
+        var extract = ctx.extract;
+        var error = [];
+
+        // only output a stack if it isn't a less error
+        if (ctx.stack && !ctx.type) {
+            return ctx.stack;
+        }
+
+        if (!ctx.hasOwnProperty('index') || !extract) {
+            return ctx.stack || ctx.message;
+        }
+
+        if (typeof extract[0] === 'string') {
+            error.push((ctx.line - 1) + ' ' + extract[0]);
+        }
+
+        if (typeof extract[1] === 'string') {
+            var errorTxt = ctx.line + ' ';
+            if (extract[1]) {
+                errorTxt += extract[1].slice(0, ctx.column) + extract[1][ctx.column] + extract[1].slice(ctx.column + 1);
+            }
+            error.push(errorTxt);
+        }
+
+        if (typeof extract[2] === 'string') {
+            error.push((ctx.line + 1) + ' ' + extract[2]);
+        }
+        error = error.join('\n') + '\n';
+
+        var message = ctx.type + 'Error: ' + ctx.message;
+        if (ctx.filename) {
+            message += ' in ' + ctx.filename + ' on line ' + ctx.line + ', column ' + (ctx.column + 1) + ':';
+        }
+
+        message += '\n' + error;
+
+        if (ctx.callLine) {
+            message += 'from ' + (ctx.filename || '') + '/n';
+            message += ctx.callLine + ' ' + ctx.callExtract + '/n';
+        }
+
+        return message;
     }
 }(arguments));

@@ -43,6 +43,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * </pre>
  * 
  * @since 2.0.0
+ * @see FileSystemsOptionBuilder
  */
 public class LessOptionsBuilder {
 
@@ -120,7 +121,7 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Disallows usage of an &#64;import operation inside of either &#64;media blocks or other selector blocks (default:
+     * Disallows usage of &#64;import operations inside of either &#64;media blocks or other selector blocks (default:
      * {@code off}).
      * @return {@code this} builder.
      * @since 2.0.0
@@ -132,7 +133,7 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Allows usage of an &#64;import operation inside of either &#64;media blocks or other selector blocks (default:
+     * Allows usage of &#64;import operations inside of either &#64;media blocks or other selector blocks (default:
      * {@code off}).
      * @return {@code this} builder.
      * @since 2.0.0
@@ -251,11 +252,11 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Sets available include paths (default: {@code empty collection}).
+     * Sets available include paths (default: {@code []}).
      * @param includePaths the available include paths ({@code null} is treated as an empty collection).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #includePaths(String[])
+     * @see #includePaths(CharSequence...)
      * @see #includePathsOff()
      */
     public LessOptionsBuilder includePaths(final Collection<? extends CharSequence> includePaths) {
@@ -272,18 +273,18 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Sets available include paths (default: {@code empty array}).
-     * @param includePaths the available include paths ({@code null} is treated as an empty array).
+     * Sets available include paths (default: {@code []}).
+     * @param includePaths the available include paths.
      * @return {@code this} builder.
      * @since 2.0.0
      * @see #includePaths(Collection)
      * @see #includePathsOff()
      */
-    public LessOptionsBuilder includePaths(final String[] includePaths) {
-        if (includePaths == null) {
-            return includePaths((Collection<CharSequence>) null);
-        } else {
+    public LessOptionsBuilder includePaths(final CharSequence... includePaths) {
+        if (includePaths != null) {
             return includePaths(Arrays.asList(includePaths));
+        } else {
+            return includePaths((Collection<CharSequence>) null);
         }
     }
 
@@ -292,7 +293,7 @@ public class LessOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      * @see #includePaths(Collection)
-     * @see #includePaths(String[])
+     * @see #includePaths(CharSequence...)
      */
     public LessOptionsBuilder includePathsOff() {
         return includePaths((Collection<CharSequence>) null);
@@ -638,6 +639,47 @@ public class LessOptionsBuilder {
      */
     public LessOptionsBuilder encodingPlatformDefault() {
         return encoding((CharSequence) null);
+    }
+
+    /**
+     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
+     *            ({@code null} is treated as a collection with default values).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #fileSystems(CharSequence...)
+     * @see FileSystemsOptionBuilder
+     */
+    public LessOptionsBuilder fileSystems(final Collection<? extends CharSequence> fileSystems) {
+        if (fileSystems != null) {
+            final List<String> paths = new ArrayList<String>(fileSystems.size());
+            for (final CharSequence path : fileSystems) {
+                paths.add(StringUtils.toStringIfNotNull(path));
+            }
+            getOptions().setFileSystems(paths);
+        } else {
+            getOptions().setFileSystems(null);
+        }
+        return this;
+    }
+
+    /**
+     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
+     *            ({@code null} is treated as a collection with default values).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #fileSystems(Collection)
+     * @see FileSystemsOptionBuilder
+     */
+    public LessOptionsBuilder fileSystems(final CharSequence... fileSystems) {
+        if (fileSystems != null) {
+            return fileSystems(Arrays.asList(fileSystems));
+        } else {
+            return fileSystems((Collection<CharSequence>) null);
+        }
     }
 
     /**

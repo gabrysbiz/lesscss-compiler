@@ -14,6 +14,14 @@ The compiler is compatible with version [1.7.5](https://github.com/less/less.js/
 The library is based on the official [Less](http://lesscss.org/) JavaScript compiler adapted to the
 [Rhino](https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino) engine.
 
+It supports sources located at:
+* local drives
+* protocols: 
+  * [HTTP](https://www.w3.org/Protocols/) and HTTPS
+  * [FTP](https://www.w3.org/Protocols/rfc959/) (requires [Apache Commons Net](https://commons.apache.org/proper/commons-net/") library in the class path)
+  * class path (prefix `classpath://`)
+* custom - defined by programmers (see [FileSystem](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html))
+
 # Requirements
 The compiler to run requires:
 * Java 6.0 or higher
@@ -25,8 +33,8 @@ or using various [dependency management tools](http://lesscss-compiler.projects.
 
 # Concept
 The library contains two compilers:
-* `NativeLessCompiler` is a compiler with a shell-type API
-* `LessCompiler` is a facade for the `NativeLessCompiler` with a developer-friendly API
+* [NativeLessCompiler](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/NativeLessCompiler.html) is a compiler with a shell-type API
+* [LessCompiler](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html) is a facade for the `NativeLessCompiler` with a developer-friendly API
 
 The idea for the `NativeLessCompiler` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)
 library by [Marcel Overdijk](https://github.com/marceloverdijk).

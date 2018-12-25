@@ -21,10 +21,32 @@
         </section>
         <section name="Compatibility">
             <p>
-                 The compiler is compatible with version <a href="https://github.com/less/less.js/releases/tag/v1.7.5">1.7.5</a>.
-                 The library is based on the official <a href="http://lesscss.org/">Less</a> JavaScript compiler adapted to the
+                The compiler is compatible with version <a href="https://github.com/less/less.js/releases/tag/v1.7.5">1.7.5</a>.
+                The library is based on the official <a href="http://lesscss.org/">Less</a> JavaScript compiler adapted to the
                 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> engine.
             </p>
+            <p>
+                It supports sources located at:
+            </p>
+            <ul>
+                <li>local drives</li>
+                <li>
+                    protocols:
+                    <ul>
+                        <li><a href="https://www.w3.org/Protocols/">HTTP</a> and HTTPS</li>
+                        <li>
+                            <a href="https://www.w3.org/Protocols/rfc959/">FTP</a> (requires
+                            <a href="https://commons.apache.org/proper/commons-net/">Apache Commons Net</a> library in the class
+                            path)
+                        </li>
+                        <li>class path (prefix <code>classpath://</code>)</li>
+                    </ul>
+                </li>
+                <li>
+                    custom - defined by programmers
+                    (see <a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html">FileSystem</a>)
+                </li>
+            </ul>
         </section>
         <section name="Requirements">
             <p>
@@ -47,25 +69,23 @@
             </p>
             <ul>
                 <li>
-                    <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
+                    <a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
                     is a compiler with a shell-type API
                 </li>
                 <li>
-                    <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>
-                    is a facade for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
-                    with a developer-friendly API
+                    <a href="apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>
+                    is a facade for the <code>NativeLessCompiler</code> with a developer-friendly API
                 </li>
             </ul>
             <p>
-                The idea for the <a href="apidocs/biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
-                class was based on the <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a>
+                The idea for the <code>NativeLessCompiler</code> class was based on the
+                <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a>
                 library by <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
             </p>
         </section>
         <section name="Usage">
             <p>
-                The <a href="apidocs/biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a> contains 18 methods.
-                Below is an example of how to use some of them:
+                The <code>LessCompiler</code> contains 18 methods. Below is an example of how to use some of them:
             </p>
             <pre>String cssCode = null;
 LessOptions options = null;

@@ -1,11 +1,14 @@
 package biz.gabrys.lesscss.compiler2.util;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+
 import java.util.List;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
 
 import biz.gabrys.lesscss.compiler2.util.ListWithoutEmptyValuesBuilder.Checker;
 
@@ -15,7 +18,7 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
     @Before
     public void setup() {
-        builder = Mockito.spy(new ListWithoutEmptyValuesBuilder<Object>(new Checker<Object>() {
+        builder = spy(new ListWithoutEmptyValuesBuilder<Object>(new Checker<Object>() {
 
             @Override
             public boolean isNotEmpty(final Object value) {
@@ -35,10 +38,10 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value).build();
 
-        Assertions.assertThat(values).isEmpty();
-        Mockito.verify(builder).append(value);
-        Mockito.verify(builder).build();
-        Mockito.verifyNoMoreInteractions(builder);
+        assertThat(values).isEmpty();
+        verify(builder).append(value);
+        verify(builder).build();
+        verifyNoMoreInteractions(builder);
     }
 
     @Test
@@ -47,10 +50,10 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value).build();
 
-        Assertions.assertThat(values).isEmpty();
-        Mockito.verify(builder).append(value);
-        Mockito.verify(builder).build();
-        Mockito.verifyNoMoreInteractions(builder);
+        assertThat(values).isEmpty();
+        verify(builder).append(value);
+        verify(builder).build();
+        verifyNoMoreInteractions(builder);
     }
 
     @Test
@@ -62,15 +65,15 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value).build();
 
-        Assertions.assertThat(values).hasSize(2);
-        Assertions.assertThat(values.get(0)).isSameAs(value1);
-        Assertions.assertThat(values.get(1)).isSameAs(value3);
-        Mockito.verify(builder).append(value);
-        Mockito.verify(builder).build();
-        Mockito.verify(builder).append(value1);
-        Mockito.verify(builder).append(value2);
-        Mockito.verify(builder).append(value3);
-        Mockito.verifyNoMoreInteractions(builder);
+        assertThat(values).hasSize(2);
+        assertThat(values.get(0)).isSameAs(value1);
+        assertThat(values.get(1)).isSameAs(value3);
+        verify(builder).append(value);
+        verify(builder).build();
+        verify(builder).append(value1);
+        verify(builder).append(value2);
+        verify(builder).append(value3);
+        verifyNoMoreInteractions(builder);
     }
 
     @Test
@@ -79,7 +82,7 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value).build();
 
-        Assertions.assertThat(values).isEmpty();
+        assertThat(values).isEmpty();
     }
 
     @Test
@@ -88,8 +91,8 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value).build();
 
-        Assertions.assertThat(values).hasSize(1);
-        Assertions.assertThat(values.get(0)).isSameAs(value);
+        assertThat(values).hasSize(1);
+        assertThat(values.get(0)).isSameAs(value);
     }
 
     @Test
@@ -100,8 +103,8 @@ public final class ListWithoutEmptyValuesBuilderTest {
 
         final List<Object> values = builder.append(value1).append(value2).append(value3).build();
 
-        Assertions.assertThat(values).hasSize(2);
-        Assertions.assertThat(values.get(0)).isSameAs(value1);
-        Assertions.assertThat(values.get(1)).isSameAs(value3);
+        assertThat(values).hasSize(2);
+        assertThat(values.get(0)).isSameAs(value1);
+        assertThat(values.get(1)).isSameAs(value3);
     }
 }

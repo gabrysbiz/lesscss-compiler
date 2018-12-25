@@ -32,8 +32,8 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * <li>{@link #compress(boolean) compression} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #ieCompatibility(boolean) IE compatibility} - whether a CSS code should be compatible with Internet
  * Explorer browser (default: {@code true})</li>
- * <li>{@link #includePaths(List) included paths} - available include paths (default: {@code empty collection})</li>
- * <li>{@link #inputFile(File) input file} - an input (source) file</li>
+ * <li>{@link #includePaths(List) included paths} - available include paths (default: {@code []})</li>
+ * <li>{@link #inputFile(String) path} - an input (source) file path</li>
  * <li>{@link #javaScript(boolean) JavaScript} - whether a compiler should allow usage of JavaScript language (default:
  * {@code true})</li>
  * <li>{@link #lineNumbers(LineNumbersValue) line numbers} - whether a compiler should generate inline source-mapping
@@ -80,6 +80,9 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * <ul>
  * <li>{@link #encoding(String) encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)</li>
+ * <li>{@link #fileSystems(List) file systems} - a list with class names of the
+ * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * {@link LessOptions#DEFAULT_FILE_SYSTEMS})</li>
  * </ul>
  * <p>
  * Example code:
@@ -89,10 +92,10 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * Collection&lt;String&gt; options = null;
  * 
  * // create options with an input file
- * options = new {@link #NativeLessOptionsBuilder() NativeLessOptionsBuilder}().{@link #inputFile(File) inputFile}(new File("file.less")).{@link #build() build}();
+ * options = new {@link #NativeLessOptionsBuilder() NativeLessOptionsBuilder}().{@link #inputFile(String) inputFile}("/less/file.less").{@link #build() build}();
  * 
  * // create options with an input file and compression enabled
- * options = new {@link #NativeLessOptionsBuilder() NativeLessOptionsBuilder}().{@link #inputFile(File) inputFile}(new File("file.less")).{@link #compress(boolean) compress}(true).{@link #build() build}();
+ * options = new {@link #NativeLessOptionsBuilder() NativeLessOptionsBuilder}().{@link #inputFile(String) inputFile}("/less/file.less").{@link #compress(boolean) compress}(true).{@link #build() build}();
  * 
  * // use {@link LessOptions} object to create options 
  * {@link LessOptions} lessOptions = new {@link LessOptions#LessOptions() LessOptions}();
@@ -106,7 +109,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 public class NativeLessOptionsBuilder {
 
     private LessOptions options = new LessOptions();
-    private File input;
+    private String input;
     private File output;
 
     private boolean sourceMapDefault;
@@ -126,6 +129,7 @@ public class NativeLessOptionsBuilder {
      * <ul>
      * <li>{@link #compress(boolean)}</li>
      * <li>{@link #encoding(String)}</li>
+     * <li>{@link #fileSystems(List)}</li>
      * <li>{@link #ieCompatibility(boolean)}</li>
      * <li>{@link #includePaths(List)}</li>
      * <li>{@link #javaScript(boolean)}</li>
@@ -155,12 +159,12 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Sets an input (source) file.
-     * @param input the input file.
+     * Sets an input (source) file path.
+     * @param input the input file path.
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessOptionsBuilder inputFile(final File input) {
+    public NativeLessOptionsBuilder inputFile(final String input) {
         this.input = input;
         return this;
     }
@@ -169,22 +173,22 @@ public class NativeLessOptionsBuilder {
      * Returns a command line option which represents an absolute path of the input file.
      * @return the command line option (never {@code null}).
      * @since 2.0.0
-     * @see #inputFile(File)
+     * @see #inputFile(String)
      */
     protected String getInputFileOption() {
         if (input != null) {
-            return input.getAbsolutePath();
+            return input;
         } else {
             return "";
         }
     }
 
     /**
-     * Sets an output (destination) file. This method must be used together with {@link #inputFile(File)}.
+     * Sets an output (destination) file. This method must be used together with {@link #inputFile(String)}.
      * @param output the output file.
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #inputFile(File)
+     * @see #inputFile(String)
      */
     public NativeLessOptionsBuilder outputFile(final File output) {
         this.output = output;
@@ -336,10 +340,9 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Sets available include paths (default: {@code empty collection}). If the file in an &#64;import rule does not
-     * exist at that exact location, a compiler will look for it at the location(s) passed to this option. You might use
-     * this for instance to specify a path to a library which you want to be referenced simply and relatively in the
-     * less files.
+     * Sets available include paths (default: {@code []}). If the file in an &#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
      * @param includePaths the available include paths.
      * @return {@code this} builder.
      * @since 2.0.0
@@ -870,6 +873,42 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
+     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
+     * files.
+     * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessOptionsBuilder fileSystems(final List<String> fileSystems) {
+        options.setFileSystems(fileSystems);
+        return this;
+    }
+
+    /**
+     * Returns a command line option representation of the available file systems.
+     * @return the command line option (never {@code null}).
+     * @since 2.0.0
+     * @see #fileSystems(List)
+     */
+    protected String getFileSystemsOption() {
+        final Collection<String> fileSystems = options.getFileSystems();
+        if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {
+            return "";
+        }
+        final StringBuilder systems = new StringBuilder();
+        for (final String system : fileSystems) {
+            if (StringUtils.isNotBlank(system)) {
+                final boolean separatorRequired = systems.length() != 0;
+                if (separatorRequired) {
+                    systems.append(',');
+                }
+                systems.append(system.trim());
+            }
+        }
+        return "--file-systems=" + systems.toString();
+    }
+
+    /**
      * Builds a collection with configuration options for the {@link NativeLessCompiler} compilation process.
      * @return the collection with configuration options.
      * @throws BuilderCreationException if you set an output file without setting an input file.
@@ -905,13 +944,14 @@ public class NativeLessOptionsBuilder {
         configurationOptions.append(getStrictUnitsOption());
 
         configurationOptions.append(getEncodingOption());
+        configurationOptions.append(getFileSystemsOption());
 
         final String inputPath = getInputFileOption();
         configurationOptions.append(inputPath);
         final String outputPath = getOutputFileOption();
         if (StringUtils.isNotBlank(outputPath)) {
             if (StringUtils.isBlank(inputPath)) {
-                throw new BuilderCreationException("Input file is required when otuput file is set (see inputFile(File) method)");
+                throw new BuilderCreationException("Input file is required when otuput file is set (see inputFile(String) method)");
             }
             configurationOptions.append(outputPath);
         }

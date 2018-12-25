@@ -1,16 +1,24 @@
 package biz.gabrys.lesscss.compiler2;
 
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.mockito.ArgumentMatchers.anyCollection;
+import static org.mockito.Mockito.doNothing;
+import static org.mockito.Mockito.doReturn;
+import static org.mockito.Mockito.mock;
+import static org.mockito.Mockito.spy;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.verifyNoMoreInteractions;
+import static org.mockito.Mockito.when;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.Charset;
 import java.util.Collection;
 import java.util.Collections;
 
-import org.assertj.core.api.Assertions;
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.ArgumentMatchers;
-import org.mockito.Mockito;
+import org.mockito.Answers;
 
 import biz.gabrys.lesscss.compiler2.io.TemporaryFileFactory;
 
@@ -25,16 +33,16 @@ public final class LessCompilerTest {
 
     @Before
     public void setup() throws IOException {
-        nativeCompiler = Mockito.mock(NativeLessCompiler.class);
-        Mockito.when(nativeCompiler.execute(ArgumentMatchers.anyCollection())).thenReturn(RESULT);
+        nativeCompiler = mock(NativeLessCompiler.class);
+        when(nativeCompiler.execute(anyCollection())).thenReturn(RESULT);
 
-        compiler = Mockito.spy(new LessCompiler(nativeCompiler));
+        compiler = spy(new LessCompiler(nativeCompiler));
 
-        optionsBuilder = Mockito.spy(new NativeLessOptionsBuilder());
-        Mockito.doReturn(optionsBuilder).when(compiler).createOptionsBuilder();
+        optionsBuilder = mock(NativeLessOptionsBuilder.class, Answers.RETURNS_SELF);
+        doReturn(optionsBuilder).when(compiler).createOptionsBuilder();
 
         commandLineOptions = Collections.emptyList();
-        Mockito.doReturn(commandLineOptions).when(optionsBuilder).build();
+        doReturn(commandLineOptions).when(optionsBuilder).build();
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -48,485 +56,525 @@ public final class LessCompilerTest {
     }
 
     @Test
-    public void compile_sourceText() {
-        final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+    public void compile_sourceCode() {
+        final String code = "code";
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(code, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
 
-        final String result = compiler.compile(source);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        final String result = compiler.compile(code);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compile(source);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compile(code);
+        verify(compiler).validateSourceCode(code);
+        verify(compiler).createOptionsBuilder();
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(code, encoding);
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
     }
 
     @Test
-    public void compile_sourceFile() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-
-        final String result = compiler.compile(source);
-        Assertions.assertThat(result).isSameAs(RESULT);
-
-        Mockito.verify(compiler).compile(source);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-    }
-
-    @Test
-    public void compile_sourceFile_encoding() {
-        final File source = Mockito.mock(File.class);
-        final Charset encoding = Charset.defaultCharset();
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        Mockito.doNothing().when(compiler).validateEncoding(encoding);
-
-        final String result = compiler.compile(source, encoding);
-        Assertions.assertThat(result).isSameAs(RESULT);
-
-        Mockito.verify(compiler).compile(source, encoding);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateEncoding(encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).encoding(encoding.name());
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-    }
-
-    @Test
-    public void compile_sourceFile_outputFile() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
-
-        compiler.compile(source, output);
-
-        Mockito.verify(compiler).compile(source, output);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-    }
-
-    @Test
-    public void compile_sourceFile_outputFile_encoding() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
-        final Charset encoding = Charset.defaultCharset();
-        Mockito.doNothing().when(compiler).validateEncoding(encoding);
-
-        compiler.compile(source, output, encoding);
-
-        Mockito.verify(compiler).compile(source, output, encoding);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateEncoding(encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).encoding(encoding.name());
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-    }
-
-    @Test
-    public void compile_sourceText_options_encodingIsNotNull() {
+    public void compile_sourceCode_options_encodingIsNotNull() {
         final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(null).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(null).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(encoding);
 
         final String result = compiler.compile(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compile(source, options);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compile(source, options);
+        verify(compiler).validateSourceCode(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
     }
 
     @Test
-    public void compile_sourceText_options_encodingIsNull() {
+    public void compile_sourceCode_options_encodingIsNull() {
         final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(null);
 
         final String result = compiler.compile(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compile(source, options);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compile(source, options);
+        verify(compiler).validateSourceCode(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_sourceFile() {
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(sourceFile);
+
+        final String result = compiler.compile(sourceFile);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compile(sourceFile);
+        verify(compiler).validateSourceFile(sourceFile);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_sourceFile_encoding() {
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        final Charset encoding = Charset.defaultCharset();
+        doNothing().when(compiler).validateSourceFile(source);
+        doNothing().when(compiler).validateEncoding(encoding);
+
+        final String result = compiler.compile(source, encoding);
+        assertThat(result).isSameAs(RESULT);
+
+        verify(compiler).compile(source, encoding);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_sourceFile_outputFile() {
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
+
+        compiler.compile(source, output);
+
+        verify(compiler).compile(source, output);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+    }
+
+    @Test
+    public void compile_sourceFile_outputFile_encoding() {
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
+        final Charset encoding = Charset.defaultCharset();
+        doNothing().when(compiler).validateEncoding(encoding);
+
+        compiler.compile(source, output, encoding);
+
+        verify(compiler).compile(source, output, encoding);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compile_sourceFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
         final LessOptions options = new LessOptions();
 
         final String result = compiler.compile(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compile(source, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compile(source, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compile_sourceFile_outputFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
         compiler.compile(source, output, options);
 
-        Mockito.verify(compiler).compile(source, output, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compile(source, output, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
-    public void compileAndCompress_sourceText() {
+    public void compileAndCompress_sourceCode() {
         final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
 
         final String result = compiler.compileAndCompress(source);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileAndCompress(source);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).compress(true);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compileAndCompress(source);
+        verify(compiler).validateSourceCode(source);
+        verify(compiler).createOptionsBuilder();
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileAndCompress_sourceFile() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
 
         final String result = compiler.compileAndCompress(source);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileAndCompress(source);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).compress(true);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileAndCompress(source);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileAndCompress_sourceFile_encoding() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
         final Charset encoding = Charset.defaultCharset();
-        Mockito.doNothing().when(compiler).validateEncoding(encoding);
+        doNothing().when(compiler).validateEncoding(encoding);
 
         final String result = compiler.compileAndCompress(source, encoding);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileAndCompress(source, encoding);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateEncoding(encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).encoding(encoding.name());
-        Mockito.verify(optionsBuilder).compress(true);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileAndCompress(source, encoding);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileAndCompress_sourceFile_outputFile() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
 
         compiler.compileAndCompress(source, output);
 
-        Mockito.verify(compiler).compileAndCompress(source, output);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).compress(true);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileAndCompress(source, output);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileAndCompress_sourceFile_outputFile_encoding() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
         final Charset encoding = Charset.defaultCharset();
-        Mockito.doNothing().when(compiler).validateEncoding(encoding);
+        doNothing().when(compiler).validateEncoding(encoding);
 
         compiler.compileAndCompress(source, output, encoding);
 
-        Mockito.verify(compiler).compileAndCompress(source, output, encoding);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateEncoding(encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).encoding(encoding.name());
-        Mockito.verify(optionsBuilder).compress(true);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileAndCompress(source, output, encoding);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateEncoding(encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).encoding(encoding.name());
+        verify(optionsBuilder).compress(true);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithInlineSourceMap_sourceCode_options_encodingIsNotNull() {
         final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(null).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(null).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(encoding);
 
         final String result = compiler.compileWithInlineSourceMap(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileWithInlineSourceMap(source, options);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).sourceMapInline(true);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compileWithInlineSourceMap(source, options);
+        verify(compiler).validateSourceCode(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithInlineSourceMap_sourceCode_options_encodingIsNull() {
         final String source = "code";
-        final File sourceFile = Mockito.mock(File.class);
+        final File sourceFile = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(sourceFile.getAbsolutePath()).thenReturn(absolutePath);
         final String encoding = "encoding";
-        Mockito.doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
-        Mockito.doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.doNothing().when(compiler).deleteFile(sourceFile);
+        doReturn(encoding).when(compiler).getDefaultPlatformEncoding();
+        doReturn(sourceFile).when(compiler).createTemporaryFileWithCode(source, encoding);
+        doNothing().when(compiler).deleteFile(sourceFile);
         final LessOptions options = new LessOptions();
         options.setEncoding(null);
 
         final String result = compiler.compileWithInlineSourceMap(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileWithInlineSourceMap(source, options);
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).getDefaultPlatformEncoding();
-        Mockito.verify(compiler).createTemporaryFileWithCode(source, encoding);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(sourceFile);
-        Mockito.verify(optionsBuilder).sourceMapInline(true);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).encoding(encoding);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verify(compiler).deleteFile(sourceFile);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
-        Mockito.verifyZeroInteractions(sourceFile);
+        verify(compiler).compileWithInlineSourceMap(source, options);
+        verify(compiler).validateSourceCode(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).getDefaultPlatformEncoding();
+        verify(compiler).createTemporaryFileWithCode(source, encoding);
+        verify(compiler).createOptionsBuilder();
+        verify(sourceFile).getAbsolutePath();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).encoding(encoding);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verify(compiler).deleteFile(sourceFile);
+        verifyNoMoreInteractions(compiler, sourceFile, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithInlineSourceMap_sourceFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
         final LessOptions options = new LessOptions();
 
         final String result = compiler.compileWithInlineSourceMap(source, options);
-        Assertions.assertThat(result).isSameAs(RESULT);
+        assertThat(result).isSameAs(RESULT);
 
-        Mockito.verify(compiler).compileWithInlineSourceMap(source, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).sourceMapInline(true);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileWithInlineSourceMap(source, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithInlineSourceMap_sourceFile_outputFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
         compiler.compileWithInlineSourceMap(source, output, options);
 
-        Mockito.verify(compiler).compileWithInlineSourceMap(source, output, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).sourceMapInline(true);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileWithInlineSourceMap(source, output, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapInline(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithSourceMap_sourceFile_outputFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
         final LessOptions options = new LessOptions();
 
         compiler.compileWithSourceMap(source, output, options);
 
-        Mockito.verify(compiler).compileWithSourceMap(source, output, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).sourceMapDefault(true);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileWithSourceMap(source, output, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapDefault(true);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test
     public void compileWithSourceMap_sourceFile_outputFile_outputSourceMapFile_options() {
-        final File source = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateSourceFile(source);
-        final File output = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputFile(output);
-        final File outputSourceMap = Mockito.mock(File.class);
-        Mockito.doNothing().when(compiler).validateOutputSourceMapFile(outputSourceMap);
+        final File source = mock(File.class);
+        final String absolutePath = "absolutePath";
+        when(source.getAbsolutePath()).thenReturn(absolutePath);
+        doNothing().when(compiler).validateSourceFile(source);
+        final File output = mock(File.class);
+        doNothing().when(compiler).validateOutputFile(output);
+        final File outputSourceMap = mock(File.class);
+        doNothing().when(compiler).validateOutputSourceMapFile(outputSourceMap);
         final LessOptions options = new LessOptions();
 
         compiler.compileWithSourceMap(source, output, outputSourceMap, options);
 
-        Mockito.verify(compiler).compileWithSourceMap(source, output, outputSourceMap, options);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verify(compiler).validateOutputSourceMapFile(outputSourceMap);
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verify(compiler).createOptionsBuilder();
-        Mockito.verify(optionsBuilder).inputFile(source);
-        Mockito.verify(optionsBuilder).outputFile(output);
-        Mockito.verify(optionsBuilder).sourceMapFile(outputSourceMap);
-        Mockito.verify(optionsBuilder).options(options);
-        Mockito.verify(optionsBuilder).build();
-        Mockito.verify(nativeCompiler).execute(commandLineOptions);
-        Mockito.verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
+        verify(compiler).compileWithSourceMap(source, output, outputSourceMap, options);
+        verify(compiler).validateSourceFile(source);
+        verify(compiler).validateOutputFile(output);
+        verify(compiler).validateOutputSourceMapFile(outputSourceMap);
+        verify(compiler).validateOptions(options);
+        verify(compiler).createOptionsBuilder();
+        verify(optionsBuilder).inputFile(absolutePath);
+        verify(optionsBuilder).outputFile(output);
+        verify(optionsBuilder).sourceMapFile(outputSourceMap);
+        verify(optionsBuilder).options(options);
+        verify(optionsBuilder).build();
+        verify(nativeCompiler).execute(commandLineOptions);
+        verifyNoMoreInteractions(compiler, optionsBuilder, nativeCompiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -539,8 +587,8 @@ public final class LessCompilerTest {
         final String source = "";
         compiler.validateSourceCode(source);
 
-        Mockito.verify(compiler).validateSourceCode(source);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateSourceCode(source);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -550,19 +598,19 @@ public final class LessCompilerTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void validateSourceFile_fileDoesNotExist_throwsException() {
-        final File source = Mockito.mock(File.class);
+        final File source = mock(File.class);
 
         compiler.validateSourceFile(source);
     }
 
     @Test
     public void validateSourceFile_fileExists_doesNothing() {
-        final File source = Mockito.mock(File.class);
-        Mockito.when(source.exists()).thenReturn(Boolean.TRUE);
+        final File source = mock(File.class);
+        when(source.exists()).thenReturn(Boolean.TRUE);
 
         compiler.validateSourceFile(source);
-        Mockito.verify(compiler).validateSourceFile(source);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateSourceFile(source);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -572,40 +620,40 @@ public final class LessCompilerTest {
 
     @Test
     public void validateOutputFile_fileDoesNotExist_doesNothing() {
-        final File output = Mockito.mock(File.class);
+        final File output = mock(File.class);
 
         compiler.validateOutputFile(output);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateOutputFile(output);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test
     public void validateOutputFile_fileExists_doesNothing() {
-        final File output = Mockito.mock(File.class);
-        Mockito.when(output.exists()).thenReturn(Boolean.TRUE);
+        final File output = mock(File.class);
+        when(output.exists()).thenReturn(Boolean.TRUE);
 
         compiler.validateOutputFile(output);
-        Mockito.verify(compiler).validateOutputFile(output);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateOutputFile(output);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test
     public void validateOutputSourceMapFile_fileDoesNotExist_doesNothing() {
-        final File outputSourceMap = Mockito.mock(File.class);
+        final File outputSourceMap = mock(File.class);
 
         compiler.validateOutputSourceMapFile(outputSourceMap);
-        Mockito.verify(compiler).validateOutputSourceMapFile(outputSourceMap);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateOutputSourceMapFile(outputSourceMap);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test
     public void validateOutputSourceMapFile_fileExists_doesNothing() {
-        final File outputSourceMap = Mockito.mock(File.class);
-        Mockito.when(outputSourceMap.exists()).thenReturn(Boolean.TRUE);
+        final File outputSourceMap = mock(File.class);
+        when(outputSourceMap.exists()).thenReturn(Boolean.TRUE);
 
         compiler.validateOutputSourceMapFile(outputSourceMap);
-        Mockito.verify(compiler).validateOutputSourceMapFile(outputSourceMap);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateOutputSourceMapFile(outputSourceMap);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -618,8 +666,8 @@ public final class LessCompilerTest {
         final LessOptions options = new LessOptions();
         compiler.validateOptions(options);
 
-        Mockito.verify(compiler).validateOptions(options);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateOptions(options);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -629,11 +677,11 @@ public final class LessCompilerTest {
 
     @Test
     public void validateEncoding_encodingIsNotNull_doesNothing() {
-        final Charset encoding = Mockito.mock(Charset.class);
+        final Charset encoding = mock(Charset.class);
         compiler.validateEncoding(encoding);
 
-        Mockito.verify(compiler).validateEncoding(encoding);
-        Mockito.verifyNoMoreInteractions(compiler);
+        verify(compiler).validateEncoding(encoding);
+        verifyNoMoreInteractions(compiler);
     }
 
     @Test(expected = IllegalArgumentException.class)
@@ -643,20 +691,20 @@ public final class LessCompilerTest {
 
     @Test
     public void deleteFile_fileIsNotNull_deletesFile() {
-        final File file = Mockito.mock(File.class);
-        Mockito.when(file.delete()).thenReturn(Boolean.TRUE);
+        final File file = mock(File.class);
+        when(file.delete()).thenReturn(Boolean.TRUE);
 
         compiler.deleteFile(file);
 
-        Mockito.verify(compiler).deleteFile(file);
-        Mockito.verify(file).delete();
-        Mockito.verifyNoMoreInteractions(compiler, file);
+        verify(compiler).deleteFile(file);
+        verify(file).delete();
+        verifyNoMoreInteractions(compiler, file);
     }
 
     @Test(expected = CompilerException.class)
     public void deleteFile_fileCannotBeDeleted_throwsException() {
-        final File file = Mockito.mock(File.class);
-        Mockito.when(file.delete()).thenReturn(Boolean.FALSE);
+        final File file = mock(File.class);
+        when(file.delete()).thenReturn(Boolean.FALSE);
 
         compiler.deleteFile(file);
     }
