@@ -4,26 +4,26 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import org.junit.Test;
 
-public class LessVariableTest {
+public class LessVariableOptionTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void construct_nameIsNull_throwsException() {
-        new LessVariable(null, "value");
+        new LessVariableOption(null, "value");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void construct_nameIsBlank_throwsException() {
-        new LessVariable(" \r\t  ", "value");
+        new LessVariableOption(" \r\t  ", "value");
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void construct_valueIsNull_throwsException() {
-        new LessVariable("name", null);
+        new LessVariableOption("name", null);
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void construct_valueIsBlank_throwsException() {
-        new LessVariable("name", " \r\t  ");
+        new LessVariableOption("name", " \r\t  ");
     }
 
     @Test
@@ -31,7 +31,7 @@ public class LessVariableTest {
         final String name = "name";
         final String value = " value ";
 
-        final LessVariable variable = new LessVariable(name, value);
+        final LessVariableOption variable = new LessVariableOption(name, value);
 
         assertThat(variable.getName()).isSameAs(name);
         assertThat(variable.getValue()).isSameAs(value);
@@ -39,8 +39,8 @@ public class LessVariableTest {
 
     @Test
     public void hashCode_variablesAreTheSame_returnsTheSameNumber() {
-        final LessVariable variable1 = new LessVariable("name", "value");
-        final LessVariable variable2 = new LessVariable("name", "value");
+        final LessVariableOption variable1 = new LessVariableOption("name", "value");
+        final LessVariableOption variable2 = new LessVariableOption("name", "value");
 
         final int hashCode1 = variable1.hashCode();
         final int hashCode2 = variable2.hashCode();
@@ -50,8 +50,8 @@ public class LessVariableTest {
 
     @Test
     public void hashCode_variablesAreNotTheSame_returnsDifferentNumbers() {
-        final LessVariable variable1 = new LessVariable("name", "value");
-        final LessVariable variable2 = new LessVariable("value", "name");
+        final LessVariableOption variable1 = new LessVariableOption("name", "value");
+        final LessVariableOption variable2 = new LessVariableOption("value", "name");
 
         final int hashCode1 = variable1.hashCode();
         final int hashCode2 = variable2.hashCode();
@@ -61,27 +61,28 @@ public class LessVariableTest {
 
     @Test
     public void equals_variablesAreTheSame_returnsTrue() {
-        final LessVariable variable1 = new LessVariable("name", "value");
-        final LessVariable variable2 = new LessVariable("name", "value");
+        final LessVariableOption variable1 = new LessVariableOption("name", "value");
+        final LessVariableOption variable2 = new LessVariableOption("name", "value");
 
+        assertThat(variable1.equals(variable1)).isTrue();
         assertThat(variable1.equals(variable2)).isTrue();
         assertThat(variable2.equals(variable1)).isTrue();
     }
 
     @Test
-    public void hashCode_variablesAreNotTheSame_returnsFalse() {
-        final LessVariable variable = new LessVariable("name", "value");
+    public void equals_variablesAreNotTheSame_returnsFalse() {
+        final LessVariableOption variable = new LessVariableOption("name", "value");
 
-        assertThat(variable.equals(new LessVariable("value", "name"))).isFalse();
-        assertThat(variable.equals(new LessVariable("name", "name"))).isFalse();
-        assertThat(variable.equals(new LessVariable("value", "value"))).isFalse();
+        assertThat(variable.equals(new LessVariableOption("value", "name"))).isFalse();
+        assertThat(variable.equals(new LessVariableOption("name", "name"))).isFalse();
+        assertThat(variable.equals(new LessVariableOption("value", "value"))).isFalse();
         assertThat(variable.equals(new Object())).isFalse();
         assertThat(variable.equals(null)).isFalse();
     }
 
     @Test
     public void testToString() {
-        final LessVariable variable = new LessVariable("name", "value");
+        final LessVariableOption variable = new LessVariableOption("name", "value");
         assertThat(variable.toString()).isEqualTo("name=value");
     }
 }

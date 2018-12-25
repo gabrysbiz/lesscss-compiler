@@ -14,10 +14,10 @@ import org.mockito.Spy;
 import org.mockito.junit.MockitoJUnitRunner;
 
 @RunWith(MockitoJUnitRunner.class)
-public class LessVariablesOptionBuilderTest {
+public class LessVariableOptionsBuilderTest {
 
     @Spy
-    private LessVariablesOptionBuilder builder;
+    private LessVariableOptionsBuilder builder;
 
     @Test(expected = IllegalArgumentException.class)
     public void append_mapIsNull_throwsException() {
@@ -30,34 +30,35 @@ public class LessVariablesOptionBuilderTest {
         variables.put("name1", "value1");
         variables.put("name2", "value2");
 
-        final LessVariablesOptionBuilder result = builder.append(variables);
+        final LessVariableOptionsBuilder result = builder.append(variables);
 
         assertThat(result).isSameAs(builder);
         verify(builder).append("name1", "value1");
         verify(builder).append("name2", "value2");
-        assertThat(builder.getVariables()).containsExactly(new LessVariable("name1", "value1"), new LessVariable("name2", "value2"));
+        assertThat(builder.getVariables()).containsExactly(new LessVariableOption("name1", "value1"),
+                new LessVariableOption("name2", "value2"));
     }
 
     @Test
     public void append_nameIsValue_variableIsAdded() {
-        final LessVariablesOptionBuilder result = builder.append("name", "value");
+        final LessVariableOptionsBuilder result = builder.append("name", "value");
 
         assertThat(result).isSameAs(builder);
-        assertThat(builder.getVariables()).containsExactly(new LessVariable("name", "value"));
+        assertThat(builder.getVariables()).containsExactly(new LessVariableOption("name", "value"));
 
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void append_iterableIsNull_throwsException() {
-        builder.append((Iterable<LessVariable>) null);
+        builder.append((Iterable<LessVariableOption>) null);
     }
 
     @Test
     public void append_iterableIsNotNull_variablesAreAdded() {
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
 
-        final LessVariablesOptionBuilder result = builder.append(Arrays.asList(variable1, variable2));
+        final LessVariableOptionsBuilder result = builder.append(Arrays.asList(variable1, variable2));
 
         assertThat(result).isSameAs(builder);
         verify(builder).append(variable1);
@@ -67,15 +68,15 @@ public class LessVariablesOptionBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void append_arrayIsNull_throwsException() {
-        builder.append((LessVariable[]) null);
+        builder.append((LessVariableOption[]) null);
     }
 
     @Test
     public void append_arrayIsNotNull_variablesAreAdded() {
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
 
-        final LessVariablesOptionBuilder result = builder.append(new LessVariable[] { variable1, variable2 });
+        final LessVariableOptionsBuilder result = builder.append(new LessVariableOption[] { variable1, variable2 });
 
         assertThat(result).isSameAs(builder);
         verify(builder).append(variable1);
@@ -85,14 +86,14 @@ public class LessVariablesOptionBuilderTest {
 
     @Test(expected = IllegalArgumentException.class)
     public void append_variableIsNull_throwsException() {
-        builder.append((LessVariable) null);
+        builder.append((LessVariableOption) null);
     }
 
     @Test
     public void append_variableIsNotNull_variablesAreAdded() {
-        final LessVariable variable = new LessVariable("name", "value");
+        final LessVariableOption variable = new LessVariableOption("name", "value");
 
-        final LessVariablesOptionBuilder result = builder.append(variable);
+        final LessVariableOptionsBuilder result = builder.append(variable);
 
         assertThat(result).isSameAs(builder);
         assertThat(builder.getVariables()).containsExactly(variable);
@@ -104,16 +105,16 @@ public class LessVariablesOptionBuilderTest {
         variablesMap.put("name1", "value1");
         variablesMap.put("name2", "value2");
 
-        final List<LessVariable> variables = builder //
+        final List<LessVariableOption> variables = builder //
                 .append(variablesMap) //
                 .append("name3", "value3") //
-                .append(new LessVariable("name2", "value4")) //
+                .append(new LessVariableOption("name2", "value4")) //
                 .build();
 
         assertThat(variables).containsExactly(//
-                new LessVariable("name1", "value1"), //
-                new LessVariable("name2", "value2"), //
-                new LessVariable("name3", "value3"), //
-                new LessVariable("name2", "value4"));
+                new LessVariableOption("name1", "value1"), //
+                new LessVariableOption("name2", "value2"), //
+                new LessVariableOption("name3", "value3"), //
+                new LessVariableOption("name2", "value4"));
     }
 }

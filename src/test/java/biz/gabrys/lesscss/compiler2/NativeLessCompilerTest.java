@@ -7,10 +7,17 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Map.Entry;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import biz.gabrys.lesscss.compiler2.filesystem.FileData;
+import biz.gabrys.lesscss.compiler2.filesystem.FileSystem;
+import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
 
 public final class NativeLessCompilerTest {
 
@@ -194,7 +201,7 @@ public final class NativeLessCompilerTest {
 
     @Test
     public void execute_basicFileLoadedFromClasspath_success() {
-        final List<String> fileSystems = new FileSystemsOptionBuilder().withClassPath().build();
+        final List<FileSystemOption> fileSystems = new FileSystemOptionsBuilder().appendClassPath().build();
         final Collection<String> options = builder.inputFile("classpath://unit/less/basic.less").fileSystems(fileSystems).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
@@ -245,7 +252,8 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_useGlobalVariables_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/variables.less").getPath());
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("width", "100px"), new LessVariable("height", "80px"));
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("width", "100px"),
+                new LessVariableOption("height", "80px"));
         final Collection<String> options = builder.globalVariables(variables).inputFile(source.getAbsolutePath()).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
@@ -258,7 +266,8 @@ public final class NativeLessCompilerTest {
     @Test
     public void execute_useModifyVariables_success() {
         final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/variables.less").getPath());
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("width", "100px"), new LessVariable("height", "80px"));
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("width", "100px"),
+                new LessVariableOption("height", "80px"));
         final Collection<String> options = builder.modifyVariables(variables).inputFile(source.getAbsolutePath()).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
 
@@ -266,5 +275,105 @@ public final class NativeLessCompilerTest {
 
         assertThat(code).isNotEmpty();
         assertThat(code.trim()).isEqualTo("body {\n  width: 100px;\n  height: 80px;\n}");
+    }
+
+    @Test
+    public void execute_useCustomFileSystems_success() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/filesystems.less").getPath());
+
+        final Map<String, String> parameters1 = new HashMap<String, String>();
+        parameters1.put("file=name", "system1.less");
+        parameters1.put(",class__name,", "class1");
+        parameters1.put("param-1", "'_=,'");
+        parameters1.put("empty", "");
+        final FileSystemOption fileSystem1 = new FileSystemOption(FakeFileSystem.class, parameters1);
+
+        final Map<String, String> parameters2 = new HashMap<String, String>();
+        parameters2.put("file=name", "system2.less");
+        parameters2.put(",class__name,", "class2");
+        parameters2.put("param", "100px");
+        parameters2.put("param1_2", "'A__,,==A'");
+        final FileSystemOption fileSystem2 = new FileSystemOption(FakeFileSystem.class, parameters2);
+
+        final Map<String, String> parameters3 = new HashMap<String, String>();
+        parameters3.put("file=name", "system3.less");
+        parameters3.put(",class__name,", "class3");
+        final FileSystemOption fileSystem3 = new FileSystemOption(FakeFileSystem.class, parameters3);
+
+        final StringBuilder expectedCode = new StringBuilder();
+        expectedCode.append(".class1 {\n");
+        expectedCode.append("  key: value;\n");
+        expectedCode.append("  param-1: '_=,';\n");
+        expectedCode.append("  empty: 'empty';\n");
+        expectedCode.append("}\n");
+        expectedCode.append(".class2 {\n");
+        expectedCode.append("  key: value;\n");
+        expectedCode.append("  param: 100px;\n");
+        expectedCode.append("  param1_2: 'A__,,==A';\n");
+        expectedCode.append("}\n");
+        expectedCode.append(".class3 {\n");
+        expectedCode.append("  key: value;\n");
+        expectedCode.append("}");
+
+        final Collection<String> options = builder
+                .fileSystems(Arrays.asList(fileSystem1, fileSystem2, fileSystem3, new FileSystemOption(LocalFileSystem.class)))
+                .inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        assertThat(code.trim()).isEqualTo(expectedCode.toString());
+    }
+
+    public static class FakeFileSystem implements FileSystem {
+
+        private String fileName;
+        private String className;
+        private Map<String, String> parameters;
+
+        @Override
+        public void configure(final Map<String, String> parameters) throws Exception {
+            fileName = parameters.remove("file=name");
+            className = parameters.remove(",class__name,");
+            this.parameters = parameters;
+        }
+
+        @Override
+        public boolean isSupported(final String path) {
+            return path.endsWith(fileName);
+        }
+
+        @Override
+        public String normalize(final String path) throws Exception {
+            return path;
+        }
+
+        @Override
+        public String expandRedirection(final String path) throws Exception {
+            return path;
+        }
+
+        @Override
+        public boolean exists(final String path) throws Exception {
+            return true;
+        }
+
+        @Override
+        public FileData fetch(final String path) throws Exception {
+            final StringBuilder code = new StringBuilder();
+            code.append('.');
+            code.append(className);
+            code.append('{');
+            code.append("key:value;");
+            for (final Entry<String, String> entry : parameters.entrySet()) {
+                code.append(entry.getKey());
+                code.append(':');
+                code.append(entry.getValue().isEmpty() ? "'empty'" : entry.getValue());
+                code.append(';');
+            }
+            code.append('}');
+            return new FileData(code.toString().getBytes("UTF-8"), "UTF-8");
+        }
     }
 }

@@ -751,7 +751,7 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void fileSystems_nullCollection() {
-        final Collection<CharSequence> fileSystems = null;
+        final Collection<FileSystemOption> fileSystems = null;
 
         final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
 
@@ -764,7 +764,9 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void fileSystems_notNullCollection() {
-        final Collection<CharSequence> fileSystems = Arrays.<CharSequence>asList("fileSystem1", "fileSystem2");
+        final FileSystemOption fileSystemOption1 = new FileSystemOption("fileSystem1");
+        final FileSystemOption fileSystemOption2 = new FileSystemOption("fileSystem2");
+        final Collection<FileSystemOption> fileSystems = Arrays.asList(fileSystemOption1, fileSystemOption2);
 
         final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
 
@@ -772,22 +774,22 @@ public final class LessOptionsBuilderTest {
         verify(builder).fileSystems(fileSystems);
         verify(builder).getOptions();
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<List<String>> captor = ArgumentCaptor.forClass(List.class);
+        final ArgumentCaptor<List<FileSystemOption>> captor = ArgumentCaptor.forClass(List.class);
         verify(options).setFileSystems(captor.capture());
-        assertThat(captor.getValue()).containsExactly("fileSystem1", "fileSystem2");
+        assertThat(captor.getValue()).containsExactly(fileSystemOption1, fileSystemOption2);
         verifyNoMoreInteractions(builder);
     }
 
     @Test
     public void fileSystems_nullArray() {
-        doReturn(builder).when(builder).fileSystems((Collection<CharSequence>) null);
-        final CharSequence[] fileSystems = null;
+        doReturn(builder).when(builder).fileSystems((Collection<FileSystemOption>) null);
+        final FileSystemOption[] fileSystems = null;
 
         final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).fileSystems(fileSystems);
-        verify(builder).fileSystems((Collection<CharSequence>) null);
+        verify(builder).fileSystems((Collection<FileSystemOption>) null);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
@@ -795,18 +797,20 @@ public final class LessOptionsBuilderTest {
     @Test
     public void fileSystems_notNullArray() {
         @SuppressWarnings("unchecked")
-        final Class<Collection<CharSequence>> collectionOfCharSequenceClass = (Class<Collection<CharSequence>>) (Class<?>) Collection.class;
-        doReturn(builder).when(builder).fileSystems(any(collectionOfCharSequenceClass));
-        final CharSequence[] fileSystems = new String[] { "fl1", "fl2" };
+        final Class<Collection<FileSystemOption>> collectionOfFileSystemOptions = (Class<Collection<FileSystemOption>>) (Class<?>) Collection.class;
+        doReturn(builder).when(builder).fileSystems(any(collectionOfFileSystemOptions));
+        final FileSystemOption fileSystemOption1 = new FileSystemOption("fileSystem1");
+        final FileSystemOption fileSystemOption2 = new FileSystemOption("fileSystem2");
+        final FileSystemOption[] fileSystems = new FileSystemOption[] { fileSystemOption1, fileSystemOption2 };
 
         final LessOptionsBuilder builder2 = builder.fileSystems(fileSystems);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).fileSystems(fileSystems);
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<Collection<CharSequence>> captor = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<Collection<FileSystemOption>> captor = ArgumentCaptor.forClass(Collection.class);
         verify(builder).fileSystems(captor.capture());
-        assertThat(captor.getValue()).containsExactly("fl1", "fl2");
+        assertThat(captor.getValue()).containsExactly(fileSystemOption1, fileSystemOption2);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
@@ -839,7 +843,7 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void globalVariables_nullCollection() {
-        final Collection<LessVariable> globalVariables = null;
+        final Collection<LessVariableOption> globalVariables = null;
 
         final LessOptionsBuilder builder2 = builder.globalVariables(globalVariables);
 
@@ -852,9 +856,9 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void globalVariables_notNullCollection() {
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
-        final Collection<LessVariable> globalVariables = Arrays.<LessVariable>asList(variable1, variable2);
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
+        final Collection<LessVariableOption> globalVariables = Arrays.asList(variable1, variable2);
 
         final LessOptionsBuilder builder2 = builder.globalVariables(globalVariables);
 
@@ -862,7 +866,7 @@ public final class LessOptionsBuilderTest {
         verify(builder).globalVariables(globalVariables);
         verify(builder).getOptions();
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<List<LessVariable>> captor = ArgumentCaptor.forClass(List.class);
+        final ArgumentCaptor<List<LessVariableOption>> captor = ArgumentCaptor.forClass(List.class);
         verify(options).setGlobalVariables(captor.capture());
         assertThat(captor.getValue()).containsExactly(variable1, variable2);
         verifyNoMoreInteractions(builder);
@@ -870,14 +874,14 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void globalVariables_nullArray() {
-        doReturn(builder).when(builder).globalVariables((Collection<LessVariable>) null);
-        final LessVariable[] globalVariables = null;
+        doReturn(builder).when(builder).globalVariables((Collection<LessVariableOption>) null);
+        final LessVariableOption[] globalVariables = null;
 
         final LessOptionsBuilder builder2 = builder.globalVariables(globalVariables);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).globalVariables(globalVariables);
-        verify(builder).globalVariables((Collection<LessVariable>) null);
+        verify(builder).globalVariables((Collection<LessVariableOption>) null);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
@@ -885,18 +889,18 @@ public final class LessOptionsBuilderTest {
     @Test
     public void globalVariables_notNullArray() {
         @SuppressWarnings("unchecked")
-        final Class<Collection<LessVariable>> collectionOfLessVariableClass = (Class<Collection<LessVariable>>) (Class<?>) Collection.class;
-        doReturn(builder).when(builder).globalVariables(any(collectionOfLessVariableClass));
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
-        final LessVariable[] globalVariables = new LessVariable[] { variable1, variable2 };
+        final Class<Collection<LessVariableOption>> collectionOfLessVariableOptions = (Class<Collection<LessVariableOption>>) (Class<?>) Collection.class;
+        doReturn(builder).when(builder).globalVariables(any(collectionOfLessVariableOptions));
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
+        final LessVariableOption[] globalVariables = new LessVariableOption[] { variable1, variable2 };
 
         final LessOptionsBuilder builder2 = builder.globalVariables(globalVariables);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).globalVariables(globalVariables);
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<Collection<LessVariable>> captor = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<Collection<LessVariableOption>> captor = ArgumentCaptor.forClass(Collection.class);
         verify(builder).globalVariables(captor.capture());
         assertThat(captor.getValue()).containsExactly(variable1, variable2);
         verifyNoMoreInteractions(builder);
@@ -905,20 +909,20 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void globalVariablesOff() {
-        doReturn(builder).when(builder).globalVariables((Collection<LessVariable>) null);
+        doReturn(builder).when(builder).globalVariables((Collection<LessVariableOption>) null);
 
         final LessOptionsBuilder builder2 = builder.globalVariablesOff();
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).globalVariablesOff();
-        verify(builder).globalVariables((Collection<LessVariable>) null);
+        verify(builder).globalVariables((Collection<LessVariableOption>) null);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
 
     @Test
     public void modifyVariables_nullCollection() {
-        final Collection<LessVariable> modifyVariables = null;
+        final Collection<LessVariableOption> modifyVariables = null;
 
         final LessOptionsBuilder builder2 = builder.modifyVariables(modifyVariables);
 
@@ -931,9 +935,9 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void modifyVariables_notNullCollection() {
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
-        final Collection<LessVariable> modifyVariables = Arrays.<LessVariable>asList(variable1, variable2);
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
+        final Collection<LessVariableOption> modifyVariables = Arrays.asList(variable1, variable2);
 
         final LessOptionsBuilder builder2 = builder.modifyVariables(modifyVariables);
 
@@ -941,7 +945,7 @@ public final class LessOptionsBuilderTest {
         verify(builder).modifyVariables(modifyVariables);
         verify(builder).getOptions();
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<List<LessVariable>> captor = ArgumentCaptor.forClass(List.class);
+        final ArgumentCaptor<List<LessVariableOption>> captor = ArgumentCaptor.forClass(List.class);
         verify(options).setModifyVariables(captor.capture());
         assertThat(captor.getValue()).containsExactly(variable1, variable2);
         verifyNoMoreInteractions(builder);
@@ -949,14 +953,14 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void modifyVariables_nullArray() {
-        doReturn(builder).when(builder).modifyVariables((Collection<LessVariable>) null);
-        final LessVariable[] modifyVariables = null;
+        doReturn(builder).when(builder).modifyVariables((Collection<LessVariableOption>) null);
+        final LessVariableOption[] modifyVariables = null;
 
         final LessOptionsBuilder builder2 = builder.modifyVariables(modifyVariables);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).modifyVariables(modifyVariables);
-        verify(builder).modifyVariables((Collection<LessVariable>) null);
+        verify(builder).modifyVariables((Collection<LessVariableOption>) null);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
@@ -964,18 +968,18 @@ public final class LessOptionsBuilderTest {
     @Test
     public void modifyVariables_notNullArray() {
         @SuppressWarnings("unchecked")
-        final Class<Collection<LessVariable>> collectionOfLessVariableClass = (Class<Collection<LessVariable>>) (Class<?>) Collection.class;
-        doReturn(builder).when(builder).modifyVariables(any(collectionOfLessVariableClass));
-        final LessVariable variable1 = new LessVariable("name1", "value1");
-        final LessVariable variable2 = new LessVariable("name2", "value2");
-        final LessVariable[] modifyVariables = new LessVariable[] { variable1, variable2 };
+        final Class<Collection<LessVariableOption>> collectionOfLessVariableOptions = (Class<Collection<LessVariableOption>>) (Class<?>) Collection.class;
+        doReturn(builder).when(builder).modifyVariables(any(collectionOfLessVariableOptions));
+        final LessVariableOption variable1 = new LessVariableOption("name1", "value1");
+        final LessVariableOption variable2 = new LessVariableOption("name2", "value2");
+        final LessVariableOption[] modifyVariables = new LessVariableOption[] { variable1, variable2 };
 
         final LessOptionsBuilder builder2 = builder.modifyVariables(modifyVariables);
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).modifyVariables(modifyVariables);
         @SuppressWarnings("unchecked")
-        final ArgumentCaptor<Collection<LessVariable>> captor = ArgumentCaptor.forClass(Collection.class);
+        final ArgumentCaptor<Collection<LessVariableOption>> captor = ArgumentCaptor.forClass(Collection.class);
         verify(builder).modifyVariables(captor.capture());
         assertThat(captor.getValue()).containsExactly(variable1, variable2);
         verifyNoMoreInteractions(builder);
@@ -984,13 +988,13 @@ public final class LessOptionsBuilderTest {
 
     @Test
     public void modifyVariablesOff() {
-        doReturn(builder).when(builder).modifyVariables((Collection<LessVariable>) null);
+        doReturn(builder).when(builder).modifyVariables((Collection<LessVariableOption>) null);
 
         final LessOptionsBuilder builder2 = builder.modifyVariablesOff();
 
         assertThat(builder2).isSameAs(builder);
         verify(builder).modifyVariablesOff();
-        verify(builder).modifyVariables((Collection<LessVariable>) null);
+        verify(builder).modifyVariables((Collection<LessVariableOption>) null);
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }

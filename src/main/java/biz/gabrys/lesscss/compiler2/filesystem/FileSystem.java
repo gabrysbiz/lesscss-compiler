@@ -12,6 +12,8 @@
  */
 package biz.gabrys.lesscss.compiler2.filesystem;
 
+import java.util.Map;
+
 /**
  * Responsible for performing operations on paths pointing to files located on the file system. The files system is
  * responsible for:
@@ -25,6 +27,7 @@ package biz.gabrys.lesscss.compiler2.filesystem;
  * </ul>
  * Methods are always called in order:
  * <ol>
+ * <li>{@link #configure(Map)} (only once after the file system has been created)</li>
  * <li>{@link #isSupported(String)}</li>
  * <li>{@link #normalize(String)}</li>
  * <li>{@link #expandRedirection(String)}</li>
@@ -34,6 +37,14 @@ package biz.gabrys.lesscss.compiler2.filesystem;
  * @since 2.0.0
  */
 public interface FileSystem {
+
+    /**
+     * Configures {@code this} file system. This method is called only once after the file system has been created.
+     * @param parameters the map with parameters (cannot be {@code null}).
+     * @throws Exception if any error occurs.
+     * @since 2.0.0
+     */
+    void configure(Map<String, String> parameters) throws Exception;
 
     /**
      * Tests whether a file path is supported. This method should return {@code true} only when this file system allows

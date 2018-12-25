@@ -35,11 +35,11 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * variablesMap.put("name1", "value1");
  * variablesMap.put("name2", "value2");
  * 
- * List&lt;{@link LessVariable}&gt; variables = new {@link #LessVariablesOptionBuilder() LessVariablesOptionBuilder}()
- *                                      .{@link #append(Map) append}(variablesMap)
- *                                      .{@link #append(CharSequence, CharSequence) append}("name3", "value3")
- *                                      .{@link #append(LessVariable) append}(new {@link LessVariable#LessVariable(String, String) LessVariable}("name2", "value4"))
- *                                      .{@link #build() build}();
+ * List&lt;{@link LessVariableOption}&gt; variables = new {@link #LessVariableOptionsBuilder() LessVariableOptionsBuilder}()
+ *                                              .{@link #append(Map) append}(variablesMap)
+ *                                              .{@link #append(CharSequence, CharSequence) append}("name3", "value3")
+ *                                              .{@link #append(LessVariableOption) append}(new {@link LessVariableOption#LessVariableOption(String, String) LessVariableOption}("name2", "value4"))
+ *                                              .{@link #build() build}();
  * 
  * System.out.println(variables.get(0)); // name1=value1
  * System.out.println(variables.get(1)); // name2=value2
@@ -49,17 +49,16 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * 
  * @since 2.0.0
  * @see LessOptions
- * @see LessVariable
  */
-public class LessVariablesOptionBuilder {
+public class LessVariableOptionsBuilder {
 
-    private final List<LessVariable> variables = new LinkedList<LessVariable>();
+    private final List<LessVariableOption> variables = new LinkedList<LessVariableOption>();
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder() {
+    public LessVariableOptionsBuilder() {
         // do nothing
     }
 
@@ -70,7 +69,7 @@ public class LessVariablesOptionBuilder {
      * @throws IllegalArgumentException if the variables is {@code null} or at least one key or value is blank.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder append(final Map<? extends CharSequence, ? extends CharSequence> variables) {
+    public LessVariableOptionsBuilder append(final Map<? extends CharSequence, ? extends CharSequence> variables) {
         if (variables == null) {
             throw new IllegalArgumentException("Variables cannot be null");
         }
@@ -88,8 +87,8 @@ public class LessVariablesOptionBuilder {
      * @throws IllegalArgumentException if key or value is blank.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder append(final CharSequence name, final CharSequence value) {
-        getVariables().add(new LessVariable(StringUtils.toStringIfNotNull(name), StringUtils.toStringIfNotNull(value)));
+    public LessVariableOptionsBuilder append(final CharSequence name, final CharSequence value) {
+        getVariables().add(new LessVariableOption(StringUtils.toStringIfNotNull(name), StringUtils.toStringIfNotNull(value)));
         return this;
     }
 
@@ -100,11 +99,11 @@ public class LessVariablesOptionBuilder {
      * @throws IllegalArgumentException if the variables or any contained variable is {@code null}.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder append(final Iterable<? extends LessVariable> variables) {
+    public LessVariableOptionsBuilder append(final Iterable<? extends LessVariableOption> variables) {
         if (variables == null) {
             throw new IllegalArgumentException("Variables cannot be null");
         }
-        for (final LessVariable variable : variables) {
+        for (final LessVariableOption variable : variables) {
             append(variable);
         }
         return this;
@@ -117,11 +116,11 @@ public class LessVariablesOptionBuilder {
      * @throws IllegalArgumentException if the variables or any contained variable is {@code null}.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder append(final LessVariable... variables) {
+    public LessVariableOptionsBuilder append(final LessVariableOption... variables) {
         if (variables == null) {
             throw new IllegalArgumentException("Variables cannot be null");
         }
-        for (final LessVariable variable : variables) {
+        for (final LessVariableOption variable : variables) {
             append(variable);
         }
         return this;
@@ -134,7 +133,7 @@ public class LessVariablesOptionBuilder {
      * @throws IllegalArgumentException if the variable is {@code null}.
      * @since 2.0.0
      */
-    public LessVariablesOptionBuilder append(final LessVariable variable) {
+    public LessVariableOptionsBuilder append(final LessVariableOption variable) {
         if (variable == null) {
             throw new IllegalArgumentException("Variable cannot be null");
         }
@@ -147,8 +146,8 @@ public class LessVariablesOptionBuilder {
      * @return the new list with all appended variables.
      * @since 2.0.0
      */
-    public List<LessVariable> build() {
-        return new ArrayList<LessVariable>(getVariables());
+    public List<LessVariableOption> build() {
+        return new ArrayList<LessVariableOption>(getVariables());
     }
 
     /**
@@ -156,7 +155,7 @@ public class LessVariablesOptionBuilder {
      * @return the internal state.
      * @since 2.0.0
      */
-    protected List<LessVariable> getVariables() {
+    protected List<LessVariableOption> getVariables() {
         return variables;
     }
 }

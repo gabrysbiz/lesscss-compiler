@@ -31,10 +31,8 @@ less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
                 expandedPath = fileSystem.expandRedirection(tmpPath);
             }
             if (fileSystem.exists(expandedPath)) {
-                if (filePath !== expandedPath) {
-                    filePath = expandedPath;
-                    absolute = true;
-                }
+                absolute = filePath !== expandedPath;
+                filePath = expandedPath;
                 break;
             }
         }
@@ -155,7 +153,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
 
     var sourceMapFilePath;
     var sourceMapInline = false;
-    var fileSystemsClassNames = [ 'biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem' ];
+    var fileSystemOptions = [];
 
     var additionalData = {
         banner: '',
@@ -163,23 +161,20 @@ gabrysLessCompiler.removeDuplications = function(array) {
         modifyVars: []
     };
 
-    args = args.filter(function(arg) {
+    var files = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
-
         if (match) {
             options.paths.push(match[1]);
             return false;
         }
 
         match = arg.match(/^--?([a-z][0-9a-z-]*)(?:=(.*))?$/i);
-        if (match) {
-            arg = match[1];
-        } else {
-            // was (?:=([^\s]*)), check!
-            return arg;
+        if (match == null) {
+            // input or output file
+            return true;
         }
 
-        switch (arg) {
+        switch (match[1]) {
             case 's':
             case 'silent':
                 options.silent = true;
@@ -254,9 +249,9 @@ gabrysLessCompiler.removeDuplications = function(array) {
                 validateEncoding(match[2]);
                 gabrysLessCompiler.encoding = match[2];
                 break;
-            case 'file-systems':
+            case 'file-system':
                 validateArgument(arg, match[2]);
-                fileSystemsClassNames = match[2].split(',');
+                fileSystemOptions[fileSystemOptions.length] = match[2];
                 break;
             case 'banner':
                 validateArgument(arg, match[2]);
@@ -273,23 +268,28 @@ gabrysLessCompiler.removeDuplications = function(array) {
             default:
                 throwConfigurationError('Invalid option "' + arg + '"');
         }
+        return false;
     });
 
     gabrysLessCompiler.includePaths = gabrysLessCompiler.removeDuplications(gabrysLessCompiler.includePaths);
     if (gabrysLessCompiler.encoding == null) {
         gabrysLessCompiler.encoding = java.nio.charset.Charset.defaultCharset().name();
     }
-    gabrysLessCompiler.fileSystems = createFileSystems(fileSystemsClassNames);
+    if (fileSystemOptions.length === 0) {
+        fileSystemOptions[fileSystemOptions.length] = 'biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem';
+    }
+    gabrysLessCompiler.fileSystems = createFileSystems(fileSystemOptions);
 
-    var source = args[0];
+    var source = files[0];
     if (source == null) {
         throwConfigurationError('Source file has not been specified');
     }
-    var output = args[1];
+    var output = files[1];
 
     if (options.sourceMap) {
         if (sourceMapFilePath == null && output == null && !sourceMapInline) {
-            throwConfigurationError('The sourcemap option has an optional filename only if the output CSS filename is given or you also pass the source-map-map-inline option');
+            throwConfigurationError('The sourcemap option has an optional filename only if the output CSS filename'
+                    + ' is given or you also pass the source-map-map-inline option');
         }
         if (!sourceMapInline) {
             var sourceMapFilename = sourceMapFilePath;
@@ -337,23 +337,92 @@ gabrysLessCompiler.removeDuplications = function(array) {
         throw new Error('Configuration problem: ' + message);
     }
 
-    function createFileSystems(classNames) {
+    function createFileSystems(options) {
         var fileSystems = [];
-        for (var i = 0; i < classNames.length; ++i) {
-            var className = classNames[i].trim();
+        for (var i = 0; i < options.length; ++i) {
+            var option = parseOption(options[i]);
             var clazz;
             try {
-                clazz = java.lang.Class.forName(className);
+                clazz = java.lang.Class.forName(option.className);
             } catch (e) {
-                throwConfigurationError('Cannot load a file system class: ' + className);
+                throwConfigurationError('Cannot load a file system class: ' + option.className);
+            }
+            var fileSystem;
+            try {
+                fileSystem = clazz.newInstance();
+            } catch (e) {
+                throwConfigurationError('Cannot create a new instance of the file system: ' + option.className);
             }
             try {
-                fileSystems[fileSystems.length] = new FileSystem(clazz.newInstance());
+                fileSystem.configure(option.parameters);
             } catch (e) {
-                throwConfigurationError('Cannot create a new instance of the file system: ' + className);
+                throwConfigurationError('Cannot configure a new instance of the file system: ' + option.className);
             }
+            fileSystems[fileSystems.length] = new FileSystem(fileSystem);
         }
         return fileSystems;
+
+        function parseOption(option) {
+            var index = option.indexOf(',');
+            if (index === -1) {
+                return {
+                    className: option,
+                    parameters: java.util.Collections.emptyMap()
+                };
+            }
+
+            var parameters = new java.util.HashMap();
+            var params = parseParameters(option.substr(index + 1));
+            for (var i = 0; i < params.length; ++i) {
+                parameters.put(params[i].name, params[i].value);
+            }
+            return {
+                className: option.substring(0, index),
+                parameters: parameters
+            };
+        }
+
+        function parseParameters(paramsText) {
+            var encoder = new ParametersEncoder(paramsText);
+            var params = encoder.getEncoded().split(',');
+
+            var parameters = [];
+            for (var i = 0; i < params.length; ++i) {
+                var index = params[i].indexOf('=');
+                var name = index === -1 ? params[i] : params[i].substring(0, index);
+                var value = index === -1 ? '' : params[i].substr(index + 1);
+                parameters[parameters.length] = {
+                    name: encoder.decode(name),
+                    value: encoder.decode(value)
+                };
+            }
+            return parameters;
+        }
+
+        function ParametersEncoder(paramsText) {
+            this.underscoreToken = generateToken(paramsText);
+            var encoded = paramsText.split('__').join(this.underscoreToken);
+            this.commaToken = generateToken(encoded);
+            encoded = encoded.split('_,').join(this.commaToken);
+            this.equalToken = generateToken(encoded);
+            encoded = encoded.split('_=').join(this.equalToken);
+
+            this.getEncoded = function() {
+                return encoded;
+            };
+
+            this.decode = function(text) {
+                return text.split(this.equalToken).join('=').split(this.commaToken).join(',').split(this.underscoreToken).join('_');
+            };
+
+            function generateToken(text) {
+                var token;
+                do {
+                    token = '{gabrys-' + java.util.UUID.randomUUID().toString() + '}';
+                } while (text.indexOf(token) !== -1);
+                return token;
+            }
+        }
 
         function FileSystem(fileSystem) {
             this.isSupported = function(path) {
@@ -425,25 +494,27 @@ gabrysLessCompiler.removeDuplications = function(array) {
         }
     }
 
-    function validateArgument(arg, option) {
-        if (!option) {
-            throwConfigurationError('"' + arg + '" option requires a parameter');
+    function validateArgument(name, value) {
+        if (!value) {
+            throwConfigurationError('"' + name + '" option requires a parameter');
         }
     }
 
-    function convertToBoolean(arg, option) {
-        var onOff = /^((on|t|true|y|yes)|(off|f|false|n|no))$/i.exec(option);
-        if (!onOff) {
-            throwConfigurationError('Unable to parse "' + option + '" for ' + arg
-                    + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
+    function convertToBoolean(name, value) {
+        if (/^(on|t|true|y|yes)$/i.exec(value) != null) {
+            return true;
         }
-        return Boolean(onOff[2]);
+        if (/^(off|f|false|n|no)$/i.exec(value) != null) {
+            return false;
+        }
+        throwConfigurationError('Unable to parse "' + value + '" for ' + name
+                + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
     }
 
     function validateEncoding(encoding) {
         var charsetSupported = false;
         try {
-            charsetSupported = java.nio.charset.Charset.isSupported(encoding)
+            charsetSupported = java.nio.charset.Charset.isSupported(encoding);
         } catch (e) {
             // ignore
         }
@@ -455,8 +526,8 @@ gabrysLessCompiler.removeDuplications = function(array) {
     function parseVariable(variable) {
         var index = variable.indexOf('=');
         return {
-          name: variable.substring(0, index),
-          value: variable.substr(index + 1)
+            name: variable.substring(0, index),
+            value: variable.substr(index + 1)
         };
     }
 

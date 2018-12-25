@@ -396,33 +396,29 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getFileSystemsOption_fileSystemsAreNull_returnsOption() {
-        final String option = builder.fileSystems(null).getFileSystemsOption();
-        assertThat(option).isEmpty();
+    public void getFileSystemsOptions_fileSystemsAreNull_returnsEmptyArray() {
+        final String[] options = builder.fileSystems(null).getFileSystemsOptions();
+        assertThat(options).isEmpty();
     }
 
     @Test
-    public void getFileSystemsOption_fileSystemsAreEmpty_returnsEmptyText() {
-        final String option = builder.fileSystems(Collections.<String>emptyList()).getFileSystemsOption();
-        assertThat(option).isEmpty();
+    public void getFileSystemsOptions_fileSystemsAreEmpty_returnsEmptyArray() {
+        final String[] options = builder.fileSystems(Collections.<FileSystemOption>emptyList()).getFileSystemsOptions();
+        assertThat(options).isEmpty();
     }
 
     @Test
-    public void getFileSystemsOption_fileSystemsContainOneElement_returnsOption() {
-        final String option = builder.fileSystems(Arrays.asList("system")).getFileSystemsOption();
-        assertThat(option).isEqualTo("--file-systems=system");
+    public void getFileSystemsOptions_fileSystemsContainOneElement_returnsOption() {
+        final List<FileSystemOption> fileSystems = Arrays.asList(new FileSystemOption("system"));
+        final String[] options = builder.fileSystems(fileSystems).getFileSystemsOptions();
+        assertThat(options).containsExactly("--file-system=system");
     }
 
     @Test
-    public void getFileSystemsOption_fileSystemsContainTwoElements_returnsOption() {
-        final String option = builder.fileSystems(Arrays.asList("system1", "system2")).getFileSystemsOption();
-        assertThat(option).isEqualTo("--file-systems=system1,system2");
-    }
-
-    @Test
-    public void getFileSystemsOption_fileSystemsContainThreeElements_returnsOption() {
-        final String option = builder.fileSystems(Arrays.asList("system1", "system2", "system3")).getFileSystemsOption();
-        assertThat(option).isEqualTo("--file-systems=system1,system2,system3");
+    public void getFileSystemsOptions_fileSystemsContainThreeElementsWhereOneIsNull_returnsTwoOptions() {
+        final List<FileSystemOption> fileSystems = Arrays.asList(new FileSystemOption("system1"), null, new FileSystemOption("system2"));
+        final String[] options = builder.fileSystems(fileSystems).getFileSystemsOptions();
+        assertThat(options).containsExactly("--file-system=system1", "--file-system=system2");
     }
 
     @Test
@@ -457,25 +453,23 @@ public final class NativeLessOptionsBuilderTest {
 
     @Test
     public void getGlobalVariablesOptions_variablesAreEmpty_returnsEmptyArray() {
-        final String[] option = builder.globalVariables(Collections.<LessVariable>emptyList()).getGlobalVariablesOptions();
+        final String[] option = builder.globalVariables(Collections.<LessVariableOption>emptyList()).getGlobalVariablesOptions();
         assertThat(option).isEmpty();
     }
 
     @Test
-    public void getGlobalVariablesOptions_variablesContainOneElement_returnsOptions() {
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("name", "value"));
+    public void getGlobalVariablesOptions_variablesContainOneElement_returnsOption() {
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("name", "value"));
         final String[] options = builder.globalVariables(variables).getGlobalVariablesOptions();
-        assertThat(options).hasSize(1);
-        assertThat(options[0]).isEqualTo("--global-var=name=value");
+        assertThat(options).containsExactly("--global-var=name=value");
     }
 
     @Test
-    public void getGlobalVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsOptions() {
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("name1", "value1"), null, new LessVariable("name2", "value2"));
+    public void getGlobalVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsTwoOptions() {
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("name1", "value1"), null,
+                new LessVariableOption("name2", "value2"));
         final String[] options = builder.globalVariables(variables).getGlobalVariablesOptions();
-        assertThat(options).hasSize(2);
-        assertThat(options[0]).isEqualTo("--global-var=name1=value1");
-        assertThat(options[1]).isEqualTo("--global-var=name2=value2");
+        assertThat(options).containsExactly("--global-var=name1=value1", "--global-var=name2=value2");
     }
 
     @Test
@@ -486,25 +480,23 @@ public final class NativeLessOptionsBuilderTest {
 
     @Test
     public void getModifyVariablesOptions_variablesAreEmpty_returnsEmptyArray() {
-        final String[] option = builder.modifyVariables(Collections.<LessVariable>emptyList()).getModifyVariablesOptions();
+        final String[] option = builder.modifyVariables(Collections.<LessVariableOption>emptyList()).getModifyVariablesOptions();
         assertThat(option).isEmpty();
     }
 
     @Test
-    public void getModifyVariablesOptions_variablesContainOneElement_returnsOptions() {
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("name", "value"));
+    public void getModifyVariablesOptions_variablesContainOneElement_returnsOption() {
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("name", "value"));
         final String[] options = builder.modifyVariables(variables).getModifyVariablesOptions();
-        assertThat(options).hasSize(1);
-        assertThat(options[0]).isEqualTo("--modify-var=name=value");
+        assertThat(options).containsExactly("--modify-var=name=value");
     }
 
     @Test
-    public void getModifyVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsOptions() {
-        final List<LessVariable> variables = Arrays.asList(new LessVariable("name1", "value1"), null, new LessVariable("name2", "value2"));
+    public void getModifyVariablesOptions_variablesContainThreeElementsWhereOneIsNull_returnsTwoOptions() {
+        final List<LessVariableOption> variables = Arrays.asList(new LessVariableOption("name1", "value1"), null,
+                new LessVariableOption("name2", "value2"));
         final String[] options = builder.modifyVariables(variables).getModifyVariablesOptions();
-        assertThat(options).hasSize(2);
-        assertThat(options[0]).isEqualTo("--modify-var=name1=value1");
-        assertThat(options[1]).isEqualTo("--modify-var=name2=value2");
+        assertThat(options).containsExactly("--modify-var=name1=value1", "--modify-var=name2=value2");
     }
 
     @Test
@@ -535,7 +527,7 @@ public final class NativeLessOptionsBuilderTest {
         verify(builder).getGlobalVariablesOptions();
         verify(builder).getModifyVariablesOptions();
         verify(builder).getEncodingOption();
-        verify(builder).getFileSystemsOption();
+        verify(builder).getFileSystemsOptions();
         verify(builder).getInputFileOption();
         verify(builder).getOutputFileOption();
         verifyNoMoreInteractions(builder);

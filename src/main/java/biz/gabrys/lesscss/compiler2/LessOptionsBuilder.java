@@ -43,8 +43,9 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * </pre>
  * 
  * @since 2.0.0
- * @see FileSystemsOptionBuilder
- * @see LessVariablesOptionBuilder
+ * @see FileSystemOptionBuilder
+ * @see FileSystemOptionsBuilder
+ * @see LessVariableOptionsBuilder
  */
 public class LessOptionsBuilder {
 
@@ -643,22 +644,17 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
-     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * Sets available file systems (default: {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
      * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
      *            ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #fileSystems(CharSequence...)
-     * @see FileSystemsOptionBuilder
+     * @see #fileSystems(FileSystemOption...)
+     * @see FileSystemOptionsBuilder
      */
-    public LessOptionsBuilder fileSystems(final Collection<? extends CharSequence> fileSystems) {
+    public LessOptionsBuilder fileSystems(final Collection<? extends FileSystemOption> fileSystems) {
         if (fileSystems != null) {
-            final List<String> paths = new ArrayList<String>(fileSystems.size());
-            for (final CharSequence path : fileSystems) {
-                paths.add(StringUtils.toStringIfNotNull(path));
-            }
-            getOptions().setFileSystems(paths);
+            getOptions().setFileSystems(new ArrayList<FileSystemOption>(fileSystems));
         } else {
             getOptions().setFileSystems(null);
         }
@@ -666,20 +662,19 @@ public class LessOptionsBuilder {
     }
 
     /**
-     * Sets available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
-     * {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * Sets available file systems (default: {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
      * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
      *            ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
      * @see #fileSystems(Collection)
-     * @see FileSystemsOptionBuilder
+     * @see FileSystemOptionBuilder
      */
-    public LessOptionsBuilder fileSystems(final CharSequence... fileSystems) {
+    public LessOptionsBuilder fileSystems(final FileSystemOption... fileSystems) {
         if (fileSystems != null) {
             return fileSystems(Arrays.asList(fileSystems));
         } else {
-            return fileSystems((Collection<CharSequence>) null);
+            return fileSystems((Collection<FileSystemOption>) null);
         }
     }
 
@@ -710,13 +705,13 @@ public class LessOptionsBuilder {
      * @param globalVariables the global variables ({@code null} is treated as an empty collection).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #globalVariables(LessVariable...)
+     * @see #globalVariables(LessVariableOption...)
      * @see #globalVariablesOff()
-     * @see LessVariablesOptionBuilder
+     * @see LessVariableOptionsBuilder
      */
-    public LessOptionsBuilder globalVariables(final Collection<? extends LessVariable> globalVariables) {
+    public LessOptionsBuilder globalVariables(final Collection<? extends LessVariableOption> globalVariables) {
         if (globalVariables != null) {
-            getOptions().setGlobalVariables(new ArrayList<LessVariable>(globalVariables));
+            getOptions().setGlobalVariables(new ArrayList<LessVariableOption>(globalVariables));
         } else {
             getOptions().setGlobalVariables(null);
         }
@@ -730,13 +725,12 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      * @see #globalVariables(Collection)
      * @see #globalVariablesOff()
-     * @see LessVariablesOptionBuilder
      */
-    public LessOptionsBuilder globalVariables(final LessVariable... globalVariables) {
+    public LessOptionsBuilder globalVariables(final LessVariableOption... globalVariables) {
         if (globalVariables != null) {
             return globalVariables(Arrays.asList(globalVariables));
         } else {
-            return globalVariables((Collection<LessVariable>) null);
+            return globalVariables((Collection<LessVariableOption>) null);
         }
     }
 
@@ -745,10 +739,10 @@ public class LessOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      * @see #globalVariables(Collection)
-     * @see #globalVariables(LessVariable...)
+     * @see #globalVariables(LessVariableOption...)
      */
     public LessOptionsBuilder globalVariablesOff() {
-        return globalVariables((Collection<LessVariable>) null);
+        return globalVariables((Collection<LessVariableOption>) null);
     }
 
     /**
@@ -756,13 +750,13 @@ public class LessOptionsBuilder {
      * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
      * @return {@code this} builder.
      * @since 2.0.0
-     * @see #modifyVariables(LessVariable...)
+     * @see #modifyVariables(LessVariableOption...)
      * @see #modifyVariablesOff()
-     * @see LessVariablesOptionBuilder
+     * @see LessVariableOptionsBuilder
      */
-    public LessOptionsBuilder modifyVariables(final Collection<? extends LessVariable> modifyVariables) {
+    public LessOptionsBuilder modifyVariables(final Collection<? extends LessVariableOption> modifyVariables) {
         if (modifyVariables != null) {
-            getOptions().setModifyVariables(new ArrayList<LessVariable>(modifyVariables));
+            getOptions().setModifyVariables(new ArrayList<LessVariableOption>(modifyVariables));
         } else {
             getOptions().setModifyVariables(null);
         }
@@ -776,13 +770,12 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      * @see #modifyVariables(Collection)
      * @see #modifyVariablesOff()
-     * @see LessVariablesOptionBuilder
      */
-    public LessOptionsBuilder modifyVariables(final LessVariable... modifyVariables) {
+    public LessOptionsBuilder modifyVariables(final LessVariableOption... modifyVariables) {
         if (modifyVariables != null) {
             return modifyVariables(Arrays.asList(modifyVariables));
         } else {
-            return modifyVariables((Collection<LessVariable>) null);
+            return modifyVariables((Collection<LessVariableOption>) null);
         }
     }
 
@@ -791,10 +784,10 @@ public class LessOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      * @see #modifyVariables(Collection)
-     * @see #modifyVariables(LessVariable...)
+     * @see #modifyVariables(LessVariableOption...)
      */
     public LessOptionsBuilder modifyVariablesOff() {
-        return modifyVariables((Collection<LessVariable>) null);
+        return modifyVariables((Collection<LessVariableOption>) null);
     }
 
     /**

@@ -55,13 +55,13 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * <pre>
  * // create compiler and source file
  * NativeLessCompiler compiler = new {@link #NativeLessCompiler() NativeLessCompiler}();
- * File input = new File("/less/file.less");
+ * String input = "/less/file.less";
  * 
  * // compile source file
- * String cssCode = compiler.{@link #execute(Collection) execute}(new {@link NativeLessOptionsBuilder#NativeLessOptionsBuilder() NativeLessOptionsBuilder}().inputFile(input).build());
+ * String cssCode = compiler.{@link #execute(Collection) execute}(new {@link NativeLessOptionsBuilder}().inputFile(input).build());
  * 
  * // compile source file with enabled CSS code compression
- * Collection&lt;Object&gt; options = new {@link NativeLessOptionsBuilder#NativeLessOptionsBuilder() NativeLessOptionsBuilder}().inputFile(input).compress(true).build();
+ * Collection&lt;Object&gt; options = new {@link NativeLessOptionsBuilder}().inputFile(input).compress(true).build();
  * String cssCompressedCode = compiler.{@link #execute(Collection) execute}(options);
  * </pre>
  * 
@@ -102,6 +102,16 @@ public class NativeLessCompiler {
      * <li>version ({@code -v} or {@code --version})</li>
      * </ul>
      * </li>
+     * </ul>
+     * <p>
+     * It also supports few non-standard options:
+     * </p>
+     * <ul>
+     * <li>{@code --encoding} - an encoding used to read source files and save generated code (default: platform default
+     * encoding)</li>
+     * <li>{@code --file-system} - a file system implementation used to fetch files (default:
+     * <code>biz.gabrys.lesscss.compiler2.filesystem.{@link biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem LocalFileSystem}</code>).
+     * This option could be specified multiple times (the order matters)</li>
      * </ul>
      * @param options the compiler options (cannot be {@code null}).
      * @return the compiler output (depends on options it can be e.g. CSS code, logs).

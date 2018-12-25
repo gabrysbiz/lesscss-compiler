@@ -24,6 +24,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Locale;
+import java.util.Map;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -72,6 +73,11 @@ public class HttpFileSystem implements FileSystem {
      * @since 2.0.0
      */
     public HttpFileSystem() {
+        // do nothing
+    }
+
+    @Override
+    public void configure(final Map<String, String> parameters) {
         // do nothing
     }
 

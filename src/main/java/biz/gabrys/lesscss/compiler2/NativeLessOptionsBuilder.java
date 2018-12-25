@@ -89,8 +89,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * <ul>
  * <li>{@link #encoding(String) encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)</li>
- * <li>{@link #fileSystems(List) file systems} - a list with class names of the
- * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * <li>{@link #fileSystems(List) file systems} - a list with file systems (default:
  * {@link LessOptions#DEFAULT_FILE_SYSTEMS})</li>
  * </ul>
  * <p>
@@ -878,39 +877,37 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
-     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
-     * files.
+     * Sets file systems used to fetch content of the source files.
      * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessOptionsBuilder fileSystems(final List<String> fileSystems) {
+    public NativeLessOptionsBuilder fileSystems(final List<FileSystemOption> fileSystems) {
         options.setFileSystems(fileSystems);
         return this;
     }
 
     /**
-     * Returns a command line option representation of the available file systems.
-     * @return the command line option (never {@code null}).
+     * Returns command line options representation of the available file systems.
+     * @return the command line options (never {@code null}).
      * @since 2.0.0
      * @see #fileSystems(List)
      */
-    protected String getFileSystemsOption() {
-        final Collection<String> fileSystems = options.getFileSystems();
+    protected String[] getFileSystemsOptions() {
+        final Collection<FileSystemOption> fileSystems = options.getFileSystems();
         if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {
-            return "";
+            return new String[0];
         }
-        final StringBuilder systems = new StringBuilder();
-        for (final String system : fileSystems) {
-            if (StringUtils.isNotBlank(system)) {
-                final boolean separatorRequired = systems.length() != 0;
-                if (separatorRequired) {
-                    systems.append(',');
-                }
-                systems.append(system.trim());
+        final List<String> commandLineOptions = new ArrayList<String>(fileSystems.size());
+        for (final FileSystemOption fileSystem : fileSystems) {
+            if (fileSystem != null) {
+                final StringBuilder commandLineOption = new StringBuilder();
+                commandLineOption.append("--file-system=");
+                commandLineOption.append(fileSystem);
+                commandLineOptions.add(commandLineOption.toString());
             }
         }
-        return "--file-systems=" + systems.toString();
+        return commandLineOptions.toArray(new String[0]);
     }
 
     /**
@@ -947,7 +944,7 @@ public class NativeLessOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessOptionsBuilder globalVariables(final List<LessVariable> globalVariables) {
+    public NativeLessOptionsBuilder globalVariables(final List<LessVariableOption> globalVariables) {
         options.setGlobalVariables(globalVariables);
         return this;
     }
@@ -959,11 +956,14 @@ public class NativeLessOptionsBuilder {
      * @see #globalVariables(List)
      */
     protected String[] getGlobalVariablesOptions() {
-        final List<LessVariable> variables = options.getGlobalVariables();
+        final List<LessVariableOption> variables = options.getGlobalVariables();
         final List<String> commandLineOptions = new ArrayList<String>(variables.size());
-        for (final LessVariable variable : variables) {
+        for (final LessVariableOption variable : variables) {
             if (variable != null) {
-                commandLineOptions.add("--global-var=" + variable);
+                final StringBuilder commandLineOption = new StringBuilder();
+                commandLineOption.append("--global-var=");
+                commandLineOption.append(variable);
+                commandLineOptions.add(commandLineOption.toString());
             }
         }
         return commandLineOptions.toArray(new String[0]);
@@ -977,7 +977,7 @@ public class NativeLessOptionsBuilder {
      * @return {@code this} builder.
      * @since 2.0.0
      */
-    public NativeLessOptionsBuilder modifyVariables(final List<LessVariable> modifyVariables) {
+    public NativeLessOptionsBuilder modifyVariables(final List<LessVariableOption> modifyVariables) {
         options.setModifyVariables(modifyVariables);
         return this;
     }
@@ -989,11 +989,14 @@ public class NativeLessOptionsBuilder {
      * @see #modifyVariables(List)
      */
     protected String[] getModifyVariablesOptions() {
-        final List<LessVariable> variables = options.getModifyVariables();
+        final List<LessVariableOption> variables = options.getModifyVariables();
         final List<String> commandLineOptions = new ArrayList<String>(variables.size());
-        for (final LessVariable variable : variables) {
+        for (final LessVariableOption variable : variables) {
             if (variable != null) {
-                commandLineOptions.add("--modify-var=" + variable);
+                final StringBuilder commandLineOption = new StringBuilder();
+                commandLineOption.append("--modify-var=");
+                commandLineOption.append(variable);
+                commandLineOptions.add(commandLineOption.toString());
             }
         }
         return commandLineOptions.toArray(new String[0]);
@@ -1039,7 +1042,7 @@ public class NativeLessOptionsBuilder {
         configurationOptions.append(getModifyVariablesOptions());
 
         configurationOptions.append(getEncodingOption());
-        configurationOptions.append(getFileSystemsOption());
+        configurationOptions.append(getFileSystemsOptions());
 
         final String inputPath = getInputFileOption();
         configurationOptions.append(inputPath);

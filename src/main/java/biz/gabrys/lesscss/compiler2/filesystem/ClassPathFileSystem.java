@@ -16,6 +16,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
+import java.util.Map;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
@@ -41,6 +42,11 @@ public class ClassPathFileSystem implements FileSystem {
      * @since 2.0.0
      */
     public ClassPathFileSystem() {
+        // do nothing
+    }
+
+    @Override
+    public void configure(final Map<String, String> parameters) {
         // do nothing
     }
 

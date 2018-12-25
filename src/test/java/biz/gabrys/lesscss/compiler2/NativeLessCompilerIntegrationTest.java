@@ -16,7 +16,7 @@ public final class NativeLessCompilerIntegrationTest {
     public void execute_localFile_success() {
         final String source = new File(NativeLessCompilerTest.class.getResource("/integration/integration.less").getPath())
                 .getAbsolutePath();
-        final List<String> fileSystems = new FileSystemsOptionBuilder().withStandard().build();
+        final List<FileSystemOption> fileSystems = new FileSystemOptionsBuilder().appendStandard().build();
         final Collection<String> options = new NativeLessOptionsBuilder().encoding("UTF-8").relativeUrls(true).fileSystems(fileSystems)
                 .inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();
@@ -41,7 +41,7 @@ public final class NativeLessCompilerIntegrationTest {
     @Test
     public void execute_fileFromNetwork_success() {
         final String source = "https://raw.githubusercontent.com/gabrysbiz/lesscss-compiler/develop/src/test/resources/integration/less/style.less";
-        final List<String> fileSystems = new FileSystemsOptionBuilder().withStandard().build();
+        final List<FileSystemOption> fileSystems = new FileSystemOptionsBuilder().appendStandard().build();
         final Collection<String> options = new NativeLessOptionsBuilder().encoding("UTF-8").relativeUrls(true).fileSystems(fileSystems)
                 .inputFile(source).build();
         final NativeLessCompiler compiler = new NativeLessCompiler();

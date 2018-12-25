@@ -15,6 +15,7 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
+import java.util.Map;
 
 import biz.gabrys.lesscss.compiler2.io.IOUtils;
 
@@ -30,7 +31,7 @@ import biz.gabrys.lesscss.compiler2.io.IOUtils;
  * <li>/home/user/less/style.less</li>
  * </ul>
  * <p>
- * <strong>Warning</strong>: the local file system in file systems option should be put as last or not at all.
+ * <strong>Warning</strong>: the local file system option should be put as last or not at all.
  * </p>
  * @since 2.0.0
  */
@@ -41,6 +42,11 @@ public class LocalFileSystem implements FileSystem {
      * @since 2.0.0
      */
     public LocalFileSystem() {
+        // do nothing
+    }
+
+    @Override
+    public void configure(final Map<String, String> parameters) {
         // do nothing
     }
 

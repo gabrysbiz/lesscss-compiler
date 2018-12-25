@@ -18,6 +18,7 @@ import java.io.InputStream;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.util.Map;
 
 import org.apache.commons.net.ftp.FTP;
 import org.apache.commons.net.ftp.FTPClient;
@@ -68,6 +69,11 @@ public class FtpFileSystem implements FileSystem {
         } catch (final ClassNotFoundException e) {
             return false;
         }
+    }
+
+    @Override
+    public void configure(final Map<String, String> parameters) {
+        // do nothing
     }
 
     @Override

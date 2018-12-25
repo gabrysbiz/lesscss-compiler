@@ -19,7 +19,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * variables.
  * @since 2.0.0
  */
-public class LessVariable {
+public class LessVariableOption {
 
     private final String name;
     private final String value;
@@ -31,7 +31,7 @@ public class LessVariable {
      * @throws IllegalArgumentException if name/value is blank.
      * @since 2.0.0
      */
-    public LessVariable(final String name, final String value) {
+    public LessVariableOption(final String name, final String value) {
         if (StringUtils.isBlank(name)) {
             throw new IllegalArgumentException("Variable name cannot be blank");
         }
@@ -83,7 +83,7 @@ public class LessVariable {
         if (obj == null || getClass() != obj.getClass()) {
             return false;
         }
-        final LessVariable other = (LessVariable) obj;
+        final LessVariableOption other = (LessVariableOption) obj;
         return name.equals(other.name) && value.equals(other.value);
     }
 

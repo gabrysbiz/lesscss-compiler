@@ -75,13 +75,13 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
  * <ul>
  * <li>{@link #getEncoding() encoding} - an encoding used to read source files and save generated code (default:
  * {@code null} - means platform default encoding)</li>
- * <li>{@link #getFileSystems() file systems} - a list with class names of the
- * {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} (default:
+ * <li>{@link #getFileSystems() file systems} - a list with file systems (default:
  * <code>["biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}"]</code>)</li>
  * </ul>
  * @since 2.0.0
  * @see LessOptionsBuilder
- * @see FileSystemsOptionBuilder
+ * @see FileSystemOptionsBuilder
+ * @see LessVariableOptionsBuilder
  */
 public class LessOptions {
 
@@ -90,7 +90,8 @@ public class LessOptions {
      * (<code>["biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}"]</code>).
      * @since 2.0.0
      */
-    public static final List<String> DEFAULT_FILE_SYSTEMS = Collections.unmodifiableList(Arrays.asList(LocalFileSystem.class.getName()));
+    public static final List<FileSystemOption> DEFAULT_FILE_SYSTEMS = Collections
+            .unmodifiableList(Arrays.asList(new FileSystemOption(LocalFileSystem.class)));
 
     private boolean silent;
     private boolean strictImports;
@@ -110,11 +111,11 @@ public class LessOptions {
     private String sourceMapUrl;
 
     private String banner;
-    private List<LessVariable> globalVariables;
-    private List<LessVariable> modifyVariables;
+    private List<LessVariableOption> globalVariables;
+    private List<LessVariableOption> modifyVariables;
 
     private String encoding;
-    private List<String> fileSystems;
+    private List<FileSystemOption> fileSystems;
 
     /**
      * Constructs a new instance.
@@ -160,11 +161,11 @@ public class LessOptions {
         sourceMapUrl = options.sourceMapUrl;
 
         banner = options.banner;
-        globalVariables = new ArrayList<LessVariable>(options.globalVariables);
-        modifyVariables = new ArrayList<LessVariable>(options.modifyVariables);
+        globalVariables = new ArrayList<LessVariableOption>(options.globalVariables);
+        modifyVariables = new ArrayList<LessVariableOption>(options.modifyVariables);
 
         encoding = options.encoding;
-        fileSystems = new ArrayList<String>(options.fileSystems);
+        fileSystems = new ArrayList<FileSystemOption>(options.fileSystems);
     }
 
     /**
@@ -739,26 +740,25 @@ public class LessOptions {
     }
 
     /**
-     * Returns {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the
-     * source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * Returns file systems used to fetch content of the source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
      * @return the file systems (never {@code null}).
      * @since 2.0.0
      */
-    public List<String> getFileSystems() {
-        return new ArrayList<String>(fileSystems);
+    public List<FileSystemOption> getFileSystems() {
+        return new ArrayList<FileSystemOption>(fileSystems);
     }
 
     /**
-     * Sets {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems} used to fetch content of the source
-     * files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * Sets file systems used to fetch content of the source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
      * @param fileSystems the file systems ({@code null} is treated as a collection with default values).
      * @since 2.0.0
+     * @see FileSystemOptionsBuilder
      */
-    public void setFileSystems(final List<String> fileSystems) {
+    public void setFileSystems(final List<FileSystemOption> fileSystems) {
         if (fileSystems == null) {
             this.fileSystems = DEFAULT_FILE_SYSTEMS;
         } else {
-            this.fileSystems = new ArrayList<String>(fileSystems);
+            this.fileSystems = new ArrayList<FileSystemOption>(fileSystems);
         }
     }
 
@@ -786,8 +786,8 @@ public class LessOptions {
      * if variables with the same names are defined in the file.
      * @return the global variables (never {@code null}).
      */
-    public List<LessVariable> getGlobalVariables() {
-        return new ArrayList<LessVariable>(globalVariables);
+    public List<LessVariableOption> getGlobalVariables() {
+        return new ArrayList<LessVariableOption>(globalVariables);
     }
 
     /**
@@ -796,12 +796,13 @@ public class LessOptions {
      * variables with the same names are defined in the file.
      * @param globalVariables the global variables ({@code null} is treated as an empty collection).
      * @since 2.0.0
+     * @see LessVariableOptionsBuilder
      */
-    public void setGlobalVariables(final List<LessVariable> globalVariables) {
+    public void setGlobalVariables(final List<LessVariableOption> globalVariables) {
         if (globalVariables == null) {
             this.globalVariables = Collections.emptyList();
         } else {
-            this.globalVariables = new ArrayList<LessVariable>(globalVariables);
+            this.globalVariables = new ArrayList<LessVariableOption>(globalVariables);
         }
     }
 
@@ -812,8 +813,8 @@ public class LessOptions {
      * @return the modify variables (never {@code null}).
      * @since 2.0.0
      */
-    public List<LessVariable> getModifyVariables() {
-        return new ArrayList<LessVariable>(modifyVariables);
+    public List<LessVariableOption> getModifyVariables() {
+        return new ArrayList<LessVariableOption>(modifyVariables);
     }
 
     /**
@@ -822,12 +823,13 @@ public class LessOptions {
      * Less file.
      * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
      * @since 2.0.0
+     * @see LessVariableOptionsBuilder
      */
-    public void setModifyVariables(final List<LessVariable> modifyVariables) {
+    public void setModifyVariables(final List<LessVariableOption> modifyVariables) {
         if (modifyVariables == null) {
             this.modifyVariables = Collections.emptyList();
         } else {
-            this.modifyVariables = new ArrayList<LessVariable>(modifyVariables);
+            this.modifyVariables = new ArrayList<LessVariableOption>(modifyVariables);
         }
     }
 }
