@@ -91,7 +91,7 @@ public class NativeLessCompiler {
      * character on Windows and ':' character on Unix/Linux machines&lt;/li&gt;
      * &lt;li&gt;does not support options:
      * &lt;ul&gt;
-     * &lt;li&gt;allow imports from insecure HTTPS hosts ({@code --insecure})&lt;/li&gt;
+     * &lt;li&gt;allow importing from insecure HTTPS hosts ({@code --insecure})&lt;/li&gt;
      * &lt;li&gt;lint ({@code -l} or {@code --lint})&lt;/li&gt;
      * &lt;li&gt;makefile ({@code -M} or {@code --depends})&lt;/li&gt;
      * &lt;li&gt;no color ({@code --no-color})&lt;/li&gt;
@@ -186,18 +186,17 @@ public class NativeLessCompiler {
 <span class="fc" id="L186">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
 
 <span class="fc" id="L188">            final Iterable&lt;ExceptionConverter&gt; converters = Arrays.asList(new ReadFileErrorExceptionConverter(),</span>
-                    new NotSupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(),
-                    new SourceFileExceptionConverter());
+                    new UnsupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(), new SourceFileExceptionConverter());
 
-<span class="fc bfc" id="L192" title="All 2 branches covered.">            for (final ExceptionConverter converter : converters) {</span>
-<span class="fc" id="L193">                final Matcher matcher = converter.getPattern().matcher(message);</span>
-<span class="fc bfc" id="L194" title="All 2 branches covered.">                if (matcher.find()) {</span>
-<span class="fc" id="L195">                    return converter.createException(exception, matcher, message);</span>
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            for (final ExceptionConverter converter : converters) {</span>
+<span class="fc" id="L192">                final Matcher matcher = converter.getPattern().matcher(message);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">                if (matcher.find()) {</span>
+<span class="fc" id="L194">                    return converter.createException(exception, matcher, message);</span>
                 }
-<span class="fc" id="L197">            }</span>
-<span class="fc" id="L198">            return new SyntaxException(message, exception);</span>
+<span class="fc" id="L196">            }</span>
+<span class="fc" id="L197">            return new SyntaxException(message, exception);</span>
         }
-<span class="nc" id="L200">        return new SyntaxException(exception);</span>
+<span class="nc" id="L199">        return new SyntaxException(exception);</span>
     }
 
     private interface ExceptionConverter {
@@ -217,32 +216,32 @@ public class NativeLessCompiler {
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L220">            return Pattern.compile(&quot;^FileError:\\sFileSystemError:&quot; + MARKUP + &quot;[^:]+:\\s(.+)&quot; + MARKUP + &quot;:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
+<span class="fc" id="L219">            return Pattern.compile(&quot;^FileError:\\sFileSystemError:&quot; + MARKUP + &quot;[^:]+:\\s(.+)&quot; + MARKUP + &quot;:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L225">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
-<span class="fc" id="L226">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: %s.%nError in %s&quot;, importedFilename,</span>
-<span class="fc" id="L227">                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+<span class="fc" id="L224">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="fc" id="L225">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: %s.%nError in %s&quot;, importedFilename,</span>
+<span class="fc" id="L226">                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
         }
     }
 
-    private static class NotSupportedProtocolExceptionConverter implements ExceptionConverter {
+    private static class UnsupportedProtocolExceptionConverter implements ExceptionConverter {
 
         private static final int IMPORTED_FILENAME_GROUP_INDEX = 1;
         private static final int SOURCE_FILEPATH_GROUP_INDEX = 2;
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L238">            return Pattern.compile(&quot;^FileError:\\sNotSupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
+<span class="fc" id="L237">            return Pattern.compile(&quot;^FileError:\\sUnsupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="nc" id="L243">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
-<span class="nc" id="L244">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: the protocol is not supported.%nError in %s&quot;,</span>
-<span class="nc" id="L245">                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+<span class="fc" id="L242">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="fc" id="L243">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: the protocol is unsupported.%nError in %s&quot;,</span>
+<span class="fc" id="L244">                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
         }
     }
 
@@ -250,12 +249,12 @@ public class NativeLessCompiler {
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L253">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
+<span class="fc" id="L252">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L258">            return new ConfigurationException(matcher.group(1), cause);</span>
+<span class="fc" id="L257">            return new ConfigurationException(matcher.group(1), cause);</span>
         }
     }
 
@@ -263,12 +262,12 @@ public class NativeLessCompiler {
 
         @Override
         public Pattern getPattern() {
-<span class="fc" id="L266">            return Pattern.compile(&quot;^Couldn't open file (.*)&quot;);</span>
+<span class="fc" id="L265">            return Pattern.compile(&quot;^Couldn't open file (.*)&quot;);</span>
         }
 
         @Override
         public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
-<span class="fc" id="L271">            return new ReadFileException(message, cause, matcher.group(1));</span>
+<span class="fc" id="L270">            return new ReadFileException(message, cause, matcher.group(1));</span>
         }
     }
 }

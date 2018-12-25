@@ -161,11 +161,11 @@ public class NativeLessOptionsBuilder {
      * @since 2.0.0
      */
     public NativeLessOptionsBuilder options(final LessOptions options) {
-<span class="nc bnc" id="L164" title="All 2 branches missed.">        if (options == null) {</span>
-<span class="nc" id="L165">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="fc bfc" id="L164" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L165">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="nc" id="L167">        this.options = new LessOptions(options);</span>
-<span class="nc" id="L168">        return this;</span>
+<span class="fc" id="L167">        this.options = new LessOptions(options);</span>
+<span class="fc" id="L168">        return this;</span>
     }
 
     /**
@@ -894,7 +894,7 @@ public class NativeLessOptionsBuilder {
      */
     protected String[] getFileSystemsOptions() {
 <span class="fc" id="L896">        final Collection&lt;FileSystemOption&gt; fileSystems = options.getFileSystems();</span>
-<span class="fc bfc" id="L897" title="All 4 branches covered.">        if (fileSystems.isEmpty() || LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {</span>
+<span class="fc bfc" id="L897" title="All 2 branches covered.">        if (LessOptions.DEFAULT_FILE_SYSTEMS.equals(fileSystems)) {</span>
 <span class="fc" id="L898">            return new String[0];</span>
         }
 <span class="fc" id="L900">        final List&lt;String&gt; commandLineOptions = new ArrayList&lt;&gt;(fileSystems.size());</span>

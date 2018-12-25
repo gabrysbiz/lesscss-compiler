@@ -22,9 +22,8 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
 
 /**
  * &lt;p&gt;
- * Allows to create value of the {@link LessOptions#getGlobalVariables() global} and
- * {@link LessOptions#getModifyVariables() modify} variables options. The builder allows adding multiple variables with
- * the same name (they are not replaced).
+ * Creates values of the {@link LessOptions#getGlobalVariables() global} and {@link LessOptions#getModifyVariables()
+ * modify} variables options. The builder allows adding multiple variables with the same name (they are not replaced).
  * &lt;/p&gt;
  * &lt;p&gt;
  * Example code:
@@ -52,15 +51,15 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  */
 public class LessVariableOptionsBuilder {
 
-<span class="fc" id="L55">    private final List&lt;LessVariableOption&gt; variables = new LinkedList&lt;&gt;();</span>
+<span class="fc" id="L54">    private final List&lt;LessVariableOption&gt; variables = new LinkedList&lt;&gt;();</span>
 
     /**
      * Constructs a new instance.
      * @since 2.0.0
      */
-<span class="fc" id="L61">    public LessVariableOptionsBuilder() {</span>
+<span class="fc" id="L60">    public LessVariableOptionsBuilder() {</span>
         // do nothing
-<span class="fc" id="L63">    }</span>
+<span class="fc" id="L62">    }</span>
 
     /**
      * Appends variables.
@@ -70,13 +69,13 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public LessVariableOptionsBuilder append(final Map&lt;? extends CharSequence, ? extends CharSequence&gt; variables) {
-<span class="fc bfc" id="L73" title="All 2 branches covered.">        if (variables == null) {</span>
-<span class="fc" id="L74">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
+<span class="fc bfc" id="L72" title="All 2 branches covered.">        if (variables == null) {</span>
+<span class="fc" id="L73">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L76" title="All 2 branches covered.">        for (final Entry&lt;? extends CharSequence, ? extends CharSequence&gt; variable : variables.entrySet()) {</span>
-<span class="fc" id="L77">            append(variable.getKey(), variable.getValue());</span>
-<span class="fc" id="L78">        }</span>
-<span class="fc" id="L79">        return this;</span>
+<span class="fc bfc" id="L75" title="All 2 branches covered.">        for (final Entry&lt;? extends CharSequence, ? extends CharSequence&gt; variable : variables.entrySet()) {</span>
+<span class="fc" id="L76">            append(variable.getKey(), variable.getValue());</span>
+<span class="fc" id="L77">        }</span>
+<span class="fc" id="L78">        return this;</span>
     }
 
     /**
@@ -88,8 +87,8 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public LessVariableOptionsBuilder append(final CharSequence name, final CharSequence value) {
-<span class="fc" id="L91">        getVariables().add(new LessVariableOption(StringUtils.toStringIfNotNull(name), StringUtils.toStringIfNotNull(value)));</span>
-<span class="fc" id="L92">        return this;</span>
+<span class="fc" id="L90">        getVariables().add(new LessVariableOption(StringUtils.toStringIfNotNull(name), StringUtils.toStringIfNotNull(value)));</span>
+<span class="fc" id="L91">        return this;</span>
     }
 
     /**
@@ -100,13 +99,13 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public LessVariableOptionsBuilder append(final Iterable&lt;? extends LessVariableOption&gt; variables) {
-<span class="fc bfc" id="L103" title="All 2 branches covered.">        if (variables == null) {</span>
-<span class="fc" id="L104">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
+<span class="fc bfc" id="L102" title="All 2 branches covered.">        if (variables == null) {</span>
+<span class="fc" id="L103">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L106" title="All 2 branches covered.">        for (final LessVariableOption variable : variables) {</span>
-<span class="fc" id="L107">            append(variable);</span>
-<span class="fc" id="L108">        }</span>
-<span class="fc" id="L109">        return this;</span>
+<span class="fc bfc" id="L105" title="All 2 branches covered.">        for (final LessVariableOption variable : variables) {</span>
+<span class="fc" id="L106">            append(variable);</span>
+<span class="fc" id="L107">        }</span>
+<span class="fc" id="L108">        return this;</span>
     }
 
     /**
@@ -117,13 +116,13 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public LessVariableOptionsBuilder append(final LessVariableOption... variables) {
-<span class="fc bfc" id="L120" title="All 2 branches covered.">        if (variables == null) {</span>
-<span class="fc" id="L121">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
+<span class="fc bfc" id="L119" title="All 2 branches covered.">        if (variables == null) {</span>
+<span class="fc" id="L120">            throw new IllegalArgumentException(&quot;Variables cannot be null&quot;);</span>
         }
-<span class="fc bfc" id="L123" title="All 2 branches covered.">        for (final LessVariableOption variable : variables) {</span>
-<span class="fc" id="L124">            append(variable);</span>
+<span class="fc bfc" id="L122" title="All 2 branches covered.">        for (final LessVariableOption variable : variables) {</span>
+<span class="fc" id="L123">            append(variable);</span>
         }
-<span class="fc" id="L126">        return this;</span>
+<span class="fc" id="L125">        return this;</span>
     }
 
     /**
@@ -134,11 +133,11 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public LessVariableOptionsBuilder append(final LessVariableOption variable) {
-<span class="fc bfc" id="L137" title="All 2 branches covered.">        if (variable == null) {</span>
-<span class="fc" id="L138">            throw new IllegalArgumentException(&quot;Variable cannot be null&quot;);</span>
+<span class="fc bfc" id="L136" title="All 2 branches covered.">        if (variable == null) {</span>
+<span class="fc" id="L137">            throw new IllegalArgumentException(&quot;Variable cannot be null&quot;);</span>
         }
-<span class="fc" id="L140">        getVariables().add(variable);</span>
-<span class="fc" id="L141">        return this;</span>
+<span class="fc" id="L139">        getVariables().add(variable);</span>
+<span class="fc" id="L140">        return this;</span>
     }
 
     /**
@@ -147,7 +146,7 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     public List&lt;LessVariableOption&gt; build() {
-<span class="fc" id="L150">        return new ArrayList&lt;&gt;(getVariables());</span>
+<span class="fc" id="L149">        return new ArrayList&lt;&gt;(getVariables());</span>
     }
 
     /**
@@ -156,7 +155,7 @@ public class LessVariableOptionsBuilder {
      * @since 2.0.0
      */
     protected List&lt;LessVariableOption&gt; getVariables() {
-<span class="fc" id="L159">        return variables;</span>
+<span class="fc" id="L158">        return variables;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

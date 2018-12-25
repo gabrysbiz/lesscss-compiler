@@ -65,12 +65,12 @@ public class LessOptionsBuilder {
      * @throws IllegalArgumentException if the options object is {@code null}.
      * @since 2.0.0
      */
-<span class="nc" id="L68">    public LessOptionsBuilder(final LessOptions options) {</span>
-<span class="nc bnc" id="L69" title="All 2 branches missed.">        if (options == null) {</span>
-<span class="nc" id="L70">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+<span class="fc" id="L68">    public LessOptionsBuilder(final LessOptions options) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L70">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
         }
-<span class="nc" id="L72">        this.options = new LessOptions(options);</span>
-<span class="nc" id="L73">    }</span>
+<span class="fc" id="L72">        this.options = new LessOptions(options);</span>
+<span class="fc" id="L73">    }</span>
 
     /**
      * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
@@ -796,7 +796,7 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      */
     public LessOptions build() {
-<span class="nc" id="L799">        return new LessOptions(getOptions());</span>
+<span class="fc" id="L799">        return new LessOptions(getOptions());</span>
     }
 
     /**
@@ -805,7 +805,7 @@ public class LessOptionsBuilder {
      * @since 2.0.0
      */
     protected LessOptions getOptions() {
-<span class="nc" id="L808">        return options;</span>
+<span class="fc" id="L808">        return options;</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

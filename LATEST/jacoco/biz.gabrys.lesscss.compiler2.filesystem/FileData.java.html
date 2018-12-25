@@ -14,6 +14,7 @@ package biz.gabrys.lesscss.compiler2.filesystem;
 
 import java.io.Serializable;
 import java.util.Arrays;
+import java.util.Objects;
 
 /**
  * Represents a file data returned by an instance of the {@link FileSystem}.
@@ -33,8 +34,8 @@ public class FileData implements Serializable {
      * @since 2.0.0
      */
     public FileData(final byte[] content) {
-<span class="fc" id="L36">        this(content, null);</span>
-<span class="fc" id="L37">    }</span>
+<span class="fc" id="L37">        this(content, null);</span>
+<span class="fc" id="L38">    }</span>
 
     /**
      * Constructs a new instance and sets the file's content and encoding.
@@ -43,13 +44,13 @@ public class FileData implements Serializable {
      * @throws IllegalArgumentException if the content is {@code null}.
      * @since 2.0.0
      */
-<span class="fc" id="L46">    public FileData(final byte[] content, final String encoding) {</span>
-<span class="pc bpc" id="L47" title="1 of 2 branches missed.">        if (content == null) {</span>
-<span class="nc" id="L48">            throw new IllegalArgumentException(&quot;Content cannot be null&quot;);</span>
+<span class="fc" id="L47">    public FileData(final byte[] content, final String encoding) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (content == null) {</span>
+<span class="fc" id="L49">            throw new IllegalArgumentException(&quot;Content cannot be null&quot;);</span>
         }
-<span class="fc" id="L50">        this.content = content;</span>
-<span class="fc" id="L51">        this.encoding = encoding;</span>
-<span class="fc" id="L52">    }</span>
+<span class="fc" id="L51">        this.content = content;</span>
+<span class="fc" id="L52">        this.encoding = encoding;</span>
+<span class="fc" id="L53">    }</span>
 
     /**
      * Returns the file's content as a byte array.
@@ -57,7 +58,7 @@ public class FileData implements Serializable {
      * @since 2.0.0
      */
     public byte[] getContent() {
-<span class="fc" id="L60">        return content;</span>
+<span class="fc" id="L61">        return content;</span>
     }
 
     /**
@@ -66,7 +67,7 @@ public class FileData implements Serializable {
      * @since 2.0.0
      */
     public String getEncoding() {
-<span class="fc" id="L69">        return encoding;</span>
+<span class="fc" id="L70">        return encoding;</span>
     }
 
     /**
@@ -75,9 +76,9 @@ public class FileData implements Serializable {
      */
     @Override
     public int hashCode() {
-<span class="fc" id="L78">        final int prime = 31;</span>
-<span class="fc" id="L79">        final int result = prime + Arrays.hashCode(content);</span>
-<span class="fc bfc" id="L80" title="All 2 branches covered.">        return prime * result + (encoding == null ? 0 : encoding.hashCode());</span>
+<span class="fc" id="L79">        final int prime = 31;</span>
+<span class="fc" id="L80">        final int result = prime + Arrays.hashCode(content);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        return prime * result + (encoding == null ? 0 : encoding.hashCode());</span>
     }
 
     /**
@@ -86,20 +87,17 @@ public class FileData implements Serializable {
      */
     @Override
     public boolean equals(final Object obj) {
-<span class="fc bfc" id="L89" title="All 2 branches covered.">        if (this == obj) {</span>
-<span class="fc" id="L90">            return true;</span>
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L91">            return true;</span>
         }
-<span class="fc bfc" id="L92" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
-<span class="fc" id="L93">            return false;</span>
+<span class="fc bfc" id="L93" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
+<span class="fc" id="L94">            return false;</span>
         }
-<span class="fc" id="L95">        final FileData other = (FileData) obj;</span>
-<span class="fc bfc" id="L96" title="All 2 branches covered.">        if (!Arrays.equals(content, other.content)) {</span>
-<span class="fc" id="L97">            return false;</span>
+<span class="fc" id="L96">        final FileData other = (FileData) obj;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (!Arrays.equals(content, other.content)) {</span>
+<span class="fc" id="L98">            return false;</span>
         }
-<span class="fc bfc" id="L99" title="All 2 branches covered.">        if (encoding == null) {</span>
-<span class="pc bpc" id="L100" title="1 of 2 branches missed.">            return other.encoding == null;</span>
-        }
-<span class="fc" id="L102">        return encoding.equals(other.encoding);</span>
+<span class="fc" id="L100">        return Objects.equals(encoding, other.encoding);</span>
     }
 
     /**
@@ -108,20 +106,20 @@ public class FileData implements Serializable {
      */
     @Override
     public String toString() {
-<span class="fc" id="L111">        final StringBuilder text = new StringBuilder();</span>
-<span class="fc" id="L112">        text.append(&quot;{\n&quot;);</span>
-<span class="fc" id="L113">        text.append(&quot;  \&quot;encoding\&quot;: &quot;);</span>
-<span class="fc bfc" id="L114" title="All 2 branches covered.">        if (encoding == null) {</span>
-<span class="fc" id="L115">            text.append(&quot;null&quot;);</span>
+<span class="fc" id="L109">        final StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L110">        text.append(&quot;{\n&quot;);</span>
+<span class="fc" id="L111">        text.append(&quot;  \&quot;encoding\&quot;: &quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (encoding == null) {</span>
+<span class="fc" id="L113">            text.append(&quot;null&quot;);</span>
         } else {
+<span class="fc" id="L115">            text.append('&quot;');</span>
+<span class="fc" id="L116">            text.append(encoding);</span>
 <span class="fc" id="L117">            text.append('&quot;');</span>
-<span class="fc" id="L118">            text.append(encoding);</span>
-<span class="fc" id="L119">            text.append('&quot;');</span>
         }
-<span class="fc" id="L121">        text.append(&quot;,\n  \&quot;content\&quot;: &quot;);</span>
-<span class="fc" id="L122">        text.append(Arrays.toString(content));</span>
-<span class="fc" id="L123">        text.append(&quot;\n}&quot;);</span>
-<span class="fc" id="L124">        return text.toString();</span>
+<span class="fc" id="L119">        text.append(&quot;,\n  \&quot;content\&quot;: &quot;);</span>
+<span class="fc" id="L120">        text.append(Arrays.toString(content));</span>
+<span class="fc" id="L121">        text.append(&quot;\n}&quot;);</span>
+<span class="fc" id="L122">        return text.toString();</span>
     }
 }
 </pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
