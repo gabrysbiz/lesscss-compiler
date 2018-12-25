@@ -35,7 +35,6 @@ public final class NativeLessCompilerIntegrationTest {
         expected.append(".style {\n  background: url(");
         expected.append(uriData);
         expected.append(");\n}");
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(expected.toString());
     }
 
@@ -50,7 +49,6 @@ public final class NativeLessCompilerIntegrationTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: block;\n}\n.style {\n  width: 100px;\n}");
     }
 }

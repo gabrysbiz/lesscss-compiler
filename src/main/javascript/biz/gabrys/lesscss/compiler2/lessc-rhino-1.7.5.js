@@ -3,8 +3,6 @@
  * Modified by Adam Gabryś
  */
 
-/*global name:true, less, loadStyleSheet, os */
-
 less.Parser.fileLoader = function(file, currentFileInfo, callback, env) {
     var filePath = file;
     var absolute = true;
@@ -159,6 +157,8 @@ gabrysLessCompiler.removeDuplications = function(array) {
     var sourceMapInline = false;
     var fileSystemsClassNames = [ 'biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem' ];
 
+    var additionalData = {};
+
     args = args.filter(function(arg) {
         var match = arg.match(/^-I(.+)$/);
 
@@ -249,11 +249,16 @@ gabrysLessCompiler.removeDuplications = function(array) {
                 break;
             case 'encoding':
                 validateArgument(arg, match[2]);
+                validateEncoding(match[2]);
                 gabrysLessCompiler.encoding = match[2];
                 break;
             case 'file-systems':
                 validateArgument(arg, match[2]);
                 fileSystemsClassNames = match[2].split(',');
+                break;
+            case 'banner':
+                validateArgument(arg, match[2]);
+                additionalData.banner = match[2];
                 break;
             default:
                 throwConfigurationError('Invalid option "' + arg + '"');
@@ -269,7 +274,6 @@ gabrysLessCompiler.removeDuplications = function(array) {
     if (source == null) {
         throwConfigurationError('Source file has not been specified');
     }
-
     var output = args[1];
 
     if (options.sourceMap) {
@@ -313,7 +317,7 @@ gabrysLessCompiler.removeDuplications = function(array) {
                 print(result);
             }
             quit(0);
-        });
+        }, additionalData);
     } catch (e) {
         throw new Error(formatError(e));
     }
@@ -423,6 +427,18 @@ gabrysLessCompiler.removeDuplications = function(array) {
                     + ' option as a boolean. Use one of on/t/true/y/yes/off/f/false/n/no');
         }
         return Boolean(onOff[2]);
+    }
+
+    function validateEncoding(encoding) {
+        var charsetSupported = false;
+        try {
+            charsetSupported = java.nio.charset.Charset.isSupported(encoding)
+        } catch (e) {
+            // ignore
+        }
+        if (!charsetSupported) {
+            throwConfigurationError('Encoding "' + encoding + '" is unsupported');
+        }
     }
 
     function writeFile(path, content) {

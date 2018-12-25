@@ -683,6 +683,28 @@ public class LessOptionsBuilder {
     }
 
     /**
+     * Sets a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @param banner the banner.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #bannerOff()
+     */
+    public LessOptionsBuilder banner(final CharSequence banner) {
+        getOptions().setBanner(StringUtils.toStringIfNotNull(banner));
+        return this;
+    }
+
+    /**
+     * Clears a value of the banner option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #banner(CharSequence)
+     */
+    public LessOptionsBuilder bannerOff() {
+        return banner(null);
+    }
+
+    /**
      * Builds a new instance of the {@link LessOptions}.
      * @return the new instance of the {@link LessOptions}.
      * @since 2.0.0

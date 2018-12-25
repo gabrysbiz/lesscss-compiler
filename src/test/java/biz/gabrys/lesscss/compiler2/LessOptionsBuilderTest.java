@@ -810,4 +810,30 @@ public final class LessOptionsBuilderTest {
         verifyNoMoreInteractions(builder);
         verifyZeroInteractions(options);
     }
+
+    @Test
+    public void banner() {
+        final String banner = "banner";
+
+        final LessOptionsBuilder builder2 = builder.banner(banner);
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).banner(banner);
+        verify(builder).getOptions();
+        verify(options).setBanner(banner);
+        verifyNoMoreInteractions(builder, options);
+    }
+
+    @Test
+    public void bannerOff() {
+        doReturn(builder).when(builder).banner(null);
+
+        final LessOptionsBuilder builder2 = builder.bannerOff();
+
+        assertThat(builder2).isSameAs(builder);
+        verify(builder).bannerOff();
+        verify(builder).banner(null);
+        verifyNoMoreInteractions(builder);
+        verifyZeroInteractions(options);
+    }
 }

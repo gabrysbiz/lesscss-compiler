@@ -28,6 +28,7 @@ import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
  * Base options:
  * </p>
  * <ul>
+ * <li>{@link #getBanner() banner} - a banner which will be inserted to a source file before the compilation</li>
  * <li>{@link #isCompress() compress} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #isIeCompatibility() IE compatibility} - whether a CSS code should be compatible with Internet Explorer
  * browser (default: {@code true})</li>
@@ -104,6 +105,8 @@ public class LessOptions {
     private String encoding;
     private List<String> fileSystems;
 
+    private String banner;
+
     /**
      * Constructs a new instance.
      * @since 2.0.0
@@ -145,6 +148,8 @@ public class LessOptions {
 
         encoding = options.encoding;
         fileSystems = new ArrayList<String>(options.fileSystems);
+
+        banner = options.banner;
     }
 
     /**
@@ -740,5 +745,23 @@ public class LessOptions {
         } else {
             this.fileSystems = new ArrayList<String>(fileSystems);
         }
+    }
+
+    /**
+     * Returns a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @return the banner.
+     * @since 2.0.0
+     */
+    public String getBanner() {
+        return banner;
+    }
+
+    /**
+     * Sets a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @param banner the banner.
+     * @since 2.0.0
+     */
+    public void setBanner(final String banner) {
+        this.banner = banner;
     }
 }

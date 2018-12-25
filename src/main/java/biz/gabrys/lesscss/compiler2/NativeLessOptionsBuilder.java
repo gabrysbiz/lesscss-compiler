@@ -29,6 +29,7 @@ import biz.gabrys.lesscss.compiler2.util.StringUtils;
  * Base options:
  * </p>
  * <ul>
+ * <li>{@link #banner(String) banner} - a banner which will be inserted to a source file before the compilation</li>
  * <li>{@link #compress(boolean) compression} - whether a CSS code should be compressed (default: {@code false})</li>
  * <li>{@link #ieCompatibility(boolean) IE compatibility} - whether a CSS code should be compatible with Internet
  * Explorer browser (default: {@code true})</li>
@@ -127,6 +128,7 @@ public class NativeLessOptionsBuilder {
     /**
      * Sets compiler options. This method overwrites values set by:
      * <ul>
+     * <li>{@link #banner(String)}</li>
      * <li>{@link #compress(boolean)}</li>
      * <li>{@link #encoding(String)}</li>
      * <li>{@link #fileSystems(List)}</li>
@@ -909,6 +911,32 @@ public class NativeLessOptionsBuilder {
     }
 
     /**
+     * Sets a banner which will be inserted to a source file before the compilation.
+     * @param banner the banner.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public NativeLessOptionsBuilder banner(final String banner) {
+        options.setBanner(banner);
+        return this;
+    }
+
+    /**
+     * Returns a command line option which sets a banner.
+     * @return the command line option (never {@code null}).
+     * @since 2.0.0
+     * @see #banner(String)
+     */
+    protected String getBannerOption() {
+        final String banner = options.getBanner();
+        if (StringUtils.isNotBlank(banner)) {
+            return "--banner=" + banner;
+        } else {
+            return "";
+        }
+    }
+
+    /**
      * Builds a collection with configuration options for the {@link NativeLessCompiler} compilation process.
      * @return the collection with configuration options.
      * @throws BuilderCreationException if you set an output file without setting an input file.
@@ -945,6 +973,8 @@ public class NativeLessOptionsBuilder {
 
         configurationOptions.append(getEncodingOption());
         configurationOptions.append(getFileSystemsOption());
+
+        configurationOptions.append(getBannerOption());
 
         final String inputPath = getInputFileOption();
         configurationOptions.append(inputPath);

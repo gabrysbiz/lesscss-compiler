@@ -254,7 +254,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getSourceMapRootPathOption_pathIsNotEmpty_returnsOption() {
+    public void getSourceMapRootPathOption_pathIsNotBlank_returnsOption() {
         final String option = builder.sourceMapRootPath("rootpath").getSourceMapRootPathOption();
         assertThat(option).isEqualTo("--source-map-rootpath=rootpath");
     }
@@ -278,7 +278,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getSourceMapBasePathOption_pathIsNotEmpty_returnsOption() {
+    public void getSourceMapBasePathOption_pathIsNotBlank_returnsOption() {
         final String option = builder.sourceMapBasePath("basepath").getSourceMapBasePathOption();
         assertThat(option).isEqualTo("--source-map-basepath=basepath");
     }
@@ -301,7 +301,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getSourceMapUrlOption_pathIsNotEmpty_returnsOption() {
+    public void getSourceMapUrlOption_pathIsNotBlank_returnsOption() {
         final String option = builder.sourceMapUrl("../map-url").getSourceMapUrlOption();
         assertThat(option).isEqualTo("--source-map-url=../map-url");
     }
@@ -325,7 +325,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getRootPathOption_pathIsNotEmpty_returnsOption() {
+    public void getRootPathOption_pathIsNotBlank_returnsOption() {
         final String option = builder.rootPath("rooturl").getRootPathOption();
         assertThat(option).isEqualTo("--rootpath=rooturl");
     }
@@ -385,7 +385,7 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
-    public void getEncodingOption_encodingIsNotEmpty_returnsOption() {
+    public void getEncodingOption_encodingIsNotBlank_returnsOption() {
         final String option = builder.encoding("UTF-8").getEncodingOption();
         assertThat(option).isEqualTo("--encoding=UTF-8");
     }
@@ -421,6 +421,30 @@ public final class NativeLessOptionsBuilderTest {
     }
 
     @Test
+    public void getBannerOption_bannerIsNull_returnsEmptyText() {
+        final String option = builder.banner(null).getBannerOption();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getBannerOption_bannerIsEmpty_returnsEmptyText() {
+        final String option = builder.banner("").getBannerOption();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getBannerOption_bannerIsBlank_returnsEmptyText() {
+        final String option = builder.banner("  ").getBannerOption();
+        assertThat(option).isEmpty();
+    }
+
+    @Test
+    public void getBannerOption_bannerIsNotBlank_returnsOption() {
+        final String option = builder.banner("text").getBannerOption();
+        assertThat(option).isEqualTo("--banner=text");
+    }
+
+    @Test
     public void build_defaultValues_returnsDefaultOptions() {
         final Collection<String> options = builder.build();
         assertThat(options).isEmpty();
@@ -446,6 +470,7 @@ public final class NativeLessOptionsBuilderTest {
         verify(builder).getStrictUnitsOption();
         verify(builder).getEncodingOption();
         verify(builder).getFileSystemsOption();
+        verify(builder).getBannerOption();
         verify(builder).getInputFileOption();
         verify(builder).getOutputFileOption();
         verifyNoMoreInteractions(builder);

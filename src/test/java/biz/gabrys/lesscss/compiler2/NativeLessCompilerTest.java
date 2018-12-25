@@ -30,7 +30,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: block;\n}");
     }
 
@@ -43,7 +42,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic{display:block}");
     }
 
@@ -56,7 +54,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: block;\n}\n.style {\n  width: 100px;\n}");
     }
 
@@ -69,7 +66,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic{display:block}.style{width:100px}");
     }
 
@@ -82,7 +78,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".reference {\n  width: 100px;\n}");
     }
 
@@ -95,7 +90,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".reference{width:100px}");
     }
 
@@ -107,7 +101,6 @@ public final class NativeLessCompilerTest {
 
         String code = compiler.execute(options);
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic{display:block}");
 
         source = new File(NativeLessCompilerTest.class.getResource("/unit/less/style.less").getPath()).getAbsolutePath();
@@ -115,7 +108,6 @@ public final class NativeLessCompilerTest {
 
         code = compiler.execute(options);
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic{display:block}.style{width:100px}");
     }
 
@@ -183,7 +175,6 @@ public final class NativeLessCompilerTest {
 
         final String code = compiler.execute(options);
 
-        // trim removes empty lines at the end
         assertThat(code).isNotEmpty();
         final String base64 = "data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABoAAAAaCAYAAACpSkzOAAAAAXNSR0IArs4c6QAAAARnQU1BAACxjwv8YQUAAAAJcEhZcwAADsMAAA7DAcdvqGQAAAAwSURBVEhL7c0hAQAACMRAgiDp34wM0GHi1cTpq+25BCPMCDPCjDAjzAgzwoywUDT373m8fKeCA80AAAAASUVORK5CYII=";
         assertThat(code.trim()).isEqualTo(String.format(".style {\n  background: url(\"%s\");\n}", base64));
@@ -198,7 +189,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).startsWith("div {\n  width: 1px;\n}\n/*# sourceMappingURL=data:application/json;base64,");
     }
 
@@ -211,7 +201,6 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: block;\n}");
     }
 
@@ -225,7 +214,31 @@ public final class NativeLessCompilerTest {
         final String code = compiler.execute(options);
 
         assertThat(code).isNotEmpty();
-        // trim removes empty lines at the end
         assertThat(code.trim()).isEqualTo(".basic {\n  display: inline;\n}");
+    }
+
+    @Test
+    public void execute_useBanner_success() {
+        final File source = new File(NativeLessCompilerTest.class.getResource("/unit/less/style.less").getPath());
+        final Collection<String> options = builder.banner("/** --compress */").inputFile(source.getAbsolutePath()).build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        final String code = compiler.execute(options);
+
+        assertThat(code).isNotEmpty();
+        assertThat(code.trim()).isEqualTo("/** --compress */\n.basic {\n  display: block;\n}\n.style {\n  width: 100px;\n}");
+    }
+
+    @Test
+    public void execute_useUnsupportedEncoding_throwsException() {
+        final Collection<String> options = builder.encoding("- invalid -").inputFile("unimportant.less").build();
+        final NativeLessCompiler compiler = new NativeLessCompiler();
+
+        try {
+            compiler.execute(options);
+            fail("Compiler should throw exception");
+        } catch (final ConfigurationException e) {
+            assertThat(e.getMessage()).isEqualTo("Encoding \"- invalid -\" is unsupported");
+        }
     }
 }
