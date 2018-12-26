@@ -1,5 +1,9 @@
 # LessCSS Compiler Changelog
 
+## 2.0.1
+
+[See documentation](http://lesscss-compiler.projects.gabrys.biz/2.0.1/)
+
 ## 2.0.0
 Features:
 * Set compatibility with Java 8+

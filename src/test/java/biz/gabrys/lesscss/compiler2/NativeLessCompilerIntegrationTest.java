@@ -40,7 +40,7 @@ public final class NativeLessCompilerIntegrationTest {
 
     @Test
     public void execute_fileFromNetwork_success() {
-        final String source = "https://raw.githubusercontent.com/gabrysbiz/lesscss-compiler/develop/src/test/resources/integration/less/style.less";
+        final String source = "https://raw.githubusercontent.com/gabrysbiz/lesscss-compiler/master/src/test/resources/integration/less/style.less";
         final List<FileSystemOption> fileSystems = new FileSystemOptionsBuilder().appendStandard().build();
         final Collection<String> options = new NativeLessOptionsBuilder().encoding("UTF-8").relativeUrls(true).fileSystems(fileSystems)
                 .inputFile(source).build();

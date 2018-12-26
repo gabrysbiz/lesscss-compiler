@@ -17,7 +17,7 @@ public final class HttpFileSystemIntegrationTest {
     private static final String HTTPS = "https";
     private static final String HTTP = "http";
 
-    private static final String HOST = "://raw.githubusercontent.com/gabrysbiz/lesscss-compiler/develop/";
+    private static final String HOST = "://raw.githubusercontent.com/gabrysbiz/lesscss-compiler/master/";
     private static final String MISSING_FILE = HOST + "non-existent-file.gabrys";
     private static final String EXISTING_FILE = HOST + "README.md";
     private static final String EXISTING_FILE_STARTS_WITH = "# About";

@@ -7,6 +7,8 @@
     </properties>
 
     <body>
+        <section id="release-2.0.1" name="Release 2.0.1">
+        </section>
         <section id="release-2.0.0" name="Release 2.0.0">
             <p>Features:</p>
             <ul>
@@ -16,6 +18,7 @@
                 <li>Added support for Source Maps</li>
                 <li>Added support for custom encodings</li>
             </ul>
+            <p><a href="http://lesscss-compiler.projects.gabrys.biz/2.0.0/">See documentation</a></p>
         </section>
         <section id="release-1.2.2" name="Release 1.2.2">
             <p>Bugs:</p>
