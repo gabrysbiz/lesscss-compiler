@@ -3,7 +3,7 @@
     <head>
         <meta charset="UTF-8" />
         <title>LessCSS Compiler</title>
-        <meta name="description" content="A Java library which compiles Less source files to the CSS code." />
+        <meta name="description" content="Java library which compiles Less source files to the CSS code." />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
         <link rel="stylesheet" type="text/css" href="stylesheets/normalize.css" media="screen" />
         <link rel="stylesheet" type="text/css" href="https://fonts.googleapis.com/css?family=Open+Sans:400,700" />
@@ -15,7 +15,7 @@
             <h1 class="project-name">LessCSS Compiler</h1>
             <h2 class="project-tagline">A Java library which compiles Less source files to the CSS code</h2>
             <a href="https://github.com/gabrysbiz/lesscss-compiler" class="btn">View on GitHub</a>
-            <a href="1.2.2/" class="btn">Release 1.2.2 docs</a>
+            <a href="2.0.0/" class="btn">Release 2.0.0 docs</a>
             <a href="LATEST/" class="btn" rel="nofollow">LATEST (version under development) docs</a>
         </section>
         <section class="main-content">
@@ -48,10 +48,26 @@
                 <a href="https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino">Rhino</a> engine.
             </p>
             <p>
-                Restrictions:
+                It supports sources located at:
             </p>
             <ul>
-                <li>cannot fetch sources from Internet, e.g. <code>&commat;import (less) &quot;http://example.org/style.less&quot;</code></li>
+                <li>local drives</li>
+                <li>
+                    protocols:
+                    <ul>
+                        <li><a href="https://www.w3.org/Protocols/">HTTP</a> and HTTPS</li>
+                        <li>
+                            <a href="https://www.w3.org/Protocols/rfc959/">FTP</a> (requires
+                            <a href="https://commons.apache.org/proper/commons-net/">Apache Commons Net</a> library in the class
+                            path)
+                        </li>
+                        <li>class path (prefix <code>classpath://</code>)</li>
+                    </ul>
+                </li>
+                <li>
+                    custom - defined by programmers
+                    (see <a href="2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html">FileSystem</a>)
+                </li>
             </ul>
             <h1>
                 <a id="requirements" class="anchor" href="#requirements" aria-hidden="true">
@@ -63,8 +79,8 @@
                 The compiler to run requires:
             </p>
             <ul>
-                <li>Java 5.0 or higher</li>
-                <li>Third-Party Dependencies (<a href="1.2.2/dependencies.html">see list</a>)</li>
+                <li>Java 8 or higher</li>
+                <li>Third-Party Dependencies (<a href="2.0.0/dependencies.html">see list</a>)</li>
             </ul>
             <h1>
                 <a id="concept" class="anchor" href="#concept" aria-hidden="true">
@@ -73,10 +89,73 @@
                 Concept
             </h1>
             <p>
-                The idea for the <code>LessCompilerImpl</code> class was based on the
-                <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a> library by
-                <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
+                The library contains two compilers:
             </p>
+            <ul>
+                <li>
+                    <a href="2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/NativeLessCompiler.html">NativeLessCompiler</a>
+                    is a compiler with a shell-type API
+                </li>
+                <li>
+                    <a href="2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html">LessCompiler</a>
+                    is a facade for the <code>NativeLessCompiler</code> with a developer-friendly API
+                </li>
+            </ul>
+            <p>
+                The idea for the <code>NativeLessCompiler</code> class was based on the
+                <a href="https://github.com/marceloverdijk/lesscss-java">lesscss-java</a>
+                library by <a href="https://github.com/marceloverdijk">Marcel Overdijk</a>.
+            </p>
+            <h1>
+                <a id="usage" class="anchor" href="#usage" aria-hidden="true">
+                    <span aria-hidden="true" class="octicon octicon-link"></span>
+                </a>
+                Usage
+            </h1>
+            <p>
+                The <code>LessCompiler</code> contains 32 methods. Below is an example of how to use some of them:
+            </p>
+            <pre>String cssCode = null;
+LessOptions options = null;
+
+// create compiler
+LessCompiler compiler = new LessCompiler();
+
+// compile source code
+cssCode = compiler.compileCode(".basic { display: block; }");
+
+// compile source code with custom options
+options = new LessOptionsBuilder().ieCompatibilityOff().build();
+cssCode = compiler.compileCode(".basic { display: block; }", options);
+
+// compile source file specified by path
+cssCode = compiler.compile("http://www.example.org/style.less");
+
+// compile source file
+cssCode = compiler.compile(new File("source.less"));
+
+// compile source file specified by path and save CSS code in an output file
+compiler.compile("http://www.example.org/style.less", new File("output.css"));
+
+// compile source file and save CSS code in an output file
+compiler.compile(new File("source.less"), new File("output.css"));
+
+// compile source file and compress CSS code
+cssCode = compiler.compileAndCompress(new File("source.less"));
+
+// compile source file specified by path and compress CSS code using custom encoding
+cssCode = compiler.compileAndCompress("http://www.example.org/style.less", Charset.forName("UTF-8"));
+
+// compile source code and generate inline source map
+cssCode = compiler.compileCodeWithInlineSourceMap(".basic { display: block; }", new LessOptions());
+
+// compile source file and generate source map (save it in output.map file)
+options = new LessOptionsBuilder().sourceMapBasePath("basePath").build();
+compiler.compileWithSourceMap(new File("source.less"), new File("output.css"),
+                              new File("output.map"), options);
+
+// compile source file specified by path and generate source map (save it in output.css.map file)
+compiler.compileWithSourceMap("http://www.example.org/style.less", new File("output.css"), options);</pre>
             <h1>
                 <a id="license" class="anchor" href="#license" aria-hidden="true">
                     <span aria-hidden="true" class="octicon octicon-link"></span>
@@ -135,32 +214,13 @@ SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.</pre>
    &lt;dependencies&gt;
       &lt;dependency&gt;
          &lt;groupId&gt;biz.gabrys.lesscss&lt;/groupId&gt;
-         &lt;artifactId&gt;compiler&lt;/artifactId&gt;
-         &lt;version&gt;1.2.2&lt;/version&gt;
+         &lt;artifactId&gt;lesscss-compiler2&lt;/artifactId&gt;
+         &lt;version&gt;2.0.0&lt;/version&gt;
       &lt;/dependency&gt;
       ...
    &lt;dependencies&gt;
    ...
 &lt;/project&gt;</pre>
-            <h1>
-                <a id="usage" class="anchor" href="#usage" aria-hidden="true">
-                    <span aria-hidden="true" class="octicon octicon-link"></span>
-                </a>
-                Usage
-            </h1>
-            <p>
-                How to compile a source file:
-            </p>
-            <pre>// create compiler & source file
-LessCompiler compiler = new LessCompilerImpl();
-File source = new File("/less/file.less");
-
-// compile file with default options
-String cssCode = compiler.compile(source); 
-
-// set custom option: minify CSS code
-CompilerOptions options = new CompilerOptionsBuilder().setMinified(true).create();
-String cssMinifiedCode = compiler.compile(source, options);</pre>
             <h1>
                 <a id="versions" class="anchor" href="#versions" aria-hidden="true">
                     <span aria-hidden="true" class="octicon octicon-link"></span>
@@ -172,6 +232,7 @@ String cssMinifiedCode = compiler.compile(source, options);</pre>
             </p>
             <p>
                 List of all available releases:
+                <a href="2.0.0/">2.0.0</a>,
                 <a href="1.2.2/">1.2.2</a>,
                 <a href="1.2.1/">1.2.1</a>,
                 <a href="1.2/">1.2</a>,
@@ -186,6 +247,19 @@ String cssMinifiedCode = compiler.compile(source, options);</pre>
                     </tr>
                 </thead>
                 <tbody>
+                    <tr>
+                        <td id="release-2.0.0">2.0.0<br />(<a href="2.0.0/">docs</a>)</td>
+                        <td>
+                            <p>Features:</p>
+                            <ul>
+                                <li>Set compatibility with Java 8+</li>
+                                <li>Added support for <code>HTTP</code>, <code>HTTPS</code>, <code>FTP</code> and <code>classpath</code> protocols</li>
+                                <li>Added support for custom protocols (file systems)</li>
+                                <li>Added support for Source Maps</li>
+                                <li>Added support for custom encodings</li>
+                            </ul>
+                        </td>
+                    </tr>
                     <tr>
                         <td id="release-1.2.2">1.2.2<br />(<a href="1.2.2/">docs</a>)</td>
                         <td>
