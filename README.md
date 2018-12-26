@@ -1,6 +1,6 @@
 # About
 [![License BSD 3-Clause](https://img.shields.io/badge/license-BSD%203--Clause-blue.svg)](http://lesscss-compiler.projects.gabrys.biz/license.txt)
-[![Build Status](https://travis-ci.org/gabrysbiz/lesscss-compiler.svg?branch=feature%2F2.0)](https://travis-ci.org/gabrysbiz/lesscss-compiler)
+[![Build Status](https://travis-ci.org/gabrysbiz/lesscss-compiler.svg?branch=master)](https://travis-ci.org/gabrysbiz/lesscss-compiler)
 
 The LessCSS Compiler is a Java library which compiles [Less](http://lesscss.org/) source files to [CSS](http://www.w3.org/Style/CSS/) code.
 
