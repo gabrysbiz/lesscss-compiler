@@ -20,21 +20,21 @@ It supports sources located at:
   * [HTTP](https://www.w3.org/Protocols/) and HTTPS
   * [FTP](https://www.w3.org/Protocols/rfc959/) (requires [Apache Commons Net](https://commons.apache.org/proper/commons-net/) library in the class path)
   * class path (prefix `classpath://`)
-* custom - defined by programmers (see [FileSystem](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html))
+* custom - defined by programmers (see [FileSystem](http://lesscss-compiler.projects.gabrys.biz/2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/filesystem/FileSystem.html))
 
 # Requirements
 The compiler to run requires:
 * Java 8 or higher
-* Third-Party Dependencies ([see list](http://lesscss-compiler.projects.gabrys.biz/LATEST/dependencies.html))
+* Third-Party Dependencies ([see list](http://lesscss-compiler.projects.gabrys.biz/2.0.0/dependencies.html))
 
 # Download
-You can download the library from [this page](http://lesscss-compiler.projects.gabrys.biz/LATEST/download.html)
-or using various [dependency management tools](http://lesscss-compiler.projects.gabrys.biz/LATEST/dependency-info.html).
+You can download the library from [this page](http://lesscss-compiler.projects.gabrys.biz/2.0.0/download.html)
+or using various [dependency management tools](http://lesscss-compiler.projects.gabrys.biz/2.0.0/dependency-info.html).
 
 # Concept
 The library contains two compilers:
-* [NativeLessCompiler](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/NativeLessCompiler.html) is a compiler with a shell-type API
-* [LessCompiler](http://lesscss-compiler.projects.gabrys.biz/LATEST/apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html) is a facade for the `NativeLessCompiler` with a developer-friendly API
+* [NativeLessCompiler](http://lesscss-compiler.projects.gabrys.biz/2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/NativeLessCompiler.html) is a compiler with a shell-type API
+* [LessCompiler](http://lesscss-compiler.projects.gabrys.biz/2.0.0/apidocs/index.html?biz/gabrys/lesscss/compiler2/LessCompiler.html) is a facade for the `NativeLessCompiler` with a developer-friendly API
 
 The idea for the `NativeLessCompiler` class was based on the [lesscss-java](https://github.com/marceloverdijk/lesscss-java)
 library by [Marcel Overdijk](https://github.com/marceloverdijk).
