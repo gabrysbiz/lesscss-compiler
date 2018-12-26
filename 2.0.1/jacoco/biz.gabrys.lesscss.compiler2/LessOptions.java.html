@@ -1,0 +1,940 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LessOptions.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">LessOptions.java</span></div><h1>LessOptions.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+import java.util.Objects;
+
+import biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem;
+
+/**
+ * &lt;p&gt;
+ * Represents &lt;a href=&quot;http://lesscss.org/usage/index.html#less-options&quot;&gt;Less compiler options&lt;/a&gt; responsible for
+ * controlling the {@link LessCompiler} compilation process.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Base options:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #isCompress() compress} - whether a CSS code should be compressed (default: {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #isIeCompatibility() IE compatibility} - whether a CSS code should be compatible with Internet Explorer
+ * browser (default: {@code true})&lt;/li&gt;
+ * &lt;li&gt;{@link #getIncludePaths() included paths} - available include paths (default: {@code []})&lt;/li&gt;
+ * &lt;li&gt;{@link #isJavaScript() JavaScript} - whether a compiler should allow usage of JavaScript language (default:
+ * {@code true})&lt;/li&gt;
+ * &lt;li&gt;{@link #getLineNumbers() line numbers} - whether a compiler should generate inline source-mapping (default:
+ * {@link LineNumbersValue#OFF})&lt;/li&gt;
+ * &lt;li&gt;{@link #isRelativeUrls() relative URLs} - whether a compiler should rewrite relative URLs (default:
+ * {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #getRootPath() root path} - a path which will be added to every generated import and URL in CSS code
+ * (default: {@code null})&lt;/li&gt;
+ * &lt;li&gt;{@link #isSilent() silent} - whether a compiler shouldn't log compilation warnings (default: {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #isStrictImports() strict imports} - whether a compiler should disallow an @import operation inside of
+ * either @media blocks or other selector blocks (default: {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #isStrictMath() strict math} - whether a compiler should try and process all maths in Less code (default:
+ * {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #isStrictUnits() strict units} - whether a compiler should guess units in Less code when it does maths
+ * (default: {@code false})&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Source Map options:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #getSourceMapBasePath() base path} - a path that will be removed from each of the Less file paths inside
+ * the Source Map and also from the path to the map file specified in your output CSS (default: {@code null})&lt;/li&gt;
+ * &lt;li&gt;{@link #isSourceMapLessInline() Less inline} - whether a compiler should include all of the Less files in to the
+ * Source Map (default: {@code false})&lt;/li&gt;
+ * &lt;li&gt;{@link #getSourceMapRootPath() root path} - a path that will be prepended to each of the Less file paths inside
+ * the Source Map and also to the path to the map file specified in your output CSS (default: {@code null})&lt;/li&gt;
+ * &lt;li&gt;{@link #getSourceMapUrl() URL} - a path which will overwrite the URL in the CSS that points at the Source Map
+ * file (default: {@code null})&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Additional options:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #getBanner() banner} - a banner which will be inserted to a source file before the compilation&lt;/li&gt;
+ * &lt;li&gt;{@link #getGlobalVariables() globalVariables} - variables that can be referenced by the files&lt;/li&gt;
+ * &lt;li&gt;{@link #getModifyVariables() modifyVariables} - variables that can overwrite variables defined in the files&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * Non-standard options:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;{@link #getEncoding() encoding} - an encoding used to read source files and save generated code (default:
+ * {@code null} - means platform default encoding)&lt;/li&gt;
+ * &lt;li&gt;{@link #getFileSystems() file systems} - a list with file systems (default:
+ * &lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}&quot;]&lt;/code&gt;)&lt;/li&gt;
+ * &lt;/ul&gt;
+ * @since 2.0.0
+ * @see LessOptionsBuilder
+ * @see FileSystemOptionsBuilder
+ * @see LessVariableOptionsBuilder
+ */
+public class LessOptions {
+
+    /**
+     * Stores a default value of the file systems option
+     * (&lt;code&gt;[&quot;biz.gabrys.lesscss.compiler2.filesystem.{@link LocalFileSystem}&quot;]&lt;/code&gt;).
+     * @since 2.0.0
+     */
+<span class="fc" id="L94">    public static final List&lt;FileSystemOption&gt; DEFAULT_FILE_SYSTEMS = Collections</span>
+<span class="fc" id="L95">            .unmodifiableList(Arrays.asList(new FileSystemOption(LocalFileSystem.class)));</span>
+
+    private boolean silent;
+    private boolean strictImports;
+    private boolean compress;
+    private boolean ieCompatibility;
+    private boolean javaScript;
+    private List&lt;String&gt; includePaths;
+    private LineNumbersValue lineNumbers;
+    private String rootPath;
+    private boolean relativeUrls;
+    private boolean strictMath;
+    private boolean strictUnits;
+
+    private String sourceMapRootPath;
+    private String sourceMapBasePath;
+    private boolean sourceMapLessInline;
+    private String sourceMapUrl;
+
+    private String banner;
+    private List&lt;LessVariableOption&gt; globalVariables;
+    private List&lt;LessVariableOption&gt; modifyVariables;
+
+    private String encoding;
+    private List&lt;FileSystemOption&gt; fileSystems;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L125">    public LessOptions() {</span>
+<span class="fc" id="L126">        ieCompatibility = true;</span>
+<span class="fc" id="L127">        javaScript = true;</span>
+<span class="fc" id="L128">        includePaths = Collections.emptyList();</span>
+<span class="fc" id="L129">        lineNumbers = LineNumbersValue.OFF;</span>
+
+<span class="fc" id="L131">        globalVariables = Collections.emptyList();</span>
+<span class="fc" id="L132">        modifyVariables = Collections.emptyList();</span>
+
+<span class="fc" id="L134">        fileSystems = DEFAULT_FILE_SYSTEMS;</span>
+<span class="fc" id="L135">    }</span>
+
+    /**
+     * Constructs a new instance as a copy of the another options object.
+     * @param options the another options object (cannot be {@code null}).
+     * @throws IllegalArgumentException if options is {@code null}.
+     * @since 2.0.0
+     */
+<span class="fc" id="L143">    public LessOptions(final LessOptions options) {</span>
+<span class="pc bpc" id="L144" title="1 of 2 branches missed.">        if (options == null) {</span>
+<span class="nc" id="L145">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+        }
+<span class="fc" id="L147">        silent = options.silent;</span>
+<span class="fc" id="L148">        strictImports = options.strictImports;</span>
+<span class="fc" id="L149">        compress = options.compress;</span>
+<span class="fc" id="L150">        ieCompatibility = options.ieCompatibility;</span>
+<span class="fc" id="L151">        javaScript = options.javaScript;</span>
+<span class="fc" id="L152">        includePaths = new ArrayList&lt;&gt;(options.includePaths);</span>
+<span class="fc" id="L153">        lineNumbers = options.lineNumbers;</span>
+<span class="fc" id="L154">        rootPath = options.rootPath;</span>
+<span class="fc" id="L155">        relativeUrls = options.relativeUrls;</span>
+<span class="fc" id="L156">        strictMath = options.strictMath;</span>
+<span class="fc" id="L157">        strictUnits = options.strictUnits;</span>
+
+<span class="fc" id="L159">        sourceMapRootPath = options.sourceMapRootPath;</span>
+<span class="fc" id="L160">        sourceMapBasePath = options.sourceMapBasePath;</span>
+<span class="fc" id="L161">        sourceMapLessInline = options.sourceMapLessInline;</span>
+<span class="fc" id="L162">        sourceMapUrl = options.sourceMapUrl;</span>
+
+<span class="fc" id="L164">        banner = options.banner;</span>
+<span class="fc" id="L165">        globalVariables = new ArrayList&lt;&gt;(options.globalVariables);</span>
+<span class="fc" id="L166">        modifyVariables = new ArrayList&lt;&gt;(options.modifyVariables);</span>
+
+<span class="fc" id="L168">        encoding = options.encoding;</span>
+<span class="fc" id="L169">        fileSystems = new ArrayList&lt;&gt;(options.fileSystems);</span>
+<span class="fc" id="L170">    }</span>
+
+    /**
+     * Checks whether a compiler shouldn't log compilation warnings (default: {@code false}).
+     * @return {@code true} whether the compiler shouldn't log compilation warnings, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isSilent() {
+<span class="fc" id="L178">        return silent;</span>
+    }
+
+    /**
+     * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
+     * @param silent {@code true} whether the compiler shouldn't log compilation warnings, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setSilent(final boolean silent) {
+<span class="fc" id="L187">        this.silent = silent;</span>
+<span class="fc" id="L188">    }</span>
+
+    /**
+     * Checks whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
+     * selector blocks (default: {@code false}).
+     * @return {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either &amp;#64;media
+     *         blocks or other selector blocks, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isStrictImports() {
+<span class="fc" id="L198">        return strictImports;</span>
+    }
+
+    /**
+     * Sets whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
+     * selector blocks (default: {@code false}).
+     * @param strictImports {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either
+     *            &amp;#64;media blocks or other selector blocks, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setStrictImports(final boolean strictImports) {
+<span class="fc" id="L209">        this.strictImports = strictImports;</span>
+<span class="fc" id="L210">    }</span>
+
+    /**
+     * Checks whether a CSS code should be compressed (default: {@code false}).
+     * @return {@code true} whether the CSS code should be compressed, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isCompress() {
+<span class="fc" id="L218">        return compress;</span>
+    }
+
+    /**
+     * Sets whether a CSS code should be compressed (default: {@code false}).
+     * @param compress {@code true} whether the CSS code should be compressed, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setCompress(final boolean compress) {
+<span class="fc" id="L227">        this.compress = compress;</span>
+<span class="fc" id="L228">    }</span>
+
+    /**
+     * Sets whether a CSS code should be compatible with Internet Explorer browser (default: {@code true}). Used for the
+     * {@code data-uri} function to ensure that images aren't created that are too large for the browser to handle.
+     * @return {@code true} whether the CSS code should be compatible with Internet Explorer browser, otherwise
+     *         {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isIeCompatibility() {
+<span class="fc" id="L238">        return ieCompatibility;</span>
+    }
+
+    /**
+     * Sets whether a CSS code should be compatible with Internet Explorer browser (default: {@code true}). Used for the
+     * {@code data-uri} function to ensure that images aren't created that are too large for the browser to handle.
+     * @param ieCompatibility {@code true} whether the CSS code should be compatible with Internet Explorer browser,
+     *            otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setIeCompatibility(final boolean ieCompatibility) {
+<span class="fc" id="L249">        this.ieCompatibility = ieCompatibility;</span>
+<span class="fc" id="L250">    }</span>
+
+    /**
+     * Checks whether a compiler should allow usage of JavaScript language (default: {@code true}).
+     * @return {@code true} whether the compiler should allow usage of JavaScript language, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isJavaScript() {
+<span class="fc" id="L258">        return javaScript;</span>
+    }
+
+    /**
+     * Sets whether a compiler should allow usage of JavaScript language (default: {@code true}).
+     * @param javaScript {@code true} whether the compiler should allow usage of JavaScript language, otherwise
+     *            {@code false}.
+     * @since 2.0.0
+     */
+    public void setJavaScript(final boolean javaScript) {
+<span class="fc" id="L268">        this.javaScript = javaScript;</span>
+<span class="fc" id="L269">    }</span>
+
+    /**
+     * Returns available include paths (default: {@code []}). If the file in an &amp;#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
+     * @return the available include paths (never {@code null}).
+     * @since 2.0.0
+     */
+    public List&lt;String&gt; getIncludePaths() {
+<span class="fc" id="L279">        return new ArrayList&lt;&gt;(includePaths);</span>
+    }
+
+    /**
+     * Sets available include paths (default: {@code []}). If the file in an &amp;#64;import rule does not exist at that
+     * exact location, a compiler will look for it at the location(s) passed to this option. You might use this for
+     * instance to specify a path to a library which you want to be referenced simply and relatively in the less files.
+     * @param includePaths the available include paths ({@code null} is treated as an empty collection).
+     * @since 2.0.0
+     */
+    public void setIncludePaths(final List&lt;String&gt; includePaths) {
+<span class="fc bfc" id="L290" title="All 2 branches covered.">        if (includePaths == null) {</span>
+<span class="fc" id="L291">            this.includePaths = Collections.emptyList();</span>
+        } else {
+<span class="fc" id="L293">            this.includePaths = new ArrayList&lt;&gt;(includePaths);</span>
+        }
+<span class="fc" id="L295">    }</span>
+
+    /**
+     * Returns whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This
+     * was the only option before browsers started supporting Source Maps.
+     * @return the line numbers value (never {@code null}).
+     * @since 2.0.0
+     */
+    public LineNumbersValue getLineNumbers() {
+<span class="fc" id="L304">        return lineNumbers;</span>
+    }
+
+    /**
+     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}). This was
+     * the only option before browsers started supporting Source Maps.
+     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#OFF}).
+     * @since 2.0.0
+     */
+    public void setLineNumbers(final LineNumbersValue lineNumbers) {
+<span class="fc bfc" id="L314" title="All 2 branches covered.">        if (lineNumbers == null) {</span>
+<span class="fc" id="L315">            this.lineNumbers = LineNumbersValue.OFF;</span>
+        } else {
+<span class="fc" id="L317">            this.lineNumbers = lineNumbers;</span>
+        }
+<span class="fc" id="L319">    }</span>
+
+    /**
+     * Returns a path which will be added to every generated import and URL in CSS code (default: {@code null}). This
+     * does not affect less import statements that are processed, just ones that are left in the output CSS.
+     * &lt;p&gt;
+     * For instance, if all the images the CSS use are in a folder called resources, you can use this option to add this
+     * on to the URL's and then have the name of that folder configurable.
+     * &lt;/p&gt;
+     * @return the path which will be added.
+     * @since 2.0.0
+     */
+    public String getRootPath() {
+<span class="fc" id="L332">        return rootPath;</span>
+    }
+
+    /**
+     * Sets a path which will be added to every generated import and URL in CSS code (default: {@code null}). This does
+     * not affect less import statements that are processed, just ones that are left in the output CSS.
+     * &lt;p&gt;
+     * For instance, if all the images the CSS use are in a folder called resources, you can use this option to add this
+     * on to the URL's and then have the name of that folder configurable.
+     * &lt;/p&gt;
+     * @param rootPath the path which will be added.
+     * @since 2.0.0
+     */
+    public void setRootPath(final String rootPath) {
+<span class="fc" id="L346">        this.rootPath = rootPath;</span>
+<span class="fc" id="L347">    }</span>
+
+    /**
+     * Checks whether a compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is,
+     * so if you import a file in a sub-directory that references an image, exactly the same URL will be output in the
+     * CSS code. This option allows you to re-write URLs in imported files so that the URL is always relative to the
+     * base imported file. Example:
+     * 
+     * &lt;pre&gt;
+     * # main.less
+     * &amp;#64;import &quot;files/backgrounds.less&quot;;
+     * 
+     * # files/backgrounds.less
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * this will output the following normally
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * but with this option on it will instead output
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('files/images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images
+     * into the CSS.
+     * &lt;/p&gt;
+     * @return {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isRelativeUrls() {
+<span class="fc" id="L390">        return relativeUrls;</span>
+    }
+
+    /**
+     * Sets whether a compiler should rewrite relative URLs (default: {@code false}). By default URLs are kept as-is, so
+     * if you import a file in a sub-directory that references an image, exactly the same URL will be output in the CSS
+     * code. This option allows you to re-write URLs in imported files so that the URL is always relative to the base
+     * imported file. Example:
+     * 
+     * &lt;pre&gt;
+     * # main.less
+     * &amp;#64;import &quot;files/backgrounds.less&quot;;
+     * 
+     * # files/backgrounds.less
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * this will output the following normally
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * but with this option on it will instead output
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .icon-1 {
+     *     background-image: url('files/images/lamp-post.png');
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * You may also want to consider using the {@code data-uri} function instead of this option, which will embed images
+     * into the CSS.
+     * &lt;/p&gt;
+     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setRelativeUrls(final boolean relativeUrls) {
+<span class="fc" id="L434">        this.relativeUrls = relativeUrls;</span>
+<span class="fc" id="L435">    }</span>
+
+    /**
+     * Checks whether a compiler should try and process all maths in Less code (default: {@code false}). By default the
+     * compiler will try and process all maths in your Less e.g.:
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     height: calc(100% - 10px);
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * will be processed currently.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * With this option enabled, only maths that is inside unnecessary parenthesis will be processed. Example:
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - ((10px  - 5px)));
+     *     height: (100px / 4px);
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * will be compiled to
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - 5px);
+     *     height: 25px;
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * @return {@code true} whether the compiler should try and process all maths in the Less code, otherwise
+     *         {@code false}.
+     * @since 2.0.0
+     * @see #isStrictUnits()
+     */
+    public boolean isStrictMath() {
+<span class="fc" id="L478">        return strictMath;</span>
+    }
+
+    /**
+     * Sets whether a compiler should try and process all maths in Less code (default: {@code false}). By default the
+     * compiler will try and process all maths in your Less e.g.:
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     height: calc(100% - 10px);
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * will be processed currently.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * With this option enabled, only maths that is inside unnecessary parenthesis will be processed. Example:
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - ((10px  - 5px)));
+     *     height: (100px / 4px);
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * will be compiled to
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     width: calc(100% - 5px);
+     *     height: 25px;
+     *     font-size: 1 / 4;
+     * }
+     * &lt;/pre&gt;
+     * 
+     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise
+     *            {@code false}.
+     * @since 2.0.0
+     * @see #setStrictUnits(boolean)
+     */
+    public void setStrictMath(final boolean strictMath) {
+<span class="fc" id="L522">        this.strictMath = strictMath;</span>
+<span class="fc" id="L523">    }</span>
+
+    /**
+     * Checks whether a compiler should guess units in Less code when it does maths (default: {@code false}). By default
+     * the compiler attempts to guess at the output unit when it does maths. For instance:
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     property: 1px * 2px;
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * In this case, things are clearly not right - a length multiplied by a length gives an area, but CSS does not
+     * support specifying areas. So we assume that the user meant for one of the values to be a value, not a unit of
+     * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an
+     * error.
+     * &lt;/p&gt;
+     * @return {@code true} whether the compiler should guess units in the Less code when it does maths, otherwise
+     *         {@code false}.
+     * @since 2.0.0
+     * @see #isStrictMath()
+     */
+    public boolean isStrictUnits() {
+<span class="fc" id="L546">        return strictUnits;</span>
+    }
+
+    /**
+     * Sets whether a compiler should guess units in Less code when it does maths (default: {@code false}). By default
+     * the compiler attempts to guess at the output unit when it does maths. For instance:
+     * 
+     * &lt;pre&gt;
+     * .class {
+     *     property: 1px * 2px;
+     * }
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * In this case, things are clearly not right - a length multiplied by a length gives an area, but CSS does not
+     * support specifying areas. So we assume that the user meant for one of the values to be a value, not a unit of
+     * length and Less outputs 2px. With strict units on, Less assumes this is a bug in the calculation and throw an
+     * error.
+     * &lt;/p&gt;
+     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,
+     *            otherwise {@code false}.
+     * @since 2.0.0
+     * @see #setStrictMath(boolean)
+     */
+    public void setStrictUnits(final boolean strictUnits) {
+<span class="fc" id="L570">        this.strictUnits = strictUnits;</span>
+<span class="fc" id="L571">    }</span>
+
+    /**
+     * Returns a path that will be prepended to each of the Less file paths inside the Source Map and also to the path
+     * to the map file specified in your output CSS (default: {@code null}).
+     * &lt;p&gt;
+     * Use it if for instance you have a CSS file generated in the root on your web server but have your source
+     * less/css/map files in a different folder.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * Example: if you have a follow file structure:
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * output.css
+     * dev-files/output.css.map
+     * dev-files/output.less
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * then you should set the Source Map root path to {@code dev-files/}.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * This option is the opposite of the {@link #getSourceMapBasePath() Source Map base path} option.
+     * &lt;/p&gt;
+     * @return the path which will be added.
+     * @since 2.0.0
+     * @see #getSourceMapBasePath()
+     * @see #getSourceMapUrl()
+     */
+    public String getSourceMapRootPath() {
+<span class="fc" id="L601">        return sourceMapRootPath;</span>
+    }
+
+    /**
+     * Sets a path that will be prepended to each of the Less file paths inside the Source Map and also to the path to
+     * the map file specified in your output CSS (default: {@code null}).
+     * &lt;p&gt;
+     * Use it if for instance you have a CSS file generated in the root on your web server but have your source
+     * less/css/map files in a different folder.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * Example: if you have a follow file structure:
+     * &lt;/p&gt;
+     * 
+     * &lt;pre&gt;
+     * output.css
+     * dev-files/output.css.map
+     * dev-files/output.less
+     * &lt;/pre&gt;
+     * &lt;p&gt;
+     * then you should set the Source Map root path to {@code dev-files/}.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * This option is the opposite of the {@link #setSourceMapBasePath(String) Source Map base path} option.
+     * &lt;/p&gt;
+     * @param sourceMapRootPath the path which will be added.
+     * @since 2.0.0
+     * @see #setSourceMapBasePath(String)
+     * @see #setSourceMapUrl(String)
+     */
+    public void setSourceMapRootPath(final String sourceMapRootPath) {
+<span class="fc" id="L632">        this.sourceMapRootPath = sourceMapRootPath;</span>
+<span class="fc" id="L633">    }</span>
+
+    /**
+     * Returns a path that will be removed from each of the Less file paths inside the Source Map and also from the path
+     * to the map file specified in your output CSS (default: {@code null}).
+     * &lt;p&gt;
+     * It specifies a path which should be removed from the output paths. For instance if you are compiling a file in
+     * the less-files directory but the source files will be available on your web server in the root or current
+     * directory, you can specify this to remove the additional less-files part of the path.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * This option is the opposite of the {@link #getSourceMapRootPath() Source Map root path} option.
+     * &lt;/p&gt;
+     * @return the path which will be removed.
+     * @since 2.0.0
+     * @see #getSourceMapRootPath()
+     * @see #getSourceMapUrl()
+     */
+    public String getSourceMapBasePath() {
+<span class="fc" id="L652">        return sourceMapBasePath;</span>
+    }
+
+    /**
+     * Sets a path that will be removed from each of the Less file paths inside the Source Map and also from the path to
+     * the map file specified in your output CSS (default: {@code null}).
+     * &lt;p&gt;
+     * It specifies a path which should be removed from the output paths. For instance if you are compiling a file in
+     * the less-files directory but the source files will be available on your web server in the root or current
+     * directory, you can specify this to remove the additional less-files part of the path.
+     * &lt;/p&gt;
+     * &lt;p&gt;
+     * This option is the opposite of the {@link #setSourceMapRootPath(String) Source Map root path} option.
+     * &lt;/p&gt;
+     * @param sourceMapBasePath the path which will be removed.
+     * @since 2.0.0
+     * @see #setSourceMapRootPath(String)
+     * @see #setSourceMapUrl(String)
+     */
+    public void setSourceMapBasePath(final String sourceMapBasePath) {
+<span class="fc" id="L672">        this.sourceMapBasePath = sourceMapBasePath;</span>
+<span class="fc" id="L673">    }</span>
+
+    /**
+     * Checks whether a compiler should include all of the Less files in to the Source Map (default: {@code false}).
+     * This means that you only need your map file to get to your original source.
+     * @return {@code true} whether the compiler should include all of the Less files in to the Source Map, otherwise
+     *         {@code false}.
+     * @since 2.0.0
+     */
+    public boolean isSourceMapLessInline() {
+<span class="fc" id="L683">        return sourceMapLessInline;</span>
+    }
+
+    /**
+     * Sets whether a compiler should include all of the Less files in to the Source Map (default: {@code false}). This
+     * means that you only need your map file to get to your original source.
+     * @param sourceMapLessInline {@code true} whether the compiler should include all of the Less files in to the
+     *            Source Map, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public void setSourceMapLessInline(final boolean sourceMapLessInline) {
+<span class="fc" id="L694">        this.sourceMapLessInline = sourceMapLessInline;</span>
+<span class="fc" id="L695">    }</span>
+
+    /**
+     * Returns a path which will overwrite the URL in the CSS that points at the Source Map file (default:
+     * {@code null}). This is for cases when the {@link #getSourceMapRootPath() root path} and the
+     * {@link #getSourceMapBasePath() base path} options are not producing exactly what you need.
+     * @return the Source Map URL.
+     * @since 2.0.0
+     * @see #getSourceMapBasePath()
+     * @see #getSourceMapRootPath()
+     */
+    public String getSourceMapUrl() {
+<span class="fc" id="L707">        return sourceMapUrl;</span>
+    }
+
+    /**
+     * Sets a path which will overwrite the URL in the CSS that points at the Source Map file (default: {@code null}).
+     * This is for cases when the {@link #setSourceMapRootPath(String) root path} and the
+     * {@link #setSourceMapBasePath(String) base path} options are not producing exactly what you need.
+     * @param sourceMapUrl the Source Map URL.
+     * @since 2.0.0
+     * @see #setSourceMapBasePath(String)
+     * @see #setSourceMapRootPath(String)
+     */
+    public void setSourceMapUrl(final String sourceMapUrl) {
+<span class="fc" id="L720">        this.sourceMapUrl = sourceMapUrl;</span>
+<span class="fc" id="L721">    }</span>
+
+    /**
+     * Returns an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @return the encoding.
+     * @since 2.0.0
+     */
+    public String getEncoding() {
+<span class="fc" id="L730">        return encoding;</span>
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @since 2.0.0
+     */
+    public void setEncoding(final String encoding) {
+<span class="fc" id="L740">        this.encoding = encoding;</span>
+<span class="fc" id="L741">    }</span>
+
+    /**
+     * Returns file systems used to fetch content of the source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @return the file systems (never {@code null}).
+     * @since 2.0.0
+     */
+    public List&lt;FileSystemOption&gt; getFileSystems() {
+<span class="fc" id="L749">        return new ArrayList&lt;&gt;(fileSystems);</span>
+    }
+
+    /**
+     * Sets file systems used to fetch content of the source files (default: {@link #DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the file systems ({@code null} and empty collections are treated as
+     *            {@link #DEFAULT_FILE_SYSTEMS}).
+     * @since 2.0.0
+     * @see FileSystemOptionsBuilder
+     */
+    public void setFileSystems(final List&lt;FileSystemOption&gt; fileSystems) {
+<span class="fc bfc" id="L760" title="All 4 branches covered.">        if (fileSystems == null || fileSystems.isEmpty()) {</span>
+<span class="fc" id="L761">            this.fileSystems = DEFAULT_FILE_SYSTEMS;</span>
+        } else {
+<span class="fc" id="L763">            this.fileSystems = new ArrayList&lt;&gt;(fileSystems);</span>
+        }
+<span class="fc" id="L765">    }</span>
+
+    /**
+     * Returns a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @return the banner.
+     * @since 2.0.0
+     */
+    public String getBanner() {
+<span class="fc" id="L773">        return banner;</span>
+    }
+
+    /**
+     * Sets a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @param banner the banner.
+     * @since 2.0.0
+     */
+    public void setBanner(final String banner) {
+<span class="fc" id="L782">        this.banner = banner;</span>
+<span class="fc" id="L783">    }</span>
+
+    /**
+     * Returns global variables that can be referenced by the files (default: {@code []}. Effectively the declarations
+     * are put at the top of your base Less file, meaning those variables can be used, but they also can be overridden
+     * if variables with the same names are defined in the file.
+     * @return the global variables (never {@code null}).
+     */
+    public List&lt;LessVariableOption&gt; getGlobalVariables() {
+<span class="fc" id="L792">        return new ArrayList&lt;&gt;(globalVariables);</span>
+    }
+
+    /**
+     * Sets global variables that can be referenced by the files (default: {@code []}. Effectively the declarations are
+     * put at the top of your base Less file, meaning those variables can be used, but they also can be overridden if
+     * variables with the same names are defined in the file.
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @since 2.0.0
+     * @see LessVariableOptionsBuilder
+     */
+    public void setGlobalVariables(final List&lt;LessVariableOption&gt; globalVariables) {
+<span class="fc bfc" id="L804" title="All 2 branches covered.">        if (globalVariables == null) {</span>
+<span class="fc" id="L805">            this.globalVariables = Collections.emptyList();</span>
+        } else {
+<span class="fc" id="L807">            this.globalVariables = new ArrayList&lt;&gt;(globalVariables);</span>
+        }
+<span class="fc" id="L809">    }</span>
+
+    /**
+     * Returns modify variables that can overwrite variables defined in the files (default: {@code []}. Effectively the
+     * declarations are put at the bottom of your base Less file, meaning they will override anything defined in your
+     * Less file.
+     * @return the modify variables (never {@code null}).
+     * @since 2.0.0
+     */
+    public List&lt;LessVariableOption&gt; getModifyVariables() {
+<span class="fc" id="L819">        return new ArrayList&lt;&gt;(modifyVariables);</span>
+    }
+
+    /**
+     * Sets modify variables that can overwrite variables defined in the files (default: {@code []}. Effectively the
+     * declarations are put at the bottom of your base Less file, meaning they will override anything defined in your
+     * Less file.
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @since 2.0.0
+     * @see LessVariableOptionsBuilder
+     */
+    public void setModifyVariables(final List&lt;LessVariableOption&gt; modifyVariables) {
+<span class="fc bfc" id="L831" title="All 2 branches covered.">        if (modifyVariables == null) {</span>
+<span class="fc" id="L832">            this.modifyVariables = Collections.emptyList();</span>
+        } else {
+<span class="fc" id="L834">            this.modifyVariables = new ArrayList&lt;&gt;(modifyVariables);</span>
+        }
+<span class="fc" id="L836">    }</span>
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public int hashCode() {
+<span class="fc" id="L844">        final int prime = 31;</span>
+<span class="fc bfc" id="L845" title="All 2 branches covered.">        int result = prime + (banner == null ? 0 : banner.hashCode());</span>
+<span class="fc bfc" id="L846" title="All 2 branches covered.">        result = prime * result + (compress ? 1231 : 1237);</span>
+<span class="fc bfc" id="L847" title="All 2 branches covered.">        result = prime * result + (encoding == null ? 0 : encoding.hashCode());</span>
+<span class="fc bfc" id="L848" title="All 2 branches covered.">        result = prime * result + (fileSystems == null ? 0 : fileSystems.hashCode());</span>
+<span class="fc bfc" id="L849" title="All 2 branches covered.">        result = prime * result + (globalVariables == null ? 0 : globalVariables.hashCode());</span>
+<span class="fc bfc" id="L850" title="All 2 branches covered.">        result = prime * result + (ieCompatibility ? 1231 : 1237);</span>
+<span class="fc bfc" id="L851" title="All 2 branches covered.">        result = prime * result + (includePaths == null ? 0 : includePaths.hashCode());</span>
+<span class="fc bfc" id="L852" title="All 2 branches covered.">        result = prime * result + (javaScript ? 1231 : 1237);</span>
+<span class="fc bfc" id="L853" title="All 2 branches covered.">        result = prime * result + (lineNumbers == null ? 0 : lineNumbers.hashCode());</span>
+<span class="fc bfc" id="L854" title="All 2 branches covered.">        result = prime * result + (modifyVariables == null ? 0 : modifyVariables.hashCode());</span>
+<span class="fc bfc" id="L855" title="All 2 branches covered.">        result = prime * result + (relativeUrls ? 1231 : 1237);</span>
+<span class="fc bfc" id="L856" title="All 2 branches covered.">        result = prime * result + (rootPath == null ? 0 : rootPath.hashCode());</span>
+<span class="fc bfc" id="L857" title="All 2 branches covered.">        result = prime * result + (silent ? 1231 : 1237);</span>
+<span class="fc bfc" id="L858" title="All 2 branches covered.">        result = prime * result + (sourceMapBasePath == null ? 0 : sourceMapBasePath.hashCode());</span>
+<span class="fc bfc" id="L859" title="All 2 branches covered.">        result = prime * result + (sourceMapLessInline ? 1231 : 1237);</span>
+<span class="fc bfc" id="L860" title="All 2 branches covered.">        result = prime * result + (sourceMapRootPath == null ? 0 : sourceMapRootPath.hashCode());</span>
+<span class="fc bfc" id="L861" title="All 2 branches covered.">        result = prime * result + (sourceMapUrl == null ? 0 : sourceMapUrl.hashCode());</span>
+<span class="fc bfc" id="L862" title="All 2 branches covered.">        result = prime * result + (strictImports ? 1231 : 1237);</span>
+<span class="fc bfc" id="L863" title="All 2 branches covered.">        result = prime * result + (strictMath ? 1231 : 1237);</span>
+<span class="fc bfc" id="L864" title="All 2 branches covered.">        return prime * result + (strictUnits ? 1231 : 1237);</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L873" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L874">            return true;</span>
+        }
+<span class="fc bfc" id="L876" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
+<span class="fc" id="L877">            return false;</span>
+        }
+<span class="fc" id="L879">        final LessOptions other = (LessOptions) obj;</span>
+<span class="fc bfc" id="L880" title="All 2 branches covered.">        if (!Objects.equals(banner, other.banner)) {</span>
+<span class="fc" id="L881">            return false;</span>
+        }
+<span class="fc bfc" id="L883" title="All 2 branches covered.">        if (compress != other.compress) {</span>
+<span class="fc" id="L884">            return false;</span>
+        }
+<span class="fc bfc" id="L886" title="All 2 branches covered.">        if (!Objects.equals(encoding, other.encoding)) {</span>
+<span class="fc" id="L887">            return false;</span>
+        }
+<span class="fc bfc" id="L889" title="All 2 branches covered.">        if (!Objects.equals(fileSystems, other.fileSystems)) {</span>
+<span class="fc" id="L890">            return false;</span>
+        }
+<span class="fc bfc" id="L892" title="All 2 branches covered.">        if (!Objects.equals(globalVariables, other.globalVariables)) {</span>
+<span class="fc" id="L893">            return false;</span>
+        }
+<span class="fc bfc" id="L895" title="All 2 branches covered.">        if (ieCompatibility != other.ieCompatibility) {</span>
+<span class="fc" id="L896">            return false;</span>
+        }
+<span class="fc bfc" id="L898" title="All 2 branches covered.">        if (!Objects.equals(includePaths, other.includePaths)) {</span>
+<span class="fc" id="L899">            return false;</span>
+        }
+<span class="fc bfc" id="L901" title="All 2 branches covered.">        if (javaScript != other.javaScript) {</span>
+<span class="fc" id="L902">            return false;</span>
+        }
+<span class="fc bfc" id="L904" title="All 2 branches covered.">        if (lineNumbers != other.lineNumbers) {</span>
+<span class="fc" id="L905">            return false;</span>
+        }
+<span class="fc bfc" id="L907" title="All 2 branches covered.">        if (!Objects.equals(modifyVariables, other.modifyVariables)) {</span>
+<span class="fc" id="L908">            return false;</span>
+        }
+<span class="fc bfc" id="L910" title="All 2 branches covered.">        if (relativeUrls != other.relativeUrls) {</span>
+<span class="fc" id="L911">            return false;</span>
+        }
+<span class="fc bfc" id="L913" title="All 2 branches covered.">        if (!Objects.equals(rootPath, other.rootPath)) {</span>
+<span class="fc" id="L914">            return false;</span>
+        }
+<span class="fc bfc" id="L916" title="All 2 branches covered.">        if (silent != other.silent) {</span>
+<span class="fc" id="L917">            return false;</span>
+        }
+<span class="fc bfc" id="L919" title="All 2 branches covered.">        if (!Objects.equals(sourceMapBasePath, other.sourceMapBasePath)) {</span>
+<span class="fc" id="L920">            return false;</span>
+        }
+<span class="fc bfc" id="L922" title="All 2 branches covered.">        if (sourceMapLessInline != other.sourceMapLessInline) {</span>
+<span class="fc" id="L923">            return false;</span>
+        }
+<span class="fc bfc" id="L925" title="All 2 branches covered.">        if (!Objects.equals(sourceMapRootPath, other.sourceMapRootPath)) {</span>
+<span class="fc" id="L926">            return false;</span>
+        }
+<span class="fc bfc" id="L928" title="All 2 branches covered.">        if (!Objects.equals(sourceMapUrl, other.sourceMapUrl)) {</span>
+<span class="fc" id="L929">            return false;</span>
+        }
+<span class="fc bfc" id="L931" title="All 2 branches covered.">        if (strictImports != other.strictImports) {</span>
+<span class="fc" id="L932">            return false;</span>
+        }
+<span class="fc bfc" id="L934" title="All 2 branches covered.">        if (strictMath != other.strictMath) {</span>
+<span class="fc" id="L935">            return false;</span>
+        }
+<span class="fc bfc" id="L937" title="All 2 branches covered.">        return strictUnits == other.strictUnits;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

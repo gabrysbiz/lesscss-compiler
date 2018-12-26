@@ -1,0 +1,125 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FileData.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.filesystem</a> &gt; <span class="el_source">FileData.java</span></div><h1>FileData.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.filesystem;
+
+import java.io.Serializable;
+import java.util.Arrays;
+import java.util.Objects;
+
+/**
+ * Represents a file data returned by an instance of the {@link FileSystem}.
+ * @since 2.0.0
+ */
+public class FileData implements Serializable {
+
+    private static final long serialVersionUID = -9078800439439146580L;
+
+    private final byte[] content;
+    private final String encoding;
+
+    /**
+     * Constructs a new instance and sets the file's content.
+     * @param content the file's content (cannot be {@code null}).
+     * @throws IllegalArgumentException if the content is {@code null}.
+     * @since 2.0.0
+     */
+    public FileData(final byte[] content) {
+<span class="fc" id="L37">        this(content, null);</span>
+<span class="fc" id="L38">    }</span>
+
+    /**
+     * Constructs a new instance and sets the file's content and encoding.
+     * @param content the file's content (cannot be {@code null}).
+     * @param encoding the file's encoding.
+     * @throws IllegalArgumentException if the content is {@code null}.
+     * @since 2.0.0
+     */
+<span class="fc" id="L47">    public FileData(final byte[] content, final String encoding) {</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">        if (content == null) {</span>
+<span class="fc" id="L49">            throw new IllegalArgumentException(&quot;Content cannot be null&quot;);</span>
+        }
+<span class="fc" id="L51">        this.content = content;</span>
+<span class="fc" id="L52">        this.encoding = encoding;</span>
+<span class="fc" id="L53">    }</span>
+
+    /**
+     * Returns the file's content as a byte array.
+     * @return the file's content.
+     * @since 2.0.0
+     */
+    public byte[] getContent() {
+<span class="fc" id="L61">        return content;</span>
+    }
+
+    /**
+     * Returns the file's data encoding. {@code null} means that a compiler will use encoding defined by a user.
+     * @return the file's data encoding or {@code null}.
+     * @since 2.0.0
+     */
+    public String getEncoding() {
+<span class="fc" id="L70">        return encoding;</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public int hashCode() {
+<span class="fc" id="L79">        final int prime = 31;</span>
+<span class="fc" id="L80">        final int result = prime + Arrays.hashCode(content);</span>
+<span class="fc bfc" id="L81" title="All 2 branches covered.">        return prime * result + (encoding == null ? 0 : encoding.hashCode());</span>
+    }
+
+    /**
+     * {@inheritDoc}
+     * @since 2.0.0
+     */
+    @Override
+    public boolean equals(final Object obj) {
+<span class="fc bfc" id="L90" title="All 2 branches covered.">        if (this == obj) {</span>
+<span class="fc" id="L91">            return true;</span>
+        }
+<span class="fc bfc" id="L93" title="All 4 branches covered.">        if (obj == null || getClass() != obj.getClass()) {</span>
+<span class="fc" id="L94">            return false;</span>
+        }
+<span class="fc" id="L96">        final FileData other = (FileData) obj;</span>
+<span class="fc bfc" id="L97" title="All 2 branches covered.">        if (!Arrays.equals(content, other.content)) {</span>
+<span class="fc" id="L98">            return false;</span>
+        }
+<span class="fc" id="L100">        return Objects.equals(encoding, other.encoding);</span>
+    }
+
+    /**
+     * Returns a string representation of this object in JSON format.
+     * @since 2.0.0
+     */
+    @Override
+    public String toString() {
+<span class="fc" id="L109">        final StringBuilder text = new StringBuilder();</span>
+<span class="fc" id="L110">        text.append(&quot;{\n&quot;);</span>
+<span class="fc" id="L111">        text.append(&quot;  \&quot;encoding\&quot;: &quot;);</span>
+<span class="fc bfc" id="L112" title="All 2 branches covered.">        if (encoding == null) {</span>
+<span class="fc" id="L113">            text.append(&quot;null&quot;);</span>
+        } else {
+<span class="fc" id="L115">            text.append('&quot;');</span>
+<span class="fc" id="L116">            text.append(encoding);</span>
+<span class="fc" id="L117">            text.append('&quot;');</span>
+        }
+<span class="fc" id="L119">        text.append(&quot;,\n  \&quot;content\&quot;: &quot;);</span>
+<span class="fc" id="L120">        text.append(Arrays.toString(content));</span>
+<span class="fc" id="L121">        text.append(&quot;\n}&quot;);</span>
+<span class="fc" id="L122">        return text.toString();</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

@@ -1,3 +1,2 @@
 User-agent: *
-Disallow: /LATEST/
 Sitemap: http://lesscss-compiler.projects.gabrys.biz/sitemap.xml

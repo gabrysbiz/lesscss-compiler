@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>ListWithoutEmptyValuesBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.util</a> &gt; <span class="el_source">ListWithoutEmptyValuesBuilder.java</span></div><h1>ListWithoutEmptyValuesBuilder.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.util;
+
+import java.util.ArrayList;
+import java.util.LinkedList;
+import java.util.List;
+
+/**
+ * Responsible for creating new instances of the {@link List} which stores not empty values.
+ * @param &lt;T&gt; the type of values.
+ * @since 2.0.0
+ */
+public class ListWithoutEmptyValuesBuilder&lt;T&gt; {
+
+    private final Checker&lt;T&gt; checker;
+<span class="fc" id="L27">    private final List&lt;T&gt; values = new LinkedList&lt;&gt;();</span>
+
+    /**
+     * Constructs a new instance.
+     * @param checker the checker responsible for testing if values are empty or not.
+     * @throws IllegalArgumentException if the checker is {@code null}.
+     * @since 2.0.0
+     */
+<span class="fc" id="L35">    public ListWithoutEmptyValuesBuilder(final Checker&lt;T&gt; checker) {</span>
+<span class="fc bfc" id="L36" title="All 2 branches covered.">        if (checker == null) {</span>
+<span class="fc" id="L37">            throw new IllegalArgumentException(&quot;Checker cannot be null&quot;);</span>
+        }
+<span class="fc" id="L39">        this.checker = checker;</span>
+<span class="fc" id="L40">    }</span>
+
+    /**
+     * Appends all values which are not blank.
+     * @param values the appended values.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public ListWithoutEmptyValuesBuilder&lt;T&gt; append(final T[] values) {
+<span class="fc bfc" id="L49" title="All 2 branches covered.">        if (values != null) {</span>
+<span class="fc bfc" id="L50" title="All 2 branches covered.">            for (final T value : values) {</span>
+<span class="fc" id="L51">                append(value);</span>
+            }
+        }
+<span class="fc" id="L54">        return this;</span>
+    }
+
+    /**
+     * Appends a value only if it is not blank.
+     * @param value the appended value.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     */
+    public ListWithoutEmptyValuesBuilder&lt;T&gt; append(final T value) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (checker.isNotEmpty(value)) {</span>
+<span class="fc" id="L65">            values.add(value);</span>
+        }
+<span class="fc" id="L67">        return this;</span>
+    }
+
+    /**
+     * Builds a new instance of the {@link List}.
+     * @return the new instance of the {@link List}.
+     * @since 2.0.0
+     */
+    public List&lt;T&gt; build() {
+<span class="fc" id="L76">        return new ArrayList&lt;&gt;(values);</span>
+    }
+
+    /**
+     * Responsible for testing if values are empty or not.
+     * @param &lt;T&gt; the type of values.
+     * @since 2.0.0
+     */
+    public interface Checker&lt;T&gt; {
+
+        /**
+         * Tests whether a value is not empty.
+         * @param value the tested value.
+         * @return {@code true} whether the value is not empty, otherwise {@code false}.
+         * @since 2.0.0
+         */
+        boolean isNotEmpty(T value);
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

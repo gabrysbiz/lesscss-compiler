@@ -1,0 +1,274 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>NativeLessCompiler.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">NativeLessCompiler.java</span></div><h1>NativeLessCompiler.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.io.ByteArrayOutputStream;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.PrintStream;
+import java.io.SequenceInputStream;
+import java.net.URL;
+import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.Collections;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.JavaScriptException;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
+import org.mozilla.javascript.tools.shell.Global;
+
+/**
+ * &lt;p&gt;
+ * Native &lt;a href=&quot;https://github.com/less/less.js/releases/tag/v1.7.5&quot;&gt;Less 1.7.5&lt;/a&gt; compiler written in JavaScript by
+ * Less team and modified by Adam Gabryś.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The library is based on the official &lt;a href=&quot;http://lesscss.org/&quot;&gt;Less&lt;/a&gt; JavaScript compiler adapted to the
+ * &lt;a href=&quot;https://developer.mozilla.org/en-US/docs/Mozilla/Projects/Rhino&quot;&gt;Rhino&lt;/a&gt; engine.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * The idea for this class implementation was based on the
+ * &lt;a href=&quot;https://github.com/marceloverdijk/lesscss-java&quot;&gt;lesscss-java&lt;/a&gt; library by
+ * &lt;a href=&quot;https://github.com/marceloverdijk&quot;&gt;Marcel Overdijk&lt;/a&gt;.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example code:
+ * &lt;/p&gt;
+ * 
+ * &lt;pre&gt;
+ * // create compiler and source file
+ * NativeLessCompiler compiler = new {@link #NativeLessCompiler() NativeLessCompiler}();
+ * String input = &quot;/less/file.less&quot;;
+ * 
+ * // compile source file
+ * String cssCode = compiler.{@link #execute(Collection) execute}(new {@link NativeLessOptionsBuilder}().inputFile(input).build());
+ * 
+ * // compile source file with enabled CSS code compression
+ * Collection&amp;lt;Object&amp;gt; options = new {@link NativeLessOptionsBuilder}().inputFile(input).compress(true).build();
+ * String cssCompressedCode = compiler.{@link #execute(Collection) execute}(options);
+ * &lt;/pre&gt;
+ * 
+ * @since 2.0.0
+ * @see NativeLessOptionsBuilder
+ */
+public class NativeLessCompiler {
+
+<span class="fc" id="L72">    private final Object mutex = new Object();</span>
+
+    private Scriptable scope;
+    private ByteArrayOutputStream console;
+    private Function compiler;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L82">    public NativeLessCompiler() {</span>
+        // do nothing
+<span class="fc" id="L84">    }</span>
+
+    /**
+     * Executes the compiler. You can use standard &lt;a href=&quot;http://lesscss.org/usage/index.html#less-options&quot;&gt;Less
+     * command line options&lt;/a&gt; with some exceptions:
+     * &lt;ul&gt;
+     * &lt;li&gt;use multiple {@code --include-path} options to declare multiple paths instead of the using separator ';'
+     * character on Windows and ':' character on Unix/Linux machines&lt;/li&gt;
+     * &lt;li&gt;does not support options:
+     * &lt;ul&gt;
+     * &lt;li&gt;allow importing from insecure HTTPS hosts ({@code --insecure})&lt;/li&gt;
+     * &lt;li&gt;lint ({@code -l} or {@code --lint})&lt;/li&gt;
+     * &lt;li&gt;makefile ({@code -M} or {@code --depends})&lt;/li&gt;
+     * &lt;li&gt;no color ({@code --no-color})&lt;/li&gt;
+     * &lt;li&gt;plugins ({@code --plugin})&lt;/li&gt;
+     * &lt;li&gt;version ({@code -v} or {@code --version})&lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;/li&gt;
+     * &lt;/ul&gt;
+     * &lt;p&gt;
+     * It also supports few non-standard options:
+     * &lt;/p&gt;
+     * &lt;ul&gt;
+     * &lt;li&gt;{@code --encoding} - an encoding used to read source files and save generated code (default: platform default
+     * encoding)&lt;/li&gt;
+     * &lt;li&gt;{@code --file-system} - a file system implementation used to fetch files (default:
+     * &lt;code&gt;biz.gabrys.lesscss.compiler2.filesystem.{@link biz.gabrys.lesscss.compiler2.filesystem.LocalFileSystem LocalFileSystem}&lt;/code&gt;).
+     * This option could be specified multiple times (the order matters)&lt;/li&gt;
+     * &lt;/ul&gt;
+     * @param options the compiler options (cannot be {@code null}).
+     * @return the compiler output (depends on options it can be e.g. CSS code, logs).
+     * @throws InitializationException if an error occurred during compiler initialization.
+     * @throws ConfigurationException if the compiler is configured incorrectly.
+     * @throws ReadFileException if the compiler cannot read source file or any &amp;#64;import operation point to
+     *             non-existent file.
+     * @throws SyntaxException if a syntax error occurred during source file compilation.
+     * @throws CompilerException if an other error occurred during execution.
+     * @since 2.0.0
+     * @see NativeLessOptionsBuilder
+     */
+    public String execute(final Collection&lt;?&gt; options) {
+<span class="fc" id="L125">        synchronized (mutex) {</span>
+<span class="fc bfc" id="L126" title="All 2 branches covered.">            if (compiler == null) {</span>
+<span class="fc" id="L127">                initialize();</span>
+            }
+            try {
+<span class="fc" id="L130">                final Context context = Context.enter();</span>
+
+<span class="fc" id="L132">                final ScriptableObject compileScope = (ScriptableObject) context.newObject(scope);</span>
+<span class="fc" id="L133">                compileScope.setParentScope(null);</span>
+<span class="fc" id="L134">                compileScope.setPrototype(scope);</span>
+
+<span class="fc" id="L136">                final Scriptable arguments = context.newArray(compileScope, options.toArray(new Object[0]));</span>
+<span class="fc" id="L137">                compileScope.defineProperty(&quot;arguments&quot;, arguments, ScriptableObject.DONTENUM);</span>
+
+<span class="fc" id="L139">                compiler.call(context, compileScope, null, new Object[0]);</span>
+<span class="fc" id="L140">                return console.toString(StandardCharsets.UTF_8.name());</span>
+
+<span class="fc" id="L142">            } catch (final JavaScriptException e) {</span>
+<span class="fc" id="L143">                throw parseException(e);</span>
+<span class="nc" id="L144">            } catch (final Exception e) {</span>
+<span class="nc" id="L145">                throw new CompilerException(e);</span>
+            } finally {
+<span class="fc" id="L147">                console.reset();</span>
+<span class="fc" id="L148">                Context.exit();</span>
+            }
+        }
+    }
+
+    private void initialize() {
+        try {
+<span class="fc" id="L155">            final Context context = Context.enter();</span>
+<span class="fc" id="L156">            context.setLanguageVersion(Context.VERSION_1_8);</span>
+
+<span class="fc" id="L158">            final Global global = new Global();</span>
+<span class="fc" id="L159">            global.init(context);</span>
+<span class="fc" id="L160">            scope = context.initStandardObjects(global);</span>
+
+<span class="fc" id="L162">            console = new ByteArrayOutputStream();</span>
+<span class="fc" id="L163">            global.setOut(new PrintStream(console, false, StandardCharsets.UTF_8.name()));</span>
+
+<span class="fc" id="L165">            final URL lessFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/less-rhino-1.7.5.js&quot;);</span>
+<span class="fc" id="L166">            final URL lesscFile = NativeLessCompiler.class.getResource(&quot;/biz/gabrys/lesscss/compiler2/lessc-rhino-1.7.5.js&quot;);</span>
+
+<span class="fc" id="L168">            final Collection&lt;InputStream&gt; streams = new ArrayList&lt;&gt;();</span>
+<span class="fc" id="L169">            streams.add(lessFile.openConnection().getInputStream());</span>
+<span class="fc" id="L170">            streams.add(lesscFile.openConnection().getInputStream());</span>
+
+<span class="fc" id="L172">            try (final InputStream inputStream = new SequenceInputStream(Collections.enumeration(streams));</span>
+<span class="fc" id="L173">                    final InputStreamReader streamReader = new InputStreamReader(inputStream, StandardCharsets.UTF_8)) {</span>
+<span class="fc" id="L174">                compiler = (Function) context.compileReader(streamReader, lessFile.toString(), 1, null);</span>
+            }
+<span class="nc" id="L176">        } catch (final Exception e) {</span>
+<span class="nc" id="L177">            throw new InitializationException(&quot;Failed to initialize native Less compiler&quot;, e);</span>
+        } finally {
+<span class="fc" id="L179">            Context.exit();</span>
+        }
+<span class="fc" id="L181">    }</span>
+
+    private static CompilerException parseException(final JavaScriptException exception) {
+<span class="fc" id="L184">        final Scriptable value = (Scriptable) exception.getValue();</span>
+<span class="pc bpc" id="L185" title="2 of 4 branches missed.">        if (value != null &amp;&amp; ScriptableObject.hasProperty(value, &quot;message&quot;)) {</span>
+<span class="fc" id="L186">            final String message = ScriptableObject.getProperty(value, &quot;message&quot;).toString();</span>
+
+<span class="fc" id="L188">            final Iterable&lt;ExceptionConverter&gt; converters = Arrays.asList(new ReadFileErrorExceptionConverter(),</span>
+                    new UnsupportedProtocolExceptionConverter(), new ConfigurationExceptionConverter(), new SourceFileExceptionConverter());
+
+<span class="fc bfc" id="L191" title="All 2 branches covered.">            for (final ExceptionConverter converter : converters) {</span>
+<span class="fc" id="L192">                final Matcher matcher = converter.getPattern().matcher(message);</span>
+<span class="fc bfc" id="L193" title="All 2 branches covered.">                if (matcher.find()) {</span>
+<span class="fc" id="L194">                    return converter.createException(exception, matcher, message);</span>
+                }
+<span class="fc" id="L196">            }</span>
+<span class="fc" id="L197">            return new SyntaxException(message, exception);</span>
+        }
+<span class="nc" id="L199">        return new SyntaxException(exception);</span>
+    }
+
+    private interface ExceptionConverter {
+
+        Pattern getPattern();
+
+        CompilerException createException(Exception cause, Matcher matcher, String message);
+    }
+
+    private static class ReadFileErrorExceptionConverter implements ExceptionConverter {
+
+        private static final String MARKUP = &quot;\\{gabrys-lesscss-compiler-filesystem-exception\\}&quot;;
+
+        private static final int ORIGINAL_EXCEPTION_MESSAGE = 1;
+        private static final int IMPORTED_FILENAME_GROUP_INDEX = 2;
+        private static final int SOURCE_FILEPATH_GROUP_INDEX = 3;
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L219">            return Pattern.compile(&quot;^FileError:\\sFileSystemError:&quot; + MARKUP + &quot;[^:]+:\\s(.+)&quot; + MARKUP + &quot;:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L224">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="fc" id="L225">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: %s.%nError in %s&quot;, importedFilename,</span>
+<span class="fc" id="L226">                    matcher.group(ORIGINAL_EXCEPTION_MESSAGE), matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+        }
+    }
+
+    private static class UnsupportedProtocolExceptionConverter implements ExceptionConverter {
+
+        private static final int IMPORTED_FILENAME_GROUP_INDEX = 1;
+        private static final int SOURCE_FILEPATH_GROUP_INDEX = 2;
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L237">            return Pattern.compile(&quot;^FileError:\\sUnsupportedProtocol:\\s+'(.+)'\\s+in\\s((?s).*)$&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L242">            final String importedFilename = matcher.group(IMPORTED_FILENAME_GROUP_INDEX);</span>
+<span class="fc" id="L243">            return new ReadFileException(String.format(&quot;Cannot read file \&quot;%s\&quot;: the protocol is unsupported.%nError in %s&quot;,</span>
+<span class="fc" id="L244">                    importedFilename, matcher.group(SOURCE_FILEPATH_GROUP_INDEX)), cause, importedFilename);</span>
+        }
+    }
+
+    private static class ConfigurationExceptionConverter implements ExceptionConverter {
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L252">            return Pattern.compile(&quot;^Configuration problem: (.*)&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L257">            return new ConfigurationException(matcher.group(1), cause);</span>
+        }
+    }
+
+    private static class SourceFileExceptionConverter implements ExceptionConverter {
+
+        @Override
+        public Pattern getPattern() {
+<span class="fc" id="L265">            return Pattern.compile(&quot;^Couldn't open file (.*)&quot;);</span>
+        }
+
+        @Override
+        public CompilerException createException(final Exception cause, final Matcher matcher, final String message) {
+<span class="fc" id="L270">            return new ReadFileException(message, cause, matcher.group(1));</span>
+        }
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

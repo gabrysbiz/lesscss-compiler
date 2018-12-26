@@ -1,0 +1,811 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>LessOptionsBuilder.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2</a> &gt; <span class="el_source">LessOptionsBuilder.java</span></div><h1>LessOptionsBuilder.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2;
+
+import java.nio.charset.Charset;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
+
+import biz.gabrys.lesscss.compiler2.util.StringUtils;
+
+/**
+ * &lt;p&gt;
+ * Responsible for creating new instances of the {@link LessOptions}.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example code:
+ * &lt;/p&gt;
+ * 
+ * &lt;pre&gt;
+ * {@link LessOptions} options = null;
+ * 
+ * // create options with enabled code compression
+ * options = new {@link #LessOptionsBuilder() LessOptionsBuilder}().{@link #compressOn() compressOn}().{@link #build() build}();
+ * 
+ * // create options with enabled strict units and disabled IE compatibility
+ * options = new {@link #LessOptionsBuilder() LessOptionsBuilder}().{@link #strictUnitsOn() strictUnitsOn}().{@link #ieCompatibilityOff() ieCompatibilityOff}().{@link #build() build}();
+ * 
+ * // use existing options object to create a new one
+ * boolean compression = false;
+ * options = new {@link #LessOptionsBuilder(LessOptions) LessOptionsBuilder}(options).{@link #compress(boolean) compress}(compression).{@link #build() build}();
+ * &lt;/pre&gt;
+ * 
+ * @since 2.0.0
+ * @see FileSystemOptionBuilder
+ * @see FileSystemOptionsBuilder
+ * @see LessVariableOptionsBuilder
+ */
+public class LessOptionsBuilder {
+
+    private final LessOptions options;
+
+    /**
+     * Constructs a new instance.
+     * @since 2.0.0
+     */
+<span class="fc" id="L58">    public LessOptionsBuilder() {</span>
+<span class="fc" id="L59">        options = new LessOptions();</span>
+<span class="fc" id="L60">    }</span>
+
+    /**
+     * Constructs a new instance and copies options into {@code this} builder.
+     * @param options the copied options.
+     * @throws IllegalArgumentException if the options object is {@code null}.
+     * @since 2.0.0
+     */
+<span class="fc" id="L68">    public LessOptionsBuilder(final LessOptions options) {</span>
+<span class="fc bfc" id="L69" title="All 2 branches covered.">        if (options == null) {</span>
+<span class="fc" id="L70">            throw new IllegalArgumentException(&quot;Options cannot be null&quot;);</span>
+        }
+<span class="fc" id="L72">        this.options = new LessOptions(options);</span>
+<span class="fc" id="L73">    }</span>
+
+    /**
+     * Sets whether a compiler shouldn't log compilation warnings (default: {@code false}).
+     * @param silent {@code true} whether the compiler shouldn't log compilation warnings, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #silentOn()
+     * @see #silentOff()
+     */
+    public LessOptionsBuilder silent(final boolean silent) {
+<span class="fc" id="L84">        getOptions().setSilent(silent);</span>
+<span class="fc" id="L85">        return this;</span>
+    }
+
+    /**
+     * Disables logging compilation warnings (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #silent(boolean)
+     * @see #silentOff()
+     */
+    public LessOptionsBuilder silentOn() {
+<span class="fc" id="L96">        return silent(true);</span>
+    }
+
+    /**
+     * Enables logging compilation warnings (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #silent(boolean)
+     * @see #silentOn()
+     */
+    public LessOptionsBuilder silentOff() {
+<span class="fc" id="L107">        return silent(false);</span>
+    }
+
+    /**
+     * Sets whether a compiler should disallow an &amp;#64;import operation inside of either &amp;#64;media blocks or other
+     * selector blocks (default: {@code false}).
+     * @param strictImports {@code true} whether the compiler should disallow the &amp;#64;import operation inside of either
+     *            &amp;#64;media blocks or other selector blocks, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictImportsOn()
+     * @see #strictImportsOff()
+     */
+    public LessOptionsBuilder strictImports(final boolean strictImports) {
+<span class="fc" id="L121">        getOptions().setStrictImports(strictImports);</span>
+<span class="fc" id="L122">        return this;</span>
+    }
+
+    /**
+     * Disallows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:
+     * {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictImports(boolean)
+     * @see #strictImportsOff()
+     */
+    public LessOptionsBuilder strictImportsOn() {
+<span class="fc" id="L134">        return strictImports(true);</span>
+    }
+
+    /**
+     * Allows usage of &amp;#64;import operations inside of either &amp;#64;media blocks or other selector blocks (default:
+     * {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictImports(boolean)
+     * @see #strictImportsOn()
+     */
+    public LessOptionsBuilder strictImportsOff() {
+<span class="fc" id="L146">        return strictImports(false);</span>
+    }
+
+    /**
+     * Sets whether a CSS code should be compressed (default: {@code false}).
+     * @param compress {@code true} whether the CSS code should be compressed, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #compressOn()
+     * @see #compressOff()
+     */
+    public LessOptionsBuilder compress(final boolean compress) {
+<span class="fc" id="L158">        getOptions().setCompress(compress);</span>
+<span class="fc" id="L159">        return this;</span>
+    }
+
+    /**
+     * Enables a CSS code compression (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #compress(boolean)
+     * @see #compressOff()
+     */
+    public LessOptionsBuilder compressOn() {
+<span class="fc" id="L170">        return compress(true);</span>
+    }
+
+    /**
+     * Disables a CSS code compression (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #compress(boolean)
+     * @see #compressOn()
+     */
+    public LessOptionsBuilder compressOff() {
+<span class="fc" id="L181">        return compress(false);</span>
+    }
+
+    /**
+     * Sets whether a CSS code should be compatible with IE browser (default: {@code true}).
+     * @param ieCompatibility {@code true} whether the CSS code should be compatible with IE browser, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #ieCompatibilityOn()
+     * @see #ieCompatibilityOff()
+     */
+    public LessOptionsBuilder ieCompatibility(final boolean ieCompatibility) {
+<span class="fc" id="L194">        getOptions().setIeCompatibility(ieCompatibility);</span>
+<span class="fc" id="L195">        return this;</span>
+    }
+
+    /**
+     * Sets that a CSS code should be compatible with IE browser (default: {@code on}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #ieCompatibility(boolean)
+     * @see #ieCompatibilityOff()
+     */
+    public LessOptionsBuilder ieCompatibilityOn() {
+<span class="fc" id="L206">        return ieCompatibility(true);</span>
+    }
+
+    /**
+     * Sets that a CSS code does not have to be compatible with IE browser (default: {@code on}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #ieCompatibility(boolean)
+     * @see #ieCompatibilityOn()
+     */
+    public LessOptionsBuilder ieCompatibilityOff() {
+<span class="fc" id="L217">        return ieCompatibility(false);</span>
+    }
+
+    /**
+     * Sets whether a compiler should allow usage of JavaScript language (default: {@code true}).
+     * @param javaScript {@code true} whether the compiler should allow usage of JavaScript language, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #javaScriptOn()
+     * @see #javaScriptOff()
+     */
+    public LessOptionsBuilder javaScript(final boolean javaScript) {
+<span class="fc" id="L230">        getOptions().setJavaScript(javaScript);</span>
+<span class="fc" id="L231">        return this;</span>
+    }
+
+    /**
+     * Allows usage of JavaScript language (default: {@code on}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #javaScript(boolean)
+     * @see #javaScriptOff()
+     */
+    public LessOptionsBuilder javaScriptOn() {
+<span class="fc" id="L242">        return javaScript(true);</span>
+    }
+
+    /**
+     * Disallows usage of JavaScript language (default: {@code on}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #javaScript(boolean)
+     * @see #javaScriptOn()
+     */
+    public LessOptionsBuilder javaScriptOff() {
+<span class="fc" id="L253">        return javaScript(false);</span>
+    }
+
+    /**
+     * Sets available include paths (default: {@code []}).
+     * @param includePaths the available include paths ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #includePaths(CharSequence...)
+     * @see #includePathsOff()
+     */
+    public LessOptionsBuilder includePaths(final Collection&lt;? extends CharSequence&gt; includePaths) {
+<span class="fc bfc" id="L265" title="All 2 branches covered.">        if (includePaths != null) {</span>
+<span class="fc" id="L266">            final List&lt;String&gt; paths = new ArrayList&lt;&gt;(includePaths.size());</span>
+<span class="fc bfc" id="L267" title="All 2 branches covered.">            for (final CharSequence path : includePaths) {</span>
+<span class="fc" id="L268">                paths.add(StringUtils.toStringIfNotNull(path));</span>
+<span class="fc" id="L269">            }</span>
+<span class="fc" id="L270">            getOptions().setIncludePaths(paths);</span>
+<span class="fc" id="L271">        } else {</span>
+<span class="fc" id="L272">            getOptions().setIncludePaths(null);</span>
+        }
+<span class="fc" id="L274">        return this;</span>
+    }
+
+    /**
+     * Sets available include paths (default: {@code []}).
+     * @param includePaths the available include paths.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #includePaths(Collection)
+     * @see #includePathsOff()
+     */
+    public LessOptionsBuilder includePaths(final CharSequence... includePaths) {
+<span class="fc bfc" id="L286" title="All 2 branches covered.">        if (includePaths != null) {</span>
+<span class="fc" id="L287">            return includePaths(Arrays.asList(includePaths));</span>
+        } else {
+<span class="fc" id="L289">            return includePaths((Collection&lt;CharSequence&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Clears available include paths (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #includePaths(Collection)
+     * @see #includePaths(CharSequence...)
+     */
+    public LessOptionsBuilder includePathsOff() {
+<span class="fc" id="L301">        return includePaths((Collection&lt;CharSequence&gt;) null);</span>
+    }
+
+    /**
+     * Sets whether a compiler should generate inline source-mapping (default: {@link LineNumbersValue#OFF}).
+     * @param lineNumbers the line numbers value ({@code null} is treated as {@link LineNumbersValue#OFF}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #lineNumbersOff()
+     * @see #lineNumbersComments()
+     * @see #lineNumbersMediaQuery()
+     * @see #lineNumbersAll()
+     */
+    public LessOptionsBuilder lineNumbers(final LineNumbersValue lineNumbers) {
+<span class="fc" id="L315">        getOptions().setLineNumbers(lineNumbers);</span>
+<span class="fc" id="L316">        return this;</span>
+    }
+
+    /**
+     * Disables generating inline source-mapping (default: {@link LineNumbersValue#OFF}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #lineNumbers(LineNumbersValue)
+     * @see #lineNumbersComments()
+     * @see #lineNumbersMediaQuery()
+     * @see #lineNumbersAll()
+     */
+    public LessOptionsBuilder lineNumbersOff() {
+<span class="fc" id="L329">        return lineNumbers(LineNumbersValue.OFF);</span>
+    }
+
+    /**
+     * Enables generating inline source-mapping in comments blocks (default: {@link LineNumbersValue#OFF}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #lineNumbers(LineNumbersValue)
+     * @see #lineNumbersOff()
+     * @see #lineNumbersMediaQuery()
+     * @see #lineNumbersAll()
+     */
+    public LessOptionsBuilder lineNumbersComments() {
+<span class="fc" id="L342">        return lineNumbers(LineNumbersValue.COMMENTS);</span>
+    }
+
+    /**
+     * Enables generating inline source-mapping in &amp;#64;media queries (default: {@link LineNumbersValue#OFF}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #lineNumbers(LineNumbersValue)
+     * @see #lineNumbersOff()
+     * @see #lineNumbersComments()
+     * @see #lineNumbersAll()
+     */
+    public LessOptionsBuilder lineNumbersMediaQuery() {
+<span class="fc" id="L355">        return lineNumbers(LineNumbersValue.MEDIA_QUERY);</span>
+    }
+
+    /**
+     * Enables generating inline source-mapping in comments blocks and &amp;#64;media queries (default:
+     * {@link LineNumbersValue#OFF}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #lineNumbers(LineNumbersValue)
+     * @see #lineNumbersOff()
+     * @see #lineNumbersComments()
+     * @see #lineNumbersMediaQuery()
+     */
+    public LessOptionsBuilder lineNumbersAll() {
+<span class="fc" id="L369">        return lineNumbers(LineNumbersValue.ALL);</span>
+    }
+
+    /**
+     * Sets a path which will be added to every generated import and URL in CSS code (default: {@code null}).
+     * @param rootPath the root path.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #rootPathOff()
+     */
+    public LessOptionsBuilder rootPath(final CharSequence rootPath) {
+<span class="fc" id="L380">        getOptions().setRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
+<span class="fc" id="L381">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the root path option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #rootPath(CharSequence)
+     */
+    public LessOptionsBuilder rootPathOff() {
+<span class="fc" id="L391">        return rootPath(null);</span>
+    }
+
+    /**
+     * Sets whether a compiler should rewrite relative URLs (default: {@code false}).
+     * @param relativeUrls {@code true} whether the compiler should rewrite relative URLs, otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #relativeUrlsOn()
+     * @see #relativeUrlsOff()
+     */
+    public LessOptionsBuilder relativeUrls(final boolean relativeUrls) {
+<span class="fc" id="L403">        getOptions().setRelativeUrls(relativeUrls);</span>
+<span class="fc" id="L404">        return this;</span>
+    }
+
+    /**
+     * Enables rewriting relative URLs (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #relativeUrls(boolean)
+     * @see #relativeUrlsOff()
+     */
+    public LessOptionsBuilder relativeUrlsOn() {
+<span class="fc" id="L415">        return relativeUrls(true);</span>
+    }
+
+    /**
+     * Disables rewriting relative URLs (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #relativeUrls(boolean)
+     * @see #relativeUrlsOn()
+     */
+    public LessOptionsBuilder relativeUrlsOff() {
+<span class="fc" id="L426">        return relativeUrls(false);</span>
+    }
+
+    /**
+     * Sets whether a compiler should try and process all maths in Less code (default: {@code false}).
+     * @param strictMath {@code true} whether the compiler should try and process all maths in the Less code, otherwise
+     *            {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictMathOn()
+     * @see #strictMathOff()
+     */
+    public LessOptionsBuilder strictMath(final boolean strictMath) {
+<span class="fc" id="L439">        getOptions().setStrictMath(strictMath);</span>
+<span class="fc" id="L440">        return this;</span>
+    }
+
+    /**
+     * Sets that a compiler should try and process all maths in Less code (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictMath(boolean)
+     * @see #strictMathOff()
+     */
+    public LessOptionsBuilder strictMathOn() {
+<span class="fc" id="L451">        return strictMath(true);</span>
+    }
+
+    /**
+     * Sets that a compiler shouldn't try and process all maths in Less code (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictMath(boolean)
+     * @see #strictMathOn()
+     */
+    public LessOptionsBuilder strictMathOff() {
+<span class="fc" id="L462">        return strictMath(false);</span>
+    }
+
+    /**
+     * Sets whether a compiler should guess units in Less code when it does maths (default: {@code false}).
+     * @param strictUnits {@code true} whether the compiler should guess units in the Less code when it does maths,
+     *            otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictUnitsOn()
+     * @see #strictUnitsOff()
+     */
+    public LessOptionsBuilder strictUnits(final boolean strictUnits) {
+<span class="fc" id="L475">        getOptions().setStrictUnits(strictUnits);</span>
+<span class="fc" id="L476">        return this;</span>
+    }
+
+    /**
+     * Sets that a compiler should guess units in Less code when it does maths (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictUnits(boolean)
+     * @see #strictUnitsOff()
+     */
+    public LessOptionsBuilder strictUnitsOn() {
+<span class="fc" id="L487">        return strictUnits(true);</span>
+    }
+
+    /**
+     * Sets that a compiler shouldn't guess units in Less code when it does maths (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #strictUnits(boolean)
+     * @see #strictUnitsOn()
+     */
+    public LessOptionsBuilder strictUnitsOff() {
+<span class="fc" id="L498">        return strictUnits(false);</span>
+    }
+
+    /**
+     * Sets a path that will be prepended to each of the Less file paths inside the Source Map and also to the path to
+     * the map file specified in your output CSS (default: {@code null}).
+     * @param rootPath the path which will be added.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapRootPathOff()
+     */
+    public LessOptionsBuilder sourceMapRootPath(final CharSequence rootPath) {
+<span class="fc" id="L510">        getOptions().setSourceMapRootPath(StringUtils.toStringIfNotNull(rootPath));</span>
+<span class="fc" id="L511">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the Source Map root path option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapRootPath(CharSequence)
+     */
+    public LessOptionsBuilder sourceMapRootPathOff() {
+<span class="fc" id="L521">        return sourceMapRootPath(null);</span>
+    }
+
+    /**
+     * Sets a path that will be removed from each of the Less file paths inside the Source Map and also from the path to
+     * the map file specified in your output CSS (default: {@code null}).
+     * @param basePath the path which will be removed.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapBasePathOff()
+     */
+    public LessOptionsBuilder sourceMapBasePath(final CharSequence basePath) {
+<span class="fc" id="L533">        getOptions().setSourceMapBasePath(StringUtils.toStringIfNotNull(basePath));</span>
+<span class="fc" id="L534">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the Source Map base path option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapBasePath(CharSequence)
+     */
+    public LessOptionsBuilder sourceMapBasePathOff() {
+<span class="fc" id="L544">        return sourceMapBasePath(null);</span>
+    }
+
+    /**
+     * Sets whether a compiler should include all of the Less files in to the Source Map (default: {@code false}).
+     * @param inline {@code true} whether the compiler should include all of the Less files in to the Source Map,
+     *            otherwise {@code false}.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapLessInlineOn()
+     * @see #sourceMapLessInlineOff()
+     */
+    public LessOptionsBuilder sourceMapLessInline(final boolean inline) {
+<span class="fc" id="L557">        getOptions().setSourceMapLessInline(inline);</span>
+<span class="fc" id="L558">        return this;</span>
+    }
+
+    /**
+     * Sets that a compiler should include all of the Less files in to the Source Map (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapLessInline(boolean)
+     * @see #sourceMapLessInlineOff()
+     */
+    public LessOptionsBuilder sourceMapLessInlineOn() {
+<span class="fc" id="L569">        return sourceMapLessInline(true);</span>
+    }
+
+    /**
+     * Sets that a compiler will not include all of the Less files in to the Source Map (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapLessInline(boolean)
+     * @see #sourceMapLessInlineOn()
+     */
+    public LessOptionsBuilder sourceMapLessInlineOff() {
+<span class="fc" id="L580">        return sourceMapLessInline(false);</span>
+    }
+
+    /**
+     * Sets a path which will overwrite the URL in the CSS that points at the Source Map map file (default:
+     * {@code null}).
+     * @param url the Source Map URL.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapUrlOff()
+     */
+    public LessOptionsBuilder sourceMapUrl(final CharSequence url) {
+<span class="fc" id="L592">        getOptions().setSourceMapUrl(StringUtils.toStringIfNotNull(url));</span>
+<span class="fc" id="L593">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the Source Map URL option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #sourceMapUrl(CharSequence)
+     */
+    public LessOptionsBuilder sourceMapUrlOff() {
+<span class="fc" id="L603">        return sourceMapUrl(null);</span>
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(Charset)
+     * @see #encodingPlatformDefault()
+     */
+    public LessOptionsBuilder encoding(final CharSequence encoding) {
+<span class="fc" id="L616">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
+<span class="fc" id="L617">        return this;</span>
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code (default: {@code null} - means platform
+     * default encoding).
+     * @param encoding the encoding.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(CharSequence)
+     * @see #encodingPlatformDefault()
+     */
+    public LessOptionsBuilder encoding(final Charset encoding) {
+<span class="fc" id="L630">        getOptions().setEncoding(StringUtils.toStringIfNotNull(encoding));</span>
+<span class="fc" id="L631">        return this;</span>
+    }
+
+    /**
+     * Sets an encoding used to read source files and save generated code to platform default (default:
+     * {@code platform default encoding}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #encoding(CharSequence)
+     * @see #encoding(Charset)
+     */
+    public LessOptionsBuilder encodingPlatformDefault() {
+<span class="fc" id="L643">        return encoding((CharSequence) null);</span>
+    }
+
+    /**
+     * Sets available file systems (default: {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
+     *            ({@code null} is treated as a collection with default values).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #fileSystems(FileSystemOption...)
+     * @see FileSystemOptionsBuilder
+     */
+    public LessOptionsBuilder fileSystems(final Collection&lt;? extends FileSystemOption&gt; fileSystems) {
+<span class="fc bfc" id="L656" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L657">            getOptions().setFileSystems(new ArrayList&lt;FileSystemOption&gt;(fileSystems));</span>
+        } else {
+<span class="fc" id="L659">            getOptions().setFileSystems(null);</span>
+        }
+<span class="fc" id="L661">        return this;</span>
+    }
+
+    /**
+     * Sets available file systems (default: {@link LessOptions#DEFAULT_FILE_SYSTEMS}).
+     * @param fileSystems the available {@link biz.gabrys.lesscss.compiler2.filesystem.FileSystem file systems}
+     *            ({@code null} is treated as a collection with default values).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #fileSystems(Collection)
+     * @see FileSystemOptionBuilder
+     */
+    public LessOptionsBuilder fileSystems(final FileSystemOption... fileSystems) {
+<span class="fc bfc" id="L674" title="All 2 branches covered.">        if (fileSystems != null) {</span>
+<span class="fc" id="L675">            return fileSystems(Arrays.asList(fileSystems));</span>
+        } else {
+<span class="fc" id="L677">            return fileSystems((Collection&lt;FileSystemOption&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Sets a banner which will be inserted to a source file before the compilation (default: {@code null}).
+     * @param banner the banner.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #bannerOff()
+     */
+    public LessOptionsBuilder banner(final CharSequence banner) {
+<span class="fc" id="L689">        getOptions().setBanner(StringUtils.toStringIfNotNull(banner));</span>
+<span class="fc" id="L690">        return this;</span>
+    }
+
+    /**
+     * Clears a value of the banner option (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #banner(CharSequence)
+     */
+    public LessOptionsBuilder bannerOff() {
+<span class="fc" id="L700">        return banner(null);</span>
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(LessVariableOption...)
+     * @see #globalVariablesOff()
+     * @see LessVariableOptionsBuilder
+     */
+    public LessOptionsBuilder globalVariables(final Collection&lt;? extends LessVariableOption&gt; globalVariables) {
+<span class="fc bfc" id="L713" title="All 2 branches covered.">        if (globalVariables != null) {</span>
+<span class="fc" id="L714">            getOptions().setGlobalVariables(new ArrayList&lt;LessVariableOption&gt;(globalVariables));</span>
+        } else {
+<span class="fc" id="L716">            getOptions().setGlobalVariables(null);</span>
+        }
+<span class="fc" id="L718">        return this;</span>
+    }
+
+    /**
+     * Sets global variables (default: {@code []}).
+     * @param globalVariables the global variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariablesOff()
+     */
+    public LessOptionsBuilder globalVariables(final LessVariableOption... globalVariables) {
+<span class="fc bfc" id="L730" title="All 2 branches covered.">        if (globalVariables != null) {</span>
+<span class="fc" id="L731">            return globalVariables(Arrays.asList(globalVariables));</span>
+        } else {
+<span class="fc" id="L733">            return globalVariables((Collection&lt;LessVariableOption&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Clears global variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #globalVariables(Collection)
+     * @see #globalVariables(LessVariableOption...)
+     */
+    public LessOptionsBuilder globalVariablesOff() {
+<span class="fc" id="L745">        return globalVariables((Collection&lt;LessVariableOption&gt;) null);</span>
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables ({@code null} is treated as an empty collection).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(LessVariableOption...)
+     * @see #modifyVariablesOff()
+     * @see LessVariableOptionsBuilder
+     */
+    public LessOptionsBuilder modifyVariables(final Collection&lt;? extends LessVariableOption&gt; modifyVariables) {
+<span class="fc bfc" id="L758" title="All 2 branches covered.">        if (modifyVariables != null) {</span>
+<span class="fc" id="L759">            getOptions().setModifyVariables(new ArrayList&lt;LessVariableOption&gt;(modifyVariables));</span>
+        } else {
+<span class="fc" id="L761">            getOptions().setModifyVariables(null);</span>
+        }
+<span class="fc" id="L763">        return this;</span>
+    }
+
+    /**
+     * Sets modify variables (default: {@code []}).
+     * @param modifyVariables the modify variables.
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariablesOff()
+     */
+    public LessOptionsBuilder modifyVariables(final LessVariableOption... modifyVariables) {
+<span class="fc bfc" id="L775" title="All 2 branches covered.">        if (modifyVariables != null) {</span>
+<span class="fc" id="L776">            return modifyVariables(Arrays.asList(modifyVariables));</span>
+        } else {
+<span class="fc" id="L778">            return modifyVariables((Collection&lt;LessVariableOption&gt;) null);</span>
+        }
+    }
+
+    /**
+     * Clears modify variables (default: {@code off}).
+     * @return {@code this} builder.
+     * @since 2.0.0
+     * @see #modifyVariables(Collection)
+     * @see #modifyVariables(LessVariableOption...)
+     */
+    public LessOptionsBuilder modifyVariablesOff() {
+<span class="fc" id="L790">        return modifyVariables((Collection&lt;LessVariableOption&gt;) null);</span>
+    }
+
+    /**
+     * Builds a new instance of the {@link LessOptions}.
+     * @return the new instance of the {@link LessOptions}.
+     * @since 2.0.0
+     */
+    public LessOptions build() {
+<span class="fc" id="L799">        return new LessOptions(getOptions());</span>
+    }
+
+    /**
+     * Returns an internal state of the builder.
+     * @return the internal state.
+     * @since 2.0.0
+     */
+    protected LessOptions getOptions() {
+<span class="fc" id="L808">        return options;</span>
+    }
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

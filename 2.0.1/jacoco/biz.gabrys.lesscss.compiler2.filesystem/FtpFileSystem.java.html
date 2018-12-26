@@ -1,0 +1,198 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>FtpFileSystem.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.filesystem</a> &gt; <span class="el_source">FtpFileSystem.java</span></div><h1>FtpFileSystem.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.filesystem;
+
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.net.URL;
+import java.util.Map;
+
+import org.apache.commons.net.ftp.FTP;
+import org.apache.commons.net.ftp.FTPClient;
+import org.apache.commons.net.ftp.FTPReply;
+
+/**
+ * &lt;p&gt;
+ * Represents a file system accessible via &lt;a href=&quot;https://www.w3.org/Protocols/rfc959/&quot;&gt;FTP&lt;/a&gt; protocol.
+ * &lt;/p&gt;
+ * &lt;p&gt;
+ * Example paths:
+ * &lt;/p&gt;
+ * &lt;ul&gt;
+ * &lt;li&gt;ftp://example.org/style.less&lt;/li&gt;
+ * &lt;li&gt;ftp://example.org/styles/main.less&lt;/li&gt;
+ * &lt;/ul&gt;
+ * &lt;p&gt;
+ * &lt;strong&gt;Warning&lt;/strong&gt;: requires &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons Net&lt;/a&gt;
+ * library in the class path.
+ * &lt;/p&gt;
+ * @since 2.0.0
+ */
+public class FtpFileSystem implements FileSystem {
+
+    /**
+     * Constructs a new instance.
+     * @throws IllegalStateException if &lt;a href=&quot;https://commons.apache.org/proper/commons-net/&quot;&gt;Apache Commons Net&lt;/a&gt;
+     *             library is not available in the classpath.
+     * @since 2.0.0
+     */
+<span class="fc" id="L52">    public FtpFileSystem() {</span>
+<span class="pc bpc" id="L53" title="1 of 2 branches missed.">        if (!isAvailable()) {</span>
+<span class="nc" id="L54">            throw new IllegalStateException(&quot;Apache Commons Net library is required to work with FTP file system&quot;);</span>
+        }
+<span class="fc" id="L56">    }</span>
+
+    /**
+     * Tests whether the file system is available (all requirements are met).
+     * @return {@code true} whether the FTP file system is available, otherwise {@code false}.
+     * @since 2.0.0
+     */
+    public static boolean isAvailable() {
+        try {
+<span class="fc" id="L65">            Class.forName(&quot;org.apache.commons.net.ftp.FTP&quot;);</span>
+<span class="fc" id="L66">            return true;</span>
+<span class="nc" id="L67">        } catch (final ClassNotFoundException e) {</span>
+<span class="nc" id="L68">            return false;</span>
+        }
+    }
+
+    @Override
+    public void configure(final Map&lt;String, String&gt; parameters) {
+        // do nothing
+<span class="nc" id="L75">    }</span>
+
+    @Override
+    public boolean isSupported(final String path) {
+<span class="fc" id="L79">        return path.startsWith(&quot;ftp://&quot;);</span>
+    }
+
+    @Override
+    public String normalize(final String path) throws URISyntaxException {
+<span class="fc" id="L84">        return new URI(path).normalize().toString();</span>
+    }
+
+    @Override
+    public String expandRedirection(final String path) {
+<span class="fc" id="L89">        return path;</span>
+    }
+
+    @Override
+    public boolean exists(final String path) throws IOException {
+<span class="fc" id="L94">        final URL url = new URL(path);</span>
+<span class="fc" id="L95">        FTPClient connection = null;</span>
+        try {
+<span class="fc" id="L97">            connection = makeConnection(url);</span>
+<span class="fc" id="L98">            return isFileExist(connection, url);</span>
+<span class="fc" id="L99">        } catch (final IOException e) {</span>
+<span class="fc" id="L100">            throw new IOException(String.format(&quot;cannot access source \&quot;%s\&quot; file&quot;, url), e);</span>
+        } finally {
+<span class="fc" id="L102">            disconnect(connection);</span>
+        }
+    }
+
+    /**
+     * Tests whether a file specified by the URL exists.
+     * @param connection the opened connection to the server (cannot be {@code null}).
+     * @param url the file URL (cannot be {@code null}).
+     * @return {@code true} whether the file specified by the URL exists, otherwise {@code false}.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected boolean isFileExist(final FTPClient connection, final URL url) throws IOException {
+<span class="fc" id="L115">        try (final InputStream inputStream = connection.retrieveFileStream(url.getPath())) {</span>
+<span class="fc bfc" id="L116" title="All 4 branches covered.">            return inputStream != null &amp;&amp; connection.getReplyCode() != FTPReply.FILE_UNAVAILABLE;</span>
+        }
+    }
+
+    @Override
+    public FileData fetch(final String path) throws IOException {
+<span class="fc" id="L122">        final URL url = new URL(path);</span>
+<span class="fc" id="L123">        FTPClient connection = null;</span>
+        try {
+<span class="fc" id="L125">            connection = makeConnection(url);</span>
+<span class="fc" id="L126">            return new FileData(fetchContent(connection, url));</span>
+<span class="fc" id="L127">        } catch (final IOException e) {</span>
+<span class="fc" id="L128">            throw new IOException(String.format(&quot;cannot download source \&quot;%s\&quot; file&quot;, url), e);</span>
+        } finally {
+<span class="fc" id="L130">            disconnect(connection);</span>
+        }
+    }
+
+    /**
+     * Opens and configures a new {@link FTPClient} instance that represents a connection to the remote server referred
+     * to by the URL.
+     * @param url the URL (cannot be {@code null}).
+     * @return the new configured {@link FTPClient} instance.
+     * @throws IOException if an I/O exception occurs.
+     * @since 2.0.0
+     */
+    protected FTPClient makeConnection(final URL url) throws IOException {
+<span class="fc" id="L143">        final FTPClient connection = createFtpClient();</span>
+<span class="fc" id="L144">        connection.setAutodetectUTF8(true);</span>
+<span class="fc bfc" id="L145" title="All 2 branches covered.">        final int port = url.getPort() != -1 ? url.getPort() : FTP.DEFAULT_PORT;</span>
+<span class="fc" id="L146">        connection.connect(url.getHost(), port);</span>
+<span class="fc" id="L147">        connection.enterLocalActiveMode();</span>
+<span class="fc bfc" id="L148" title="All 2 branches covered.">        if (!connection.login(&quot;anonymous&quot;, &quot;anonymous&quot;)) {</span>
+<span class="fc" id="L149">            throw new IOException(String.format(&quot;cannot login as anonymous user, reason: %s&quot;, connection.getReplyString()));</span>
+        }
+<span class="fc" id="L151">        connection.enterLocalPassiveMode();</span>
+<span class="fc" id="L152">        connection.setFileType(FTP.BINARY_FILE_TYPE);</span>
+<span class="fc" id="L153">        return connection;</span>
+    }
+
+    /**
+     * Creates a new {@link FTPClient} instance. The reason why this method has been extracted is allow stubbing and
+     * mocking FTP client objects in tests.
+     * @return the new {@link FTPClient} instance.
+     * @since 2.0.0
+     */
+    protected FTPClient createFtpClient() {
+<span class="nc" id="L163">        return new FTPClient();</span>
+    }
+
+    /**
+     * Returns a data of the file specified by the URL.
+     * @param connection the opened connection to the server (cannot be {@code null}).
+     * @param url the file URL (cannot be {@code null}).
+     * @return the data of the file.
+     * @throws IOException if an I/O exception occurs.
+     */
+    protected byte[] fetchContent(final FTPClient connection, final URL url) throws IOException {
+<span class="fc" id="L174">        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {</span>
+<span class="fc bfc" id="L175" title="All 2 branches covered.">            if (!connection.retrieveFile(url.getPath(), outputStream)) {</span>
+<span class="fc" id="L176">                throw new IOException(String.format(&quot;cannot retrieve file, reason: %s&quot;, connection.getReplyString()));</span>
+            }
+<span class="fc" id="L178">            return outputStream.toByteArray();</span>
+        }
+    }
+
+    /**
+     * Disconnects a connection unconditionally.
+     * @param connection the connection to close (can be {@code null} or already closed).
+     * @since 2.0.0
+     */
+    protected void disconnect(final FTPClient connection) {
+<span class="fc bfc" id="L188" title="All 2 branches covered.">        if (connection == null) {</span>
+<span class="fc" id="L189">            return;</span>
+        }
+        try {
+<span class="fc" id="L192">            connection.disconnect();</span>
+<span class="fc" id="L193">        } catch (final Exception e) {</span>
+            // do nothing
+<span class="fc" id="L195">        }</span>
+<span class="fc" id="L196">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>

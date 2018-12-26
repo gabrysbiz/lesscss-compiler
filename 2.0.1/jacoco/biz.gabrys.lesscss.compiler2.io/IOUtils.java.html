@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd"><html xmlns="http://www.w3.org/1999/xhtml" lang="en"><head><meta http-equiv="Content-Type" content="text/html;charset=UTF-8"/><link rel="stylesheet" href="../jacoco-resources/report.css" type="text/css"/><link rel="shortcut icon" href="../jacoco-resources/report.gif" type="image/gif"/><title>IOUtils.java</title><link rel="stylesheet" href="../jacoco-resources/prettify.css" type="text/css"/><script type="text/javascript" src="../jacoco-resources/prettify.js"></script></head><body onload="window['PR_TAB_WIDTH']=4;prettyPrint()"><div class="breadcrumb" id="breadcrumb"><span class="info"><a href="../jacoco-sessions.html" class="el_session">Sessions</a></span><a href="../index.html" class="el_report">LessCSS Compiler</a> &gt; <a href="index.source.html" class="el_package">biz.gabrys.lesscss.compiler2.io</a> &gt; <span class="el_source">IOUtils.java</span></div><h1>IOUtils.java</h1><pre class="source lang-java linenums">/*
+ * LessCSS Compiler
+ * http://lesscss-compiler.projects.gabrys.biz/
+ *
+ * Copyright (c) 2015 Adam Gabrys
+ *
+ * This file is licensed under the BSD 3-Clause (the &quot;License&quot;).
+ * You may not use this file except in compliance with the License.
+ * You may obtain:
+ *  - a copy of the License at project page
+ *  - a template of the License at https://opensource.org/licenses/BSD-3-Clause
+ */
+package biz.gabrys.lesscss.compiler2.io;
+
+import java.io.ByteArrayOutputStream;
+import java.io.Closeable;
+import java.io.IOException;
+import java.io.InputStream;
+
+/**
+ * Provides tools for working with I/O operations.
+ * @since 2.0.0
+ */
+public final class IOUtils {
+
+    private static final int DEFAULT_BUFFER_SIZE = 4096;
+    private static final int END_OF_FILE = -1;
+
+    private IOUtils() {
+        // blocks the possibility of create a new instance
+    }
+
+    /**
+     * Reads data from an input stream and closes the stream at the end of the operation.
+     * @param inputStream the input stream to read from (cannot be {@code null}).
+     * @return bytes stored by the input stream.
+     * @throws IllegalArgumentException if the file, content or encoding is {@code null}.
+     * @throws IOException if an I/O error occurs.
+     * @since 2.0.0
+     */
+    public static byte[] toByteArray(final InputStream inputStream) throws IOException {
+<span class="fc bfc" id="L42" title="All 2 branches covered.">        if (inputStream == null) {</span>
+<span class="fc" id="L43">            throw new IllegalArgumentException(&quot;Input cannot be null&quot;);</span>
+        }
+
+<span class="fc" id="L46">        try (final ByteArrayOutputStream outputStream = new ByteArrayOutputStream()) {</span>
+<span class="fc" id="L47">            final byte[] buffer = new byte[DEFAULT_BUFFER_SIZE];</span>
+<span class="fc bfc" id="L48" title="All 2 branches covered.">            for (int readBytes = inputStream.read(buffer); readBytes != END_OF_FILE; readBytes = inputStream.read(buffer)) {</span>
+<span class="fc" id="L49">                outputStream.write(buffer, 0, readBytes);</span>
+            }
+<span class="fc" id="L51">            outputStream.flush();</span>
+<span class="fc" id="L52">            return outputStream.toByteArray();</span>
+        } finally {
+<span class="fc" id="L54">            closeQuietly(inputStream);</span>
+        }
+    }
+
+    /**
+     * Closes a {@link Closeable} unconditionally.
+     * @param closeable the object to close (can be {@code null} or already closed).
+     * @since 2.0.0
+     */
+    public static void closeQuietly(final Closeable closeable) {
+<span class="fc bfc" id="L64" title="All 2 branches covered.">        if (closeable == null) {</span>
+<span class="fc" id="L65">            return;</span>
+        }
+        try {
+<span class="fc" id="L68">            closeable.close();</span>
+<span class="fc" id="L69">        } catch (final Exception e) {</span>
+            // do nothing
+<span class="fc" id="L71">        }</span>
+<span class="fc" id="L72">    }</span>
+}
+</pre><div class="footer"><span class="right">Created with <a href="http://www.jacoco.org/jacoco">JaCoCo</a> 0.8.2.201808211720</span></div></body></html>
